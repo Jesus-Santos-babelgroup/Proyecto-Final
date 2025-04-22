@@ -8,10 +8,10 @@
         <version>3.4.4</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.babelgroup</groupId>
-    <artifactId>proyecto-final</artifactId>
+    <groupId>com.helloworld</groupId>
+    <artifactId>renting</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>proyecto-final</name>
+    <name>renting</name>
     <description>Proyecto final de la formación HelloWorld</description>
     <url/>
     <licenses>
