@@ -1,0 +1,3 @@
+2025-04-23 10:07:19 [main] INFO  com.helloworld.Main - Hola Roi - INFO
+2025-04-23 10:07:19 [main] DEBUG com.helloworld.Main - Hola Roi - DEBUG
+2025-04-23 10:07:19 [main] ERROR com.helloworld.Main - Hola Roi - ERROR
