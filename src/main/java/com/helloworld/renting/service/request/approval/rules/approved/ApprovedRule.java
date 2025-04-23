@@ -1,4 +1,4 @@
-package com.helloworld.renting.service.request.approval.rules.approved_rules;
+package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.service.request.approval.Rules;
 

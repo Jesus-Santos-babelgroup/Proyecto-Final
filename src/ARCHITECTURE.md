@@ -33,13 +33,19 @@ com.helloworld.renting
 │   ├── RequestSummaryDto.java
 │   └── RequestDetailDto.java
 │
-├── model/                  # Entidades de dominio (@Entity JPA)
+├── entities/                  # Entidades de dominio (@Entity JPA)
 │   ├── Client.java
 │   ├── Vehicle.java
 │   ├── Request.java
 │   ├── RequestItem.java
 │   ├── Extra.java
 │   └── Guarantee.java
+│
+├── exceptions/                  # Excepciones personalizadas
+│   ├── attributes/
+│   ├── db/
+│   ├── notfound/
+│   └── RentingException.java
 │
 ├── repository/             # Repositorios JPA
 │   ├── ClientRepository.java
