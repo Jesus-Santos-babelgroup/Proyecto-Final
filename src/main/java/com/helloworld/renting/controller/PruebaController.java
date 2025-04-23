@@ -14,6 +14,10 @@ public class PruebaController {
 
     @GetMapping("/prueba")
     public String prueba() {
-        return pruebaService.obtenerMensaje();
+        try {
+            return pruebaService.obtenerMensaje();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al ejecutar la prueba", e);
+        }
     }
 }

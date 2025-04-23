@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +35,19 @@ class PruebaControllerTest {
 
         // Then
         assertEquals(message, actualMessage);
+    }
+
+    @Test
+    void should_raiseException_when_pruebaFallida() {
+        // Given
+        String message = "Error al ejecutar la prueba";
+        when(pruebaService.obtenerMensaje()).thenThrow(new RuntimeException("BOOM"));
+
+        // When
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> sut.prueba());
+
+        // Then
+        assertEquals(message, exception.getMessage());
     }
 
 }
