@@ -11,6 +11,7 @@
             <Policies>
                 <TimeBasedTriggeringPolicy/>
             </Policies>
+            <DefaultRolloverStrategy max="7"/>
             <Delete>
                 <IfFileName glob="logs/app-*.log"/>
                 <IfLastModified age="7d"/>
