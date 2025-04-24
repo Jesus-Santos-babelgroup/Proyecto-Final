@@ -4,7 +4,7 @@ import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
-import com.helloworld.renting.repository.ClientRepository;
+import com.helloworld.renting.mapper.ClientMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,17 +22,16 @@ import static org.mockito.Mockito.*;
 class CreateClientServiceTest {
 
     @Mock
-    private ClientRepository clientRepository;
+    private ClientMapper clientMapper;
 
     @InjectMocks
     private ClientService clientService;
 
     private ClientDto validClientDto;
-    private Client savedClient;
 
     @BeforeEach
     void setUp() {
-        // Configure a valid ClientDto to use in testing
+        // Configurar un ClientDto válido para usar en las pruebas
         validClientDto = new ClientDto();
         validClientDto.setName("Juan");
         validClientDto.setFirstSurname("García");
@@ -44,28 +43,18 @@ class CreateClientServiceTest {
         validClientDto.setDateOfBirth(LocalDate.of(1990, 1, 15));
         validClientDto.setEmail("juan@example.com");
         validClientDto.setScoring(80);
-
-        // Configure the Client to be returned after saving it
-        savedClient = new Client();
-        savedClient.setId(1L);
-        savedClient.setName("Juan");
-        savedClient.setFirstSurname("García");
-        savedClient.setSecondSurname("López");
-        savedClient.setAddressId(1L);
-        savedClient.setCountryId(1L);
-        savedClient.setPhone("666555444");
-        savedClient.setNif("12345678A");
-        savedClient.setDateOfBirth(LocalDate.of(1990, 1, 15));
-        savedClient.setEmail("juan@example.com");
-        savedClient.setScoring(80);
     }
 
     @Test
     void createClient_WithValidData_ShouldReturnClientDto() {
         // Given
-        when(clientRepository.existsByNif(validClientDto.getNif())).thenReturn(false);
-        when(clientRepository.existsByEmail(validClientDto.getEmail())).thenReturn(false);
-        when(clientRepository.save(any(Client.class))).thenReturn(savedClient);
+        when(clientMapper.existsByNif(validClientDto.getNif())).thenReturn(false);
+        when(clientMapper.existsByEmail(validClientDto.getEmail())).thenReturn(false);
+        doAnswer(invocation -> {
+            Client client = invocation.getArgument(0);
+            client.setId(1L); // Simular la asignación de ID que haría la base de datos
+            return 1; // Retornar 1 fila afectada
+        }).when(clientMapper).insert(any(Client.class));
 
         // When
         ClientDto result = clientService.createClient(validClientDto);
@@ -76,6 +65,10 @@ class CreateClientServiceTest {
         assertEquals("Juan", result.getName());
         assertEquals("García", result.getFirstSurname());
         assertEquals("12345678A", result.getNif());
+
+        verify(clientMapper).existsByNif(validClientDto.getNif());
+        verify(clientMapper).existsByEmail(validClientDto.getEmail());
+        verify(clientMapper).insert(any(Client.class));
     }
 
     @Test
@@ -87,13 +80,13 @@ class CreateClientServiceTest {
         );
 
         assertEquals("El DTO del cliente no puede ser nulo", exception.getMessage());
-        verify(clientRepository, never()).save(any(Client.class));
+        verify(clientMapper, never()).insert(any(Client.class));
     }
 
     @Test
     void createClient_WithDuplicateNif_ShouldThrowDuplicateModelException() {
         // Given
-        when(clientRepository.existsByNif(validClientDto.getNif())).thenReturn(true);
+        when(clientMapper.existsByNif(validClientDto.getNif())).thenReturn(true);
 
         // When & Then
         DuplicateModel exception = assertThrows(
@@ -102,13 +95,14 @@ class CreateClientServiceTest {
         );
 
         assertEquals("Ya existe un cliente con este NIF: 12345678A", exception.getMessage());
+        verify(clientMapper, never()).insert(any(Client.class));
     }
 
     @Test
     void createClient_WithDuplicateEmail_ShouldThrowDuplicateModelException() {
         // Given
-        when(clientRepository.existsByNif(validClientDto.getNif())).thenReturn(false);
-        when(clientRepository.existsByEmail(validClientDto.getEmail())).thenReturn(true);
+        when(clientMapper.existsByNif(validClientDto.getNif())).thenReturn(false);
+        when(clientMapper.existsByEmail(validClientDto.getEmail())).thenReturn(true);
 
         // When & Then
         DuplicateModel exception = assertThrows(
@@ -117,5 +111,6 @@ class CreateClientServiceTest {
         );
 
         assertEquals("Ya existe un cliente con este email: juan@example.com", exception.getMessage());
+        verify(clientMapper, never()).insert(any(Client.class));
     }
 }
