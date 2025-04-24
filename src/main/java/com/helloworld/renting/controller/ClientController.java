@@ -18,6 +18,11 @@ public class ClientController {
     public ClientController() {
     }
 
+    @GetMapping("/hello")
+    public ResponseEntity<String> hello() {
+        return ResponseEntity.ok("¡La app está viva, tronco!");
+    }
+
     @PostMapping("")
     @Operation(
             summary = "Crear un cliente",
