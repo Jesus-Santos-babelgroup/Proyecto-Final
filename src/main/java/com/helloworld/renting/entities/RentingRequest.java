@@ -32,8 +32,8 @@ public class RentingRequest {
     @JoinColumn(name = "Warranty_id", referencedColumnName = "ID_warranty", insertable = false, updatable = false)
     private Warranty warranty;
 
-    @Column(name = "Final_monthly_fee", nullable = false)
-    private BigDecimal final_monthly_fee;
+    @Column(name = "Quota_final", nullable = false)
+    private BigDecimal quotaFinal;
 
     @Column(name = "Quota_base_monthly_fee", nullable = false)
     private BigDecimal quotaBaseMonthlyFee;

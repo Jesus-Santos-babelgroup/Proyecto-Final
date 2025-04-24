@@ -34,8 +34,8 @@ public class VehicleRequested {
     @Column(name = "License_plate", nullable = false, unique = true)
     private String licensePlate;
 
-    @Column(name = "Quota_final_monthly_vehicle", nullable = false)
-    private BigDecimal quotaFinalMonthlyVehicle;
+    @Column(name = "Quota_final_vehicle", nullable = false)
+    private BigDecimal quotaFinalVehicle;
 
     @Column(name = "Months_Hired", nullable = false)
     private Integer monthsHired;
