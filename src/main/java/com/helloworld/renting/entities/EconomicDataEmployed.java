@@ -1,39 +1,33 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "economic_data_employed")
+@Data
 public class EconomicDataEmployed {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_employee_data")
+    @Positive
     private Long id;
 
-    @Column(name = "ID_client", nullable = false)
+    @NotNull
+    @Positive
     private Long clientId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_client", referencedColumnName = "ID_client", insertable = false, updatable = false)
-    private Client client;
-
-    @Column(name = "CIF")
+    @NotBlank
     private String cif;
 
-    @Column(name = "Gross_income")
+    @NotNull
     private BigDecimal grossIncome;
 
-    @Column(name = "Start_date")
+    @NotNull
     private LocalDate startDate;
 
-    @Column(name = "Year_entry")
+    @NotNull
+    @Positive
     private Integer yearEntry;
 }

@@ -1,26 +1,21 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "address")
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Positive;
+
+@Data
 public class Address {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_address")
+    @Positive
     private Long id;
 
-    @Column(name = "City", nullable = false)
+    @NotBlank
     private String city;
 
-    @Column(name = "Zip_code", nullable = false)
+    @NotBlank
     private String zipCode;
 
-    @Column(name = "Street")
     private String street;
 }

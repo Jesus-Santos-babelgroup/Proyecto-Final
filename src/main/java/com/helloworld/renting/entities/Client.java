@@ -1,62 +1,46 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "client")
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import java.time.LocalDate;
+
+@Data
 public class Client {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_client")
+    @Positive
     private Long id;
 
-    @Column(name = "Name", nullable = false)
+    @NotBlank
     private String name;
 
-    @Column(name = "First_surname", nullable = false)
+    @NotBlank
     private String firstSurname;
 
-    @Column(name = "Second_surname")
     private String secondSurname;
 
-    @Column(name = "Email")
+    @Email
     private String email;
 
-    @Column(name = "NIF", nullable = false, unique = true)
+    @NotBlank
     private String nif;
 
-    @Column(name = "Phone")
     private String phone;
 
-    @Column(name = "Date_of_birth")
-    private java.time.LocalDate dateOfBirth;
+    private LocalDate dateOfBirth;
 
-    @Column(name = "Scoring")
     private Integer scoring;
 
-    @Column(name = "ID_country", nullable = false)
+    @NotBlank
     private String countryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_country", referencedColumnName = "ID_country", insertable = false, updatable = false)
-    private Country country;
-
-    @Column(name = "ID_address", nullable = false)
+    @NotNull
+    @Positive
     private Long addressId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_address", referencedColumnName = "ID_address", insertable = false, updatable = false)
-    private Address address;
-
-    @Column(name = "ID_notification_address")
+    @Positive
     private Long notificationAddressId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_notification_address", referencedColumnName = "ID_address", insertable = false, updatable = false)
-    private Address notificationAddress;
 }

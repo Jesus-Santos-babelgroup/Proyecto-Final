@@ -1,31 +1,25 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "warranty")
+@Data
 public class Warranty {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_warranty")
+    @Positive
     private Long id;
 
-    @Column(name = "Warranty_type", nullable = false)
+    @NotNull
     private WarrantyType warrantyType;
 
-    @Column(name = "Warranty_import", nullable = false)
+    @NotNull
     private BigDecimal warrantyImport;
 
-    @Column(name = "NIF", nullable = false)
+    @NotBlank
     private String nif;
 
-    @Column(name = "Description")
     private String description;
 }

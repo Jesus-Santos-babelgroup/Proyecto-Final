@@ -1,39 +1,36 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "informa_registry")
-@Getter
-@Setter
+@Data
 public class Informa {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_informa_registry")
+    @Positive
     private Long id;
 
-    @Column(name = "CIF")
+    @NotBlank
     private String cif;
 
-    @Column(name = "Company_name")
+    @NotBlank
     private String companyName;
 
-    @Column(name = "Municipality")
+    @NotBlank
     private String municipality;
 
-    @Column(name = "Zip_code")
+    @NotBlank
     private String zipCode;
 
-    @Column(name = "Amount_sales")
+    @NotNull
     private BigDecimal amountSales;
 
-    @Column(name = "Profit_before_tax")
+    @NotNull
     private BigDecimal profitBeforeTax;
 
-    @Column(name = "Fiscal_year")
+    @NotNull
+    @Positive
     private Integer fiscalYear;
 }

@@ -1,27 +1,23 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "debt")
-@Setter
-@Getter
+@Data
 public class Debt {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_debt")
+
+    @Positive
     private Long id;
 
-    @Column(name = "NIF", nullable = false)
+    @NotBlank
     private String nif;
 
-    @Column(name = "Category_company")
     private String categoryCompany;
 
-    @Column(name = "Amount")
+    @NotNull
     private BigDecimal amount;
 }

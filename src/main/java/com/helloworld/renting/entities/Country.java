@@ -1,21 +1,15 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Entity
-@Table(name = "country")
-@Setter
-@Getter
+import javax.validation.constraints.NotBlank;
+
+@Data
 public class Country {
-    @Id
-    @Column(name = "ID_country")
+
+    @NotBlank
     private String id;
 
-    @Column(name = "Country")
+    @NotBlank
     private String name;
 }

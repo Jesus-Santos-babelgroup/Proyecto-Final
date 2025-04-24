@@ -1,27 +1,23 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "extra_vehicle")
-@Getter
-@Setter
+@Data
 public class ExtraVehicle {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_extra_vehicle")
+    @Positive
     private Long id;
 
-    @Column(name = "Description")
+    @NotBlank
     private String description;
 
-    @Column(name = "Quota_increment")
+    @NotNull
     private BigDecimal quotaIncrement;
 
-    @Column(name = "Increment_type")
+    @NotNull
     private IncrementType incrementType;
 }

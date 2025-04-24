@@ -1,42 +1,41 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "vehicle")
-@Getter
-@Setter
+@Data
 public class Vehicle {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_vehicle")
+    @Positive
     private Long id;
 
-    @Column(name = "Model")
+    @NotBlank
     private String model;
 
-    @Column(name = "Brand")
+    @NotBlank
     private String brand;
 
-    @Column(name = "Investment")
+    @NotNull
     private BigDecimal investment;
 
-    @Column(name = "Quota_base")
+    @NotNull
     private BigDecimal quotaBase;
 
-    @Column(name = "Cubic_capacity")
+    @NotNull
+    @Positive
     private Integer cubicCapacity;
 
-    @Column(name = "Power")
+    @NotNull
+    @Positive
     private Integer power;
 
-    @Column(name = "Color")
+    @NotBlank
     private String color;
 
-    @Column(name = "Number_seats")
+    @NotNull
+    @Positive
     private Integer numberSeats;
 }

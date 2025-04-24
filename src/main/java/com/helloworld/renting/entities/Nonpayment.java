@@ -1,33 +1,29 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name = "nonpayment")
-@Setter
-@Getter
+@Data
 public class Nonpayment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_nonpayment")
+    @Positive
     private Long id;
 
-    @Column(name = "ID_client", nullable = false)
+    @NotNull
+    @Positive
     private Long idClient;
 
-    @Column(name = "Category")
     private String category;
 
-    @Column(name = "Start_year")
+    @NotNull
+    @Positive
     private Integer startYear;
 
-    @Column(name = "Payment_amount")
+    @NotNull
     private BigDecimal paymentAmount;
 
-    @Column(name = "Initial_total_import")
+    @NotNull
     private BigDecimal initialTotalImport;
 }

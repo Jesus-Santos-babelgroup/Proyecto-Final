@@ -1,55 +1,44 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "renting_request")
+@Data
 public class RentingRequest {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_request")
+    @Positive
     private Long id;
 
-    @Column(name = "ID_client", nullable = false)
+    @NotNull
+    @Positive
     private Long clientId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ID_client", referencedColumnName = "ID_client", insertable = false, updatable = false)
-    private Client client;
-
-    @Column(name = "Warranty_id")
+    @NotNull
+    @Positive
     private Long warrantyId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Warranty_id", referencedColumnName = "ID_warranty", insertable = false, updatable = false)
-    private Warranty warranty;
-
-    @Column(name = "Quota_final", nullable = false)
+    @NotNull
     private BigDecimal quotaFinal;
 
-    @Column(name = "Quota_base_monthly_fee", nullable = false)
+    @NotNull
     private BigDecimal quotaBaseMonthlyFee;
 
-    @Column(name = "Contracting_date", nullable = false)
+    @NotNull
     private LocalDate contractingDate;
 
-    @Column(name = "Start_date", nullable = false)
+    @NotNull
     private LocalDate startDate;
 
-    @Column(name = "PreResult", nullable = false)
+    @NotNull
     private PreResultType preResultType;
 
-    @Column(name = "Final_result")
     private FinalResultType finalResultType;
 
-    @Column(name = "Months_Hired", nullable = false)
+    @NotNull
+    @Positive
     private Integer monthsHired;
 }

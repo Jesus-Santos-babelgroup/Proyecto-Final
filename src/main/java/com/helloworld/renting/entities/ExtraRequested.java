@@ -1,26 +1,20 @@
 package com.helloworld.renting.entities;
 
-import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Setter
-@Getter
-@Entity
-@Table(name = "extra_requested")
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+
+@Data
 public class ExtraRequested {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "ID_extra_requested")
+    @Positive
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ID_vehicle_requested", referencedColumnName = "ID_vehicle_requested")
-    private VehicleRequested vehicleRequested;
+    @NotNull
+    @Positive
+    private Long vehicleRequestedId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "ID_extra_vehicle", referencedColumnName = "ID_extra_vehicle")
-    private ExtraVehicle extraVehicle;
-
+    @NotNull
+    @Positive
+    private Long extraVehicleId;
 }
