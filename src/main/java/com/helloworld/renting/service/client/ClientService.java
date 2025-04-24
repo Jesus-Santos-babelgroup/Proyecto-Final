@@ -20,12 +20,11 @@ public class ClientService {
 
     @Transactional
     public ClientDto createClient(ClientDto clientDto) {
-        // Verificaciones de datos
+
         if (clientDto == null) {
             throw new InvalidClientDtoException("El DTO del cliente no puede ser nulo");
         }
 
-        // Verificar si el cliente ya existe
         if (clientRepository.existsByNif(clientDto.getNif())) {
             throw new DuplicateModel("Ya existe un cliente con este NIF: " + clientDto.getNif());
         }

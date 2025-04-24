@@ -41,15 +41,68 @@ public class ClientController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "201",
-                    description = "Cliente creado exitosamente"
+                    description = "Cliente creado exitosamente",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ClientDto.class),
+                            examples = {
+                                    @ExampleObject(
+                                            name = "clienteCreado",
+                                            summary = "Cliente creado correctamente",
+                                            value = "{\n" +
+                                                    "  \"id\": 1,\n" +
+                                                    "  \"name\": \"Juan\",\n" +
+                                                    "  \"firstSurname\": \"García\",\n" +
+                                                    "  \"secondSurname\": \"López\",\n" +
+                                                    "  \"addressId\": 1,\n" +
+                                                    "  \"countryId\": 1,\n" +
+                                                    "  \"phone\": \"666555444\",\n" +
+                                                    "  \"nif\": \"12345678A\",\n" +
+                                                    "  \"dateOfBirth\": \"1990-01-15\",\n" +
+                                                    "  \"email\": \"juan@example.com\",\n" +
+                                                    "  \"scoring\": 80\n" +
+                                                    "}"
+                                    )
+                            }
+                    )
             ),
             @ApiResponse(
                     responseCode = "400",
-                    description = "Datos inválidos o incompletos"
+                    description = "Datos inválidos o incompletos",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = {
+                                    @ExampleObject(
+                                            name = "errorValidacion",
+                                            value = "{\n" +
+                                                    "  \"timestamp\": \"2023-07-25T10:15:30.123+00:00\",\n" +
+                                                    "  \"status\": 400,\n" +
+                                                    "  \"error\": \"Bad Request\",\n" +
+                                                    "  \"message\": \"El nombre es obligatorio\",\n" +
+                                                    "  \"path\": \"/api/clients\"\n" +
+                                                    "}"
+                                    )
+                            }
+                    )
             ),
             @ApiResponse(
                     responseCode = "409",
-                    description = "Ya existe un cliente con el mismo NIF o email"
+                    description = "Ya existe un cliente con el mismo NIF o email",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = {
+                                    @ExampleObject(
+                                            name = "clienteDuplicado",
+                                            value = "{\n" +
+                                                    "  \"timestamp\": \"2023-07-25T10:15:30.123+00:00\",\n" +
+                                                    "  \"status\": 409,\n" +
+                                                    "  \"error\": \"Conflict\",\n" +
+                                                    "  \"message\": \"Ya existe un cliente con este NIF: 12345678A\",\n" +
+                                                    "  \"path\": \"/api/clients\"\n" +
+                                                    "}"
+                                    )
+                            }
+                    )
             )
     })
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
