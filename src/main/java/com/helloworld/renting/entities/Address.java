@@ -23,7 +23,4 @@ public class Address {
 
     @Column(name = "Street")
     private String street;
-
-    @Column(name = "ID_client", nullable = false)
-    private Long clientId;
 }
