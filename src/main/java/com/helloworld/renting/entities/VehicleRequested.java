@@ -36,7 +36,4 @@ public class VehicleRequested {
 
     @Column(name = "Quota_final_vehicle", nullable = false)
     private BigDecimal quotaFinalVehicle;
-
-    @Column(name = "Months_Hired", nullable = false)
-    private Integer monthsHired;
 }

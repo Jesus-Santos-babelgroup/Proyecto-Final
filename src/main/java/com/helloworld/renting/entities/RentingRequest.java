@@ -50,4 +50,6 @@ public class RentingRequest {
     @Column(name = "Final_result")
     private FinalResultType finalResultType;
 
+    @Column(name = "Months_Hired", nullable = false)
+    private Integer monthsHired;
 }
