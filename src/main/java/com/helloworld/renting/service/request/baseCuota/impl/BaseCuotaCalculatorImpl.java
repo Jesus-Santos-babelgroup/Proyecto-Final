@@ -1,7 +1,9 @@
 package com.helloworld.renting.service.request.baseCuota.impl;
 
 import com.helloworld.renting.service.request.baseCuota.BaseCuotaCalculator;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BaseCuotaCalculatorImpl implements BaseCuotaCalculator {
     @Override
     public Double getBaseCuota(int months) {
