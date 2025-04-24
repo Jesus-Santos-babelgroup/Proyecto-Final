@@ -38,9 +38,6 @@ public class RentingRequest {
     @Column(name = "Quota_base_monthly_fee", nullable = false)
     private BigDecimal quotaBaseMonthlyFee;
 
-    @Column(name = "Term", nullable = false)
-    private Integer term;
-
     @Column(name = "Contracting_date", nullable = false)
     private LocalDate contractingDate;
 
