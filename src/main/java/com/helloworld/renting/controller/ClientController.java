@@ -54,7 +54,7 @@ public class ClientController {
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Eliminar un cliente",
-            description = "Elimina un cliente si no tiene solicitudes asociadas",
+            description = "Elimina un cliente si no tiene solicitudes asociadas a través de su ID o el CIF del empleador",
             tags = {"clients"},
             responses = {
                     @ApiResponse(responseCode = "204", description = "Cliente eliminado"),
