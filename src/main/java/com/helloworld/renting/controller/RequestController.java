@@ -1,8 +1,6 @@
 package com.helloworld.renting.controller;
 
-import com.helloworld.renting.dto.RequestDetailDto;
-import com.helloworld.renting.dto.RequestDto;
-import com.helloworld.renting.dto.RequestSummaryDto;
+import com.helloworld.renting.dto.RentingRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -29,7 +27,7 @@ public class RequestController {
                     @ApiResponse(responseCode = "201", description = "Solicitud creada")
             }
     )
-    public ResponseEntity<RequestSummaryDto> createRequest(@Valid @RequestBody RequestDto requestDto) {
+    public ResponseEntity<RentingRequestDto> createRequest(@Valid @RequestBody RentingRequestDto requestDto) {
         return null;
     }
 
@@ -43,7 +41,7 @@ public class RequestController {
                     @ApiResponse(responseCode = "404", description = "Solicitud no encontrada")
             }
     )
-    public ResponseEntity<RequestDetailDto> getRequest(@PathVariable Long id) {
+    public ResponseEntity<RentingRequestDto> getRequest(@PathVariable Long id) {
         return null;
     }
 
@@ -56,7 +54,7 @@ public class RequestController {
                     @ApiResponse(responseCode = "200", description = "Listado de solicitudes")
             }
     )
-    public ResponseEntity<List<RequestSummaryDto>> listRequests() {
+    public ResponseEntity<List<RentingRequestDto>> listRequests() {
         return null;
     }
 }
