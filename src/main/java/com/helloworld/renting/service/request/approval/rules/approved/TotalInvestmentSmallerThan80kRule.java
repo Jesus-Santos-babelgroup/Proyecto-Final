@@ -6,7 +6,7 @@ import com.helloworld.renting.dto.RulesContextDto;
 import java.math.BigDecimal;
 import java.util.List;
 
-public class TotalInvestmentSmallerThan80k extends ApprovedRule {
+public class TotalInvestmentSmallerThan80kRule extends ApprovedRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
