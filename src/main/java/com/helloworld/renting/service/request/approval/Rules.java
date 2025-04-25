@@ -1,9 +1,9 @@
 package com.helloworld.renting.service.request.approval;
 
-import com.helloworld.renting.entities.Client;
-import com.helloworld.renting.entities.RentingRequest;
+import com.helloworld.renting.dto.RulesContextDto;
 
 public interface Rules {
+    boolean conditionMet(RulesContextDto rulesContextDto);
 
-    public boolean conditionMet(RentingRequest rentingRequest);
+    public String getName();
 }
