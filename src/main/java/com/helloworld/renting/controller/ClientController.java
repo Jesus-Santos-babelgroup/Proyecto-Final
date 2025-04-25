@@ -1,6 +1,7 @@
 package com.helloworld.renting.controller;
 
 import com.helloworld.renting.dto.ClientDto;
+import com.helloworld.renting.service.client.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +16,10 @@ import java.util.List;
 @Tag(name = "clients", description = "Operaciones sobre clientes")
 public class ClientController {
 
-    public ClientController() {
+    private final ClientService clientService;
+
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     @GetMapping("/hello")
@@ -46,8 +50,10 @@ public class ClientController {
                     @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
             }
     )
-    public ResponseEntity<ClientDto> updateClient(@PathVariable Long id,
-                                                  @Valid @RequestBody ClientDto clientDto) {
+    public ResponseEntity<ClientDto> updateClient(@Valid @RequestBody ClientDto clientDto) {
+        //pasas un clientdto o un client?
+        /*Client client = clientService.updateClient(clientDto);
+        return client; */
         return null;
     }
 
