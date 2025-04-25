@@ -15,12 +15,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class CreateClientServiceTest {
+class CreateClientTest {
 
     @Mock
     private ClientMapper clientMapper;
@@ -137,5 +139,23 @@ class CreateClientServiceTest {
         verify(clientMapper).insert(clientCaptor.capture());
         Client insertedClient = clientCaptor.getValue();
         assertEquals("12345678A", insertedClient.getNif());
+    }
+    @Test
+    void createClient_WithFutureBirthDate_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNif("12345678A");
+        inputDto.setEmail("test@example.com");
+        inputDto.setName("Juan");
+
+        // Establecer una fecha de nacimiento futura
+        LocalDate futureDate = LocalDate.now().plusYears(1);
+        inputDto.setDateOfBirth(futureDate);
+        // When & Then
+        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
+                () -> clientService.createClient(inputDto));
+
+        assertTrue(exception.getMessage().contains("fecha de nacimiento"));
+        verify(clientMapper, never()).insert(any());
     }
 }
