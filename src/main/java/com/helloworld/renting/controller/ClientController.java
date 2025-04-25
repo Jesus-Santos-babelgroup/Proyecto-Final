@@ -6,10 +6,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -50,11 +52,21 @@ public class ClientController {
                     @ApiResponse(responseCode = "404", description = "Cliente no encontrado")
             }
     )
-    public ResponseEntity<ClientDto> updateClient(@Valid @RequestBody ClientDto clientDto) {
-        //pasas un clientdto o un client?
-        /*Client client = clientService.updateClient(clientDto);
-        return client; */
-        return null;
+
+    public ResponseEntity<?> updateClient(@PathVariable Long id, @Valid @RequestBody ClientDto clientDto) {
+        clientDto.setId(id);
+        ClientDto updated = clientService.updateClient(clientDto);
+        if (updated != null) {
+            return ResponseEntity.ok(
+                    Map.of(
+                            "message", "Cliente actualizado correctamente",
+                            "client", updated
+                    )
+            );
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", "Cliente no encontrado"));
+        }
     }
 
     @DeleteMapping("/{id}")

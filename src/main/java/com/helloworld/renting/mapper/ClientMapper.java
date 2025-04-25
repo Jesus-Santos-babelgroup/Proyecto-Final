@@ -9,18 +9,18 @@ import org.apache.ibatis.annotations.Update;
 public interface ClientMapper {
     @Update("""
                 UPDATE Client
-                SET Name = #{client.name},
-                    First_surname = #{client.firstSurname},
-                    Second_surname = #{client.secondSurname},
-                    Email = #{client.email},
-                    Nif = #{client.nif},
-                    Phone = #{client.phone},
-                    Date_of_birth = #{client.dateOfBirth},
-                    Scoring = #{client.scoring},
-                    Country_id = #{client.countryId},
-                    Address_id = #{client.addressId},
-                    Notification_address_id = #{client.notificationAddressId}
-                WHERE ID_client = #{client.id}
+                SET Name = #{name},
+                    First_surname = #{firstSurname},
+                    Second_surname = #{secondSurname},
+                    Email = #{email},
+                    NIF = #{nif},
+                    Phone = #{phone},
+                    Date_of_birth = #{dateOfBirth},
+                    Scoring = #{scoring},
+                    ID_country = #{countryId},
+                    ID_address = #{addressId},
+                    ID_notification_address = #{notificationAddressId}
+                WHERE ID_client = #{id}
             """)
-    Client updateClient(Client client);
+    int updateClient(Client client);
 }
