@@ -1,13 +1,10 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.RulesContextDto;
-import com.helloworld.renting.exceptions.attributes.AttributeException;
-
+import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import java.math.BigDecimal;
-import java.util.List;
 
-public class TotalInvestmentSmallerThan80kRule extends ApprovedRule {
+public class TotalInvestmentSmallerThan80000Rule extends ApprovedRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
@@ -16,10 +13,10 @@ public class TotalInvestmentSmallerThan80kRule extends ApprovedRule {
         BigDecimal limit = BigDecimal.valueOf(80000);
 
         if (totalInvestment == null) {
-            throw new AttributeException("Total Investment cannot be null");
+            throw new InvalidRulesContextDtoException("Total Investment cannot be null");
         }
         if (totalInvestment.compareTo(BigDecimal.ZERO) < 0) {
-            throw new AttributeException("Total Investment cannot be negative");
+            throw new InvalidRulesContextDtoException("Total Investment cannot be negative");
         }
         return (totalInvestment.compareTo(limit) < 0);
     }

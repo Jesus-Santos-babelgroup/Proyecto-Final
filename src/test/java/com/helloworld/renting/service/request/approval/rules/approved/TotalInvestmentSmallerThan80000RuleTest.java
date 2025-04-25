@@ -1,20 +1,20 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.RulesContextDto;
-import com.helloworld.renting.exceptions.attributes.AttributeException;
+import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TotalInvestmentSmallerThan80kRuleTest {
+public class TotalInvestmentSmallerThan80000RuleTest {
 
-    private TotalInvestmentSmallerThan80kRule sut;
+    private TotalInvestmentSmallerThan80000Rule sut;
 
     @BeforeEach
     void setUp() {
-        sut = new TotalInvestmentSmallerThan80kRule();
+        sut = new TotalInvestmentSmallerThan80000Rule();
     }
 
     @Test
@@ -50,7 +50,7 @@ public class TotalInvestmentSmallerThan80kRuleTest {
         RulesContextDto rulesContextDto = new RulesContextDto();
 
         // When
-        AttributeException exception = assertThrows(AttributeException.class, () -> sut.conditionMet(rulesContextDto));
+        InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContextDto));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -64,7 +64,7 @@ public class TotalInvestmentSmallerThan80kRuleTest {
         rulesContextDto.setTotalInvestment(BigDecimal.valueOf(-10000));
 
         // When
-        AttributeException exception = assertThrows(AttributeException.class, () -> sut.conditionMet(rulesContextDto));
+        InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContextDto));
 
         // Then
         assertEquals(message, exception.getMessage());
