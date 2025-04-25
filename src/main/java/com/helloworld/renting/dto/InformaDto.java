@@ -8,34 +8,29 @@ import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Data
-public class VehicleDto {
+public class InformaDto {
     @Positive
     private Long id;
 
     @NotBlank
-    private String model;
+    private String cif;
 
     @NotBlank
-    private String brand;
-
-    @NotNull
-    private BigDecimal investment;
-
-    @NotNull
-    private BigDecimal quotaBase;
-
-    @NotNull
-    @Positive
-    private Integer cubicCapacity;
-
-    @NotNull
-    @Positive
-    private Integer power;
+    private String companyName;
 
     @NotBlank
-    private String color;
+    private String municipality;
+
+    @NotBlank
+    private String zipCode;
+
+    @NotNull
+    private BigDecimal amountSales;
+
+    @NotNull
+    private BigDecimal profitBeforeTax;
 
     @NotNull
     @Positive
-    private Integer numberSeats;
+    private Integer fiscalYear;
 }
