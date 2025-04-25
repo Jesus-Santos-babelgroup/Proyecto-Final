@@ -1,4 +1,31 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-public class DebtLessThanMonthlyQuotaRule extends ApprovedRule {
+import com.helloworld.renting.dto.DebtDto;
+import com.helloworld.renting.dto.RulesContextDto;
+
+import java.util.List;
+
+public class DebtLessThanMonthlyQuotaRule extends ApprovedRule{
+
+    @Override
+    public boolean conditionMet(RulesContextDto rulesContextDto) {
+        List<DebtDto> debts = rulesContextDto.getDebts();
+        Double debt = (debts != null ? debts.stream()
+                .map(d -> d.getAmount().doubleValue())
+                .reduce(0.0, Double::sum) : 0.0);
+        Double monthlyQuota = rulesContextDto.getMonthly_quota();
+        if (monthlyQuota == null) {
+            throw new IllegalArgumentException("Monthly quota cannot be null");
+        }
+        if (monthlyQuota < 0) {
+            throw new IllegalArgumentException("Monthly quota cannot be negative");
+        }
+        return debt < monthlyQuota;
+    }
+
+    @Override
+    public String getName() {
+        return "DebtLessThanMonthlyQuota";
+    }
+
 }
