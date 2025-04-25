@@ -1,7 +1,5 @@
 package com.helloworld.renting.controller;
 
-import com.helloworld.renting.dto.RequestDetailDto;
-import com.helloworld.renting.dto.RequestSummaryDto;
 import com.helloworld.renting.dto.RentingRequestDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

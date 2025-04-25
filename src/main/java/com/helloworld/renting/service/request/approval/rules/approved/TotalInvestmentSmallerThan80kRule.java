@@ -2,6 +2,7 @@ package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.RulesContextDto;
+import com.helloworld.renting.exceptions.attributes.AttributeException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,10 +16,10 @@ public class TotalInvestmentSmallerThan80kRule extends ApprovedRule {
         BigDecimal limit = BigDecimal.valueOf(80000);
 
         if (totalInvestment == null) {
-            throw new IllegalArgumentException("Total Investment cannot be null");
+            throw new AttributeException("Total Investment cannot be null");
         }
         if (totalInvestment.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Total Investment cannot be negative");
+            throw new AttributeException("Total Investment cannot be negative");
         }
         return (totalInvestment.compareTo(limit) < 0);
     }
