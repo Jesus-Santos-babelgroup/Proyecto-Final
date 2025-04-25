@@ -1,6 +1,5 @@
 package com.helloworld.renting.controller;
 
-import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.service.client.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

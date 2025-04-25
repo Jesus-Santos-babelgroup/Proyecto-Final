@@ -1,6 +1,5 @@
 package com.helloworld.renting.controller;
 
-import com.helloworld.renting.dto.VehicleDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
