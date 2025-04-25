@@ -8,34 +8,21 @@ import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
 
 @Data
-public class VehicleDto {
+public class VehicleRequestedDto {
     @Positive
     private Long id;
 
-    @NotBlank
-    private String model;
-
-    @NotBlank
-    private String brand;
-
     @NotNull
-    private BigDecimal investment;
-
-    @NotNull
-    private BigDecimal quotaBase;
+    @Positive
+    private Long requestId;
 
     @NotNull
     @Positive
-    private Integer cubicCapacity;
-
-    @NotNull
-    @Positive
-    private Integer power;
+    private Long vehicleId;
 
     @NotBlank
-    private String color;
+    private String licensePlate;
 
     @NotNull
-    @Positive
-    private Integer numberSeats;
+    private BigDecimal quotaFinalVehicle;
 }
