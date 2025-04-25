@@ -7,7 +7,7 @@ import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoExcept
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class DebtAmountLessThanMonthlyQuote extends DenialRule {
+public class DenialRuleDebtAmountLessThanMonthlyQuote extends DenialRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
