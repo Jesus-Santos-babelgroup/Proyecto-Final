@@ -4,9 +4,11 @@ import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.AttributeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 
+@Component
 public class AgeBelow18Rule extends DenialRule {
 
     private static final Logger logger = LoggerFactory.getLogger(AgeBelow18Rule.class);
