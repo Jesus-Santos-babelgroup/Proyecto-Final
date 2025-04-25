@@ -8,6 +8,7 @@ import java.util.Objects;
 
 @Component
 public class NotInInternalDebtsRule extends DenialRule {
+
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
         validate(rulesContextDto);
