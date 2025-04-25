@@ -28,14 +28,14 @@ class SeniorityGreaterThan3YearsRuleTest {
     void testSeniorityLessThan3Years() {
         RulesContextDto context = new RulesContextDto();
         context.setEmploymentStartDate(LocalDate.now().minusYears(2));
-        assertTrue(rule.conditionMet(context));
+        assertFalse(rule.conditionMet(context));
     }
 
     @Test
     void testSeniorityMoreThan3Years() {
         RulesContextDto context = new RulesContextDto();
         context.setEmploymentStartDate(LocalDate.now().minusYears(5));
-        assertFalse(rule.conditionMet(context));
+        assertTrue(rule.conditionMet(context));
     }
 
     @Test
@@ -51,7 +51,7 @@ class SeniorityGreaterThan3YearsRuleTest {
     void testEmploymentStartDateIsToday() {
         RulesContextDto context = new RulesContextDto();
         context.setEmploymentStartDate(LocalDate.now());
-        assertTrue(rule.conditionMet(context));
+        assertFalse(rule.conditionMet(context));
     }
 
     @Test

@@ -9,7 +9,7 @@ public class SeniorityGreaterThan3YearsRule extends ApprovedRule{
         int seniority = LocalDate.now().getYear() - rulesContextDto.getEmploymentStartDate().getYear();
         if(seniority < 0)
             throw new IllegalArgumentException("Employment start date cannot be in the future");
-        return seniority <= 3;
+        return seniority >= 3;
     }
 
     @Override
