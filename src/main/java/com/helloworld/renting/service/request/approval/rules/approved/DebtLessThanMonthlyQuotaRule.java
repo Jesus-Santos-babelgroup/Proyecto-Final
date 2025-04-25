@@ -5,7 +5,7 @@ import com.helloworld.renting.dto.RulesContextDto;
 
 import java.util.List;
 
-public class DebtLessThanMonthlyQuotaRule extends ApprovedRule{
+public class DebtLessThanMonthlyQuotaRule extends ApprovedRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
