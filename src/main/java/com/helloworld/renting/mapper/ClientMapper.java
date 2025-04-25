@@ -6,14 +6,14 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface ClientMapper {
 
-    @Insert("INSERT INTO clients (name, first_surname, second_surname, address_id, country_id, phone, nif, date_of_birth, email, scoring) " +
-            "VALUES (#{name}, #{firstSurname}, #{secondSurname}, #{addressId}, #{countryId}, #{phone}, #{nif}, #{dateOfBirth}, #{email}, #{scoring})")
-    @Options(useGeneratedKeys = true, keyProperty = "id")
+    @Insert("INSERT INTO clients (Name, First_surname, Second_surname, ID_address, ID_country, Phone, NIF, Date_of_birth, Email, Scoring, ID_notification_address) " +
+            "VALUES (#{name}, #{firstSurname}, #{secondSurname}, #{addressId}, #{countryId}, #{phone}, #{nif}, #{dateOfBirth}, #{email}, #{scoring}, #{notificationAddressId})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "ID_client")
     int insert(Client client);
 
-    @Select("SELECT COUNT(*) FROM clients WHERE nif = #{nif}")
+    @Select("SELECT COUNT(*) FROM clients WHERE NIF = #{nif}")
     boolean existsByNif(String nif);
 
-    @Select("SELECT COUNT(*) FROM clients WHERE email = #{email}")
+    @Select("SELECT COUNT(*) FROM clients WHERE Email = #{email}")
     boolean existsByEmail(String email);
 }
