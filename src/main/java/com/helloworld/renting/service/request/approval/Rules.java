@@ -4,4 +4,6 @@ import com.helloworld.renting.dto.RulesContextDto;
 
 public interface Rules {
     boolean conditionMet(RulesContextDto rulesContextDto);
+
+    public String getName();
 }
