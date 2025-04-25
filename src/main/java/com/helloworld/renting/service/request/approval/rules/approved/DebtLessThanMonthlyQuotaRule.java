@@ -1,13 +1,11 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.dto.RulesContextDto;
-
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.RulesContextDto;
 
 import java.util.List;
 
-public class DebtLessThanMonthlyQuotaRule extends ApprovedRule{
+public class DebtLessThanMonthlyQuotaRule extends ApprovedRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
