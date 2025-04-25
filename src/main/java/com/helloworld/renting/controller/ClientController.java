@@ -1,6 +1,7 @@
 package com.helloworld.renting.controller;
 
 import com.helloworld.renting.dto.ClientDto;
+import com.helloworld.renting.service.client.ClientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -15,7 +16,10 @@ import java.util.List;
 @Tag(name = "clients", description = "Operaciones sobre clientes")
 public class ClientController {
 
-    public ClientController() {
+    private final ClientService clientService;
+
+    public ClientController(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     @GetMapping("/hello")
@@ -54,7 +58,7 @@ public class ClientController {
     @DeleteMapping("/{id}")
     @Operation(
             summary = "Eliminar un cliente",
-            description = "Elimina un cliente si no tiene solicitudes asociadas a través de su ID o el CIF del empleador",
+            description = "Elimina un cliente si no tiene solicitudes asociadas a través de su ID",
             tags = {"clients"},
             responses = {
                     @ApiResponse(responseCode = "204", description = "Cliente eliminado"),
@@ -62,7 +66,23 @@ public class ClientController {
             }
     )
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        return null;
+        clientService.deleteClientById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("")
+    @Operation(
+            summary = "Eliminar un cliente por CIF",
+            description = "Elimina un cliente si no tiene solicitudes asociadas a través del CIF del empleador",
+            tags = {"clients"},
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Cliente eliminado"),
+                    @ApiResponse(responseCode = "404", description = "Cliente no encontrado o con solicitudes")
+            }
+    )
+    public ResponseEntity<Void> deleteClientByCIF(@RequestParam("cif") String cif) {
+        clientService.deleteClientByCIF(cif);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
