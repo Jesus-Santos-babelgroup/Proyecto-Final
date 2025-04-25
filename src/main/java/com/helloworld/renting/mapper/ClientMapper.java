@@ -1,5 +1,6 @@
 package com.helloworld.renting.mapper;
 
+import com.helloworld.renting.entities.Client;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

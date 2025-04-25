@@ -1,5 +1,7 @@
 package com.helloworld.renting.service.client;
 
+import com.helloworld.renting.dto.ClientDto;
+import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
 import com.helloworld.renting.mapper.ClientMapper;
