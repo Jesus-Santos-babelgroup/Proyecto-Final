@@ -1,7 +1,6 @@
 package com.helloworld.renting.controller;
 
 import com.helloworld.renting.dto.RequestDetailDto;
-import com.helloworld.renting.dto.RequestDto;
 import com.helloworld.renting.dto.RequestSummaryDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -29,7 +28,7 @@ public class RequestController {
                     @ApiResponse(responseCode = "201", description = "Solicitud creada")
             }
     )
-    public ResponseEntity<RequestSummaryDto> createRequest(@Valid @RequestBody RequestDto requestDto) {
+    public ResponseEntity<RequestSummaryDto> createRequest(@Valid @RequestBody RequestSummaryDto requestDto) {
         return null;
     }
 
