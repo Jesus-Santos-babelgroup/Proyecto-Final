@@ -62,7 +62,7 @@ class AgeBelow18RuleTest {
         // Given
         String message = "Client birth date is not valid";
         RulesContextDto context = new RulesContextDto();
-        context.setClientBirthDate(LocalDate.of(2030,5,10));
+        context.setClientBirthDate(LocalDate.of(9999,12,31));
 
         // When
         AttributeException exception = assertThrows(AttributeException.class, () -> sut.conditionMet(context));
