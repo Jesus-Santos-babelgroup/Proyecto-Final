@@ -2,18 +2,22 @@ package com.helloworld.renting.service.client;
 
 import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.entities.Client;
+import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
+import com.helloworld.renting.exceptions.db.DuplicateModel;
 import com.helloworld.renting.mapper.ClientMapper;
 import com.helloworld.renting.mapper.StructMapperToDto;
 import com.helloworld.renting.mapper.StructMapperToEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CreateClientServiceTest {
@@ -30,6 +34,9 @@ class CreateClientServiceTest {
     @InjectMocks
     private ClientService clientService;
 
+    @Captor
+    private ArgumentCaptor<Client> clientCaptor;
+
     @Test
     void createClient_BasicFunctionality() {
         // Given
@@ -41,10 +48,10 @@ class CreateClientServiceTest {
         ClientDto outputDto = new ClientDto();
         outputDto.setId(1L);
 
-        when(clientMapper.existsByNif(any())).thenReturn(false);
-        when(clientMapper.existsByEmail(any())).thenReturn(false);
-        when(toEntity.toEntity(any())).thenReturn(client);
-        when(toDto.toDto(any())).thenReturn(outputDto);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(false);
+        when(toEntity.toEntity(inputDto)).thenReturn(client);
+        when(toDto.toDto(client)).thenReturn(outputDto);
 
         // When
         ClientDto result = clientService.createClient(inputDto);
@@ -52,5 +59,83 @@ class CreateClientServiceTest {
         // Then
         assertNotNull(result);
         assertEquals(1L, result.getId());
+
+        // Verificamos que los métodos se llamaron con los parámetros correctos
+        verify(clientMapper).existsByNif(inputDto.getNif());
+        verify(clientMapper).existsByEmail(inputDto.getEmail());
+        verify(toEntity).toEntity(inputDto);
+        verify(clientMapper).insert(client);
+        verify(toDto).toDto(client);
+    }
+
+    @Test
+    void createClient_WithNullDto_ShouldThrowException() {
+        // When & Then
+        assertThrows(InvalidClientDtoException.class,
+                () -> clientService.createClient(null));
+
+        // Verificamos que no se llamaron otros métodos
+        verifyNoInteractions(toEntity, toDto);
+        verify(clientMapper, never()).insert(any());
+    }
+
+    @Test
+    void createClient_WithDuplicateNif_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNif("12345678A");
+        inputDto.setEmail("test@example.com");
+
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(true);
+
+        // When & Then
+        DuplicateModel exception = assertThrows(DuplicateModel.class,
+                () -> clientService.createClient(inputDto));
+
+        assertTrue(exception.getMessage().contains(inputDto.getNif()));
+        verify(clientMapper, never()).insert(any());
+    }
+
+    @Test
+    void createClient_WithDuplicateEmail_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNif("12345678A");
+        inputDto.setEmail("test@example.com");
+
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(true);
+
+        // When & Then
+        DuplicateModel exception = assertThrows(DuplicateModel.class,
+                () -> clientService.createClient(inputDto));
+
+        assertTrue(exception.getMessage().contains(inputDto.getEmail()));
+        verify(clientMapper, never()).insert(any());
+    }
+
+    @Test
+    void createClient_ShouldInsertClientCorrectly() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNif("12345678A");
+        inputDto.setEmail("test@example.com");
+        inputDto.setName("Juan");
+
+        Client mappedClient = new Client();
+        mappedClient.setNif("12345678A");
+
+        when(clientMapper.existsByNif(any())).thenReturn(false);
+        when(clientMapper.existsByEmail(any())).thenReturn(false);
+        when(toEntity.toEntity(inputDto)).thenReturn(mappedClient);
+        when(toDto.toDto(any())).thenReturn(new ClientDto());
+
+        // When
+        clientService.createClient(inputDto);
+
+        // Then
+        verify(clientMapper).insert(clientCaptor.capture());
+        Client insertedClient = clientCaptor.getValue();
+        assertEquals("12345678A", insertedClient.getNif());
     }
 }
