@@ -14,6 +14,8 @@ public abstract class DenialRule implements Rules {
             throw new InvalidRulesContextDtoException("RequestId es obligatorios");
         } else if (rulesContextDto.getClientNif().isEmpty()) {
             throw new InvalidRulesContextDtoException("ClientNif no puede ser vacio");
+        } else if (rulesContextDto.getClientScoring() == null) {
+            throw new InvalidRulesContextDtoException("Scoring no puede ser null");
         }
     }
 }
