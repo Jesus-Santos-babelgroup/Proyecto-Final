@@ -24,6 +24,7 @@ public class RulesContextDto {
     private List<DebtDto> debts;
     private List<NonpaymentDto> nonpayments;
     private List<InformaDto> informaRecords;
+    private Double Monthly_quota;
     private boolean previouslyRejected;
     private boolean previouslyApprovedWithGuarantee;
 }
