@@ -10,6 +10,9 @@ public class CheckExternalDebtsCompanyTypeRule extends DenialRule {
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
         List<DebtDto> debts = rulesContextDto.getDebts();
+        if(debts == null){
+            return true;
+        }
         return debts.stream()
                 .map(DebtDto::getCategoryCompany)
                 .noneMatch(category ->
