@@ -8,14 +8,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.List;
 
 import static com.helloworld.renting.entities.PreResultType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = LENIENT)
 class RuleEvaluatorTest {
 
     @Mock
@@ -79,5 +82,20 @@ class RuleEvaluatorTest {
 
         // Assert
         assertEquals(NEEDS_REVIEW, result);
+    }
+
+    @Test
+    void evaluate_whenSomeDenialAndSomeApprovalFalse_returnsPreDenied() {
+        // Arrange
+        when(denialRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(denialRule2.conditionMet(dummyCtx)).thenReturn(false);
+        when(approvalRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(approvalRule2.conditionMet(dummyCtx)).thenReturn(false);
+
+        // Act
+        var result = evaluator.evaluate(dummyCtx);
+
+        // Assert
+        assertEquals(PREDENIED, result);
     }
 }
