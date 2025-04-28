@@ -24,7 +24,7 @@ public class EconomicDataService {
         }
 
         try {
-            logger.info("Deleting economic data for client");
+            logger.debug("Deleting economic data for client");
             economicDataMapper.deleteEconomicDataEmployedByClientId(id);
             economicDataMapper.deleteEconomicDataSelfEmployedByClientId(id);
         } catch (Exception e) {

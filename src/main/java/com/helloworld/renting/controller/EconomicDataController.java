@@ -4,6 +4,8 @@ import com.helloworld.renting.service.economicdata.EconomicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class EconomicDataController {
 
     private EconomicDataService economicDataService;
+    private Logger logger = LoggerFactory.getLogger(EconomicDataController.class);
 
     public EconomicDataController(EconomicDataService economicDataService) {
         this.economicDataService = economicDataService;
@@ -32,6 +35,7 @@ public class EconomicDataController {
     )
     public ResponseEntity<Void> deleteEconomicDataFromClient(@PathVariable Long id) {
         try {
+            logger.debug("Starting to delete economic data for client");
             economicDataService.deleteEconomicDataFromClient(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
