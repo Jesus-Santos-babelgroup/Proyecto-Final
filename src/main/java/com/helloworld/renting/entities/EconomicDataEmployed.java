@@ -25,6 +25,10 @@ public class EconomicDataEmployed {
     private BigDecimal grossIncome;
 
     @NotNull
+    private BigDecimal netIncome;
+
+
+    @NotNull
     private LocalDate startDate;
 
     @NotNull
