@@ -7,11 +7,11 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
 @Component
-public class TotalInvestmentSmallerThanMaxTotalInvestmentRule extends ApprovedRule {
+public class MaxTotalInvestmentRule extends ApprovedRule {
 
     private final MaxTotalInvestmentProperties rulesProperties;
 
-    public TotalInvestmentSmallerThanMaxTotalInvestmentRule(MaxTotalInvestmentProperties rulesProperties) {
+    public MaxTotalInvestmentRule(MaxTotalInvestmentProperties rulesProperties) {
         this.rulesProperties = rulesProperties;
     }
 
@@ -21,13 +21,28 @@ public class TotalInvestmentSmallerThanMaxTotalInvestmentRule extends ApprovedRu
         BigDecimal totalInvestment = rulesContextDto.getTotalInvestment();
         BigDecimal limit = rulesProperties.getLimit();
 
+        validate(totalInvestment, limit);
+
+        // comprobar limite, aqui y en test
+        // mover a funcion
+        return (totalInvestment.compareTo(limit) < 0);
+    }
+
+    void validate(BigDecimal totalInvestment, BigDecimal limit){
+
         if (totalInvestment == null) {
             throw new InvalidRulesContextDtoException("Total Investment cannot be null");
         }
         if (totalInvestment.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidRulesContextDtoException("Total Investment cannot be negative");
         }
-        return (totalInvestment.compareTo(limit) < 0);
+
+        if (limit == null) {
+            throw new InvalidRulesContextDtoException("Max Total Investment cannot be null");
+        }
+        if (limit.compareTo(BigDecimal.ZERO) < 0) {
+            throw new InvalidRulesContextDtoException("Max Total Investment cannot be negative");
+        }
     }
 
     @Override
