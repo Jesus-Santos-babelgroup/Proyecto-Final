@@ -1,13 +1,35 @@
 package com.helloworld.renting.service.client;
 
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
+import com.helloworld.renting.entities.EconomicDataSelfEmployed;
+import com.helloworld.renting.mapper.economicalData.EconomicalDataSelfEmployedMapper;
+import com.helloworld.renting.mapper.economicalData.StructEconomicalDataSelfEmployedMapperToDto;
+import com.helloworld.renting.mapper.economicalData.StructEconomicalDataSelfEmployedMapperToEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EconomicDataService {
 
+    private final EconomicalDataSelfEmployedMapper economicalDataSelfEmployedMapper;
+    private final StructEconomicalDataSelfEmployedMapperToDto selfEmployedMapperToDto;
+    private final StructEconomicalDataSelfEmployedMapperToEntity selfEmployedMapperToEntity;
+
+    public EconomicDataService(EconomicalDataSelfEmployedMapper economicalDataSelfEmployedMapper,
+                               StructEconomicalDataSelfEmployedMapperToDto selfEmployedMapperToDto,
+                               StructEconomicalDataSelfEmployedMapperToEntity selfEmployedMapperToEntity){
+        this.economicalDataSelfEmployedMapper = economicalDataSelfEmployedMapper;
+        this.selfEmployedMapperToDto = selfEmployedMapperToDto;
+        this.selfEmployedMapperToEntity = selfEmployedMapperToEntity;
+    }
+
+    @Transactional
     public EconomicDataSelfEmployedDto addEconomicData (EconomicDataSelfEmployedDto economicDataSelfEmployedDto){
-        return null;
+        EconomicDataSelfEmployed economicDataSelfEmployed = selfEmployedMapperToEntity.toEntity(economicDataSelfEmployedDto);
+        System.out.println(economicDataSelfEmployed);
+        economicalDataSelfEmployedMapper.insert(economicDataSelfEmployed);
+
+        return economicDataSelfEmployedDto;
     }
 
 }
