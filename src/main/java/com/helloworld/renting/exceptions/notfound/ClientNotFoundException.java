@@ -1,6 +1,8 @@
 package com.helloworld.renting.exceptions.notfound;
 
-public class ClientNotFoundException extends NotFoundException {
+import com.helloworld.renting.exceptions.RentingException;
+
+public class ClientNotFoundException extends RentingException {
     public ClientNotFoundException(String message) {
         super(message);
     }

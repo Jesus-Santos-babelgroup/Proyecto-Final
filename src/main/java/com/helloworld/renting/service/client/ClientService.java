@@ -1,7 +1,8 @@
 package com.helloworld.renting.service.client;
 
 import com.helloworld.renting.entities.Client;
-import com.helloworld.renting.exceptions.RentingException;
+import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
+import com.helloworld.renting.exceptions.attributes.ClientWithPendingRequestsException;
 import com.helloworld.renting.repository.ClientRepository;
 import com.helloworld.renting.repository.RequestRepository;
 import org.springframework.stereotype.Service;
@@ -20,30 +21,25 @@ public class ClientService {
     public void deleteClientById(Long id) {
         Client client = clientRepository.findById(id);
         if (client == null) {
-            throw new RentingException("Cliente no encontrado");
+            throw new ClientNotFoundException("Cliente no encontrado");
         }
-
         if (requestRepository.countPendingByClientId(id) > 0) {
-            throw new RentingException("Cliente con solicitudes pendientes. No se puede eliminar.");
+            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes pendientes");
         }
-
         clientRepository.delete(id);
     }
 
-    public void deleteClientByCIF(String cif) {
-        if (!cif.matches("^[A-Z][0-9]{7}[A-Z0-9]$")) {
-            throw new RentingException("Formato de CIF inválido");
+    public void deleteClientByNif(String nif) {
+        if (!nif.matches("^[0-9]{8}[A-Z]$")) {
+            throw new IllegalArgumentException("Formato de NIF inválido");
         }
-
-        Client client = clientRepository.findByCif(cif);
+        Client client = clientRepository.findByNif(nif);
         if (client == null) {
-            throw new RentingException("Cliente no encontrado");
+            throw new ClientNotFoundException("Cliente no encontrado");
         }
-
         if (requestRepository.countPendingByClientId(client.getId()) > 0) {
-            throw new RentingException("Cliente con solicitudes pendientes. No se puede eliminar.");
+            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes pendientes");
         }
-
         clientRepository.delete(client.getId());
     }
 }
