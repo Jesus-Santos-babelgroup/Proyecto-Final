@@ -2,15 +2,17 @@ package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.RulesContextDto;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class CheckExternalDebtsCompanyTypeRule extends DenialRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
         List<DebtDto> debts = rulesContextDto.getDebts();
-        if(debts == null){
+        if (debts == null) {
             return true;
         }
         return debts.stream()

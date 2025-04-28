@@ -2,8 +2,11 @@ package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 
+@Component
 public class TotalInvestmentSmallerThan80000Rule extends ApprovedRule {
 
     @Override

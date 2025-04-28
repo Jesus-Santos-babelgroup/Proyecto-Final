@@ -1,13 +1,16 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.RulesContextDto;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-public class SeniorityGreaterThan3YearsRule extends ApprovedRule{
+
+@Component
+public class SeniorityGreaterThan3YearsRule extends ApprovedRule {
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
         int seniority = LocalDate.now().getYear() - rulesContextDto.getEmploymentStartDate().getYear();
-        if(seniority < 0)
+        if (seniority < 0)
             throw new IllegalArgumentException("Employment start date cannot be in the future");
         return seniority >= 3;
     }
