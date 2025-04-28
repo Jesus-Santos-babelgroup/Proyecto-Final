@@ -21,14 +21,13 @@ public class MaxTotalInvestmentRule extends ApprovedRule {
         BigDecimal totalInvestment = rulesContextDto.getTotalInvestment();
         BigDecimal limit = rulesProperties.getLimit();
 
-        validate(totalInvestment, limit);
+        validateTotalInvestment(totalInvestment);
+        validateMaxTotalInvestment(limit);
 
-        // comprobar limite, aqui y en test
-        // mover a funcion
         return (totalInvestment.compareTo(limit) < 0);
     }
 
-    void validate(BigDecimal totalInvestment, BigDecimal limit){
+    void validateTotalInvestment(BigDecimal totalInvestment){
 
         if (totalInvestment == null) {
             throw new InvalidRulesContextDtoException("Total Investment cannot be null");
@@ -36,6 +35,9 @@ public class MaxTotalInvestmentRule extends ApprovedRule {
         if (totalInvestment.compareTo(BigDecimal.ZERO) < 0) {
             throw new InvalidRulesContextDtoException("Total Investment cannot be negative");
         }
+    }
+
+    void validateMaxTotalInvestment(BigDecimal limit){
 
         if (limit == null) {
             throw new InvalidRulesContextDtoException("Max Total Investment cannot be null");
