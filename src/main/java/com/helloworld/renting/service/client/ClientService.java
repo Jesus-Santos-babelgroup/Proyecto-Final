@@ -60,6 +60,10 @@ public class ClientService {
             throw new DuplicateModel("Ya existe un cliente con este email: " + clientDto.getEmail());
         }
 
+        if (clientDto.getScoring() == null || clientDto.getScoring() < 0) {
+            throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
+        }
+
         // Converting to entity
         Client client = toEntity.toEntity(clientDto);
 
