@@ -30,8 +30,13 @@ public class EconomicDataController {
                     @ApiResponse(responseCode = "404", description = "No economic data was found for this client")
             }
     )
-    public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        return null;
+    public ResponseEntity<Void> deleteEconomicDataFromClient(@PathVariable Long id) {
+        try {
+            economicDataService.deleteEconomicDataFromClient(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
