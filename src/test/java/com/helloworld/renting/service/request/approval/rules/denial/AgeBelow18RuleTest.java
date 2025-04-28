@@ -2,6 +2,7 @@ package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.AttributeException;
+import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -65,7 +66,7 @@ class AgeBelow18RuleTest {
         context.setClientBirthDate(LocalDate.of(9999,12,31));
 
         // When
-        AttributeException exception = assertThrows(AttributeException.class, () -> sut.conditionMet(context));
+        InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(context));
 
         // Then
         assertEquals(message, exception.getMessage());
