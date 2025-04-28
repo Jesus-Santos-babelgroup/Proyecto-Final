@@ -45,6 +45,7 @@ class CreateClientTest {
         ClientDto inputDto = new ClientDto();
         inputDto.setNif("12345678A");
         inputDto.setEmail("test@example.com");
+        inputDto.setScoring(100); // Valor válido para scoring
 
         Client client = new Client();
         ClientDto outputDto = new ClientDto();
@@ -123,6 +124,7 @@ class CreateClientTest {
         inputDto.setNif("12345678A");
         inputDto.setEmail("test@example.com");
         inputDto.setName("Juan");
+        inputDto.setScoring(50); // Valor válido para scoring
 
         Client mappedClient = new Client();
         mappedClient.setNif("12345678A");
