@@ -1,16 +1,25 @@
-package com.helloworld.renting.service.request.approval.rules.approved;
+package com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment;
 
 import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
+import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 
-public class TotalInvestmentSmallerThan80000Rule extends ApprovedRule {
+@Component
+public class TotalInvestmentSmallerThanMaxTotalInvestmentRule extends ApprovedRule {
+
+    private final MaxTotalInvestmentProperties rulesProperties;
+
+    public TotalInvestmentSmallerThanMaxTotalInvestmentRule(MaxTotalInvestmentProperties rulesProperties) {
+        this.rulesProperties = rulesProperties;
+    }
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
 
         BigDecimal totalInvestment = rulesContextDto.getTotalInvestment();
-        BigDecimal limit = BigDecimal.valueOf(80000);
+        BigDecimal limit = rulesProperties.getLimit();
 
         if (totalInvestment == null) {
             throw new InvalidRulesContextDtoException("Total Investment cannot be null");
@@ -23,7 +32,7 @@ public class TotalInvestmentSmallerThan80000Rule extends ApprovedRule {
 
     @Override
     public String getName() {
-        return "TotalInvestmentSmallerThan80k";
+        return "TotalInvestmentSmallerThanMaxTotalInvestment";
     }
 
 }

@@ -1,24 +1,28 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
+import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentProperties;
 import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.TotalInvestmentSmallerThanMaxTotalInvestmentRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TotalInvestmentSmallerThan80000RuleTest {
+public class TotalInvestmentSmallerThanMaxTotalInvestmentRuleTest {
 
-    private TotalInvestmentSmallerThan80000Rule sut;
+    private TotalInvestmentSmallerThanMaxTotalInvestmentRule sut;
 
     @BeforeEach
     void setUp() {
-        sut = new TotalInvestmentSmallerThan80000Rule();
+        MaxTotalInvestmentProperties properties = new MaxTotalInvestmentProperties();
+        properties.setLimit(BigDecimal.valueOf(80000));
+        sut = new TotalInvestmentSmallerThanMaxTotalInvestmentRule(properties);
     }
 
     @Test
-    void should_returnTrue_when_TotalInvestmentIsSmallerThan80000() {
+    void should_returnTrue_when_TotalInvestmentIsSmallerThanMaxTotalInvestment() {
         // Given
         RulesContextDto rulesContextDto = new RulesContextDto();
         rulesContextDto.setTotalInvestment(BigDecimal.valueOf(50000));
@@ -31,7 +35,7 @@ public class TotalInvestmentSmallerThan80000RuleTest {
     }
 
     @Test
-    void should_returnFalse_when_TotalInvestmentIsEqualTo80000() {
+    void should_returnFalse_when_TotalInvestmentIsEqualToMaxTotalInvestment() {
         // Given
         RulesContextDto rulesContextDto = new RulesContextDto();
         rulesContextDto.setTotalInvestment(BigDecimal.valueOf(80000));
