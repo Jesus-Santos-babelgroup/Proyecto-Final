@@ -5,6 +5,7 @@ import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Objects;
 
 public class DenialRuleDebtAmountLessThanMonthlyQuote extends DenialRule {
@@ -22,7 +23,7 @@ public class DenialRuleDebtAmountLessThanMonthlyQuote extends DenialRule {
             totalDebt = totalDebt.add(debt.getAmount());
         }
 
-        return monthlyQuota < totalDebt.doubleValue();
+        return monthlyQuota > totalDebt.doubleValue();
     }
 
     @Override
@@ -37,6 +38,20 @@ public class DenialRuleDebtAmountLessThanMonthlyQuote extends DenialRule {
             throw new InvalidRulesContextDtoException("Cuota mensual no puede ser null.");
         } else if (rulesContextDto.getDebts() == null) {
             throw new InvalidRulesContextDtoException("Lista de deudas no puede ser null.");
+        } else if (!validDebts(rulesContextDto.getDebts())) {
+            throw new InvalidRulesContextDtoException("Algún valor de deuda es negativo.");
         }
+    }
+
+    private boolean validDebts(List<DebtDto> debts) {
+        for (DebtDto debt : debts) {
+            if (debt.getAmount() == null) {
+                return false;
+            }
+            if (debt.getAmount().compareTo(BigDecimal.valueOf(0)) < 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
