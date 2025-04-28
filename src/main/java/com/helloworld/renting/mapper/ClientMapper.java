@@ -1,7 +1,10 @@
 package com.helloworld.renting.mapper;
 
 import com.helloworld.renting.entities.Client;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface ClientMapper {
@@ -10,6 +13,9 @@ public interface ClientMapper {
             "VALUES (#{name}, #{firstSurname}, #{secondSurname}, #{addressId}, #{countryId}, #{phone}, #{nif}, #{dateOfBirth}, #{email}, #{scoring}, #{notificationAddressId})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "ID_client")
     int insert(Client client);
+
+    @Select("SELECT * FROM Client WHERE id = #{id}")
+    Client findById(Long id);
 
     @Select("SELECT COUNT(*) FROM Client WHERE NIF = #{nif}")
     boolean existsByNif(String nif);
