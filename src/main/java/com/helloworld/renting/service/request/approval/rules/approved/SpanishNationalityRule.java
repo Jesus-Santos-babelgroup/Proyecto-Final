@@ -16,7 +16,6 @@ public class SpanishNationalityRule implements ApprovedRule {
         String nationality = rentingRequestDto.getClient().getCountry().getIsoA2();
 
         if (nationality == null) {
-            logger.warn("Client nationality is null");
             throw new InvalidRentingRequestDtoException("Client nationality is null");
         } else {
             logger.debug("SpanishNationalityRule checked");
