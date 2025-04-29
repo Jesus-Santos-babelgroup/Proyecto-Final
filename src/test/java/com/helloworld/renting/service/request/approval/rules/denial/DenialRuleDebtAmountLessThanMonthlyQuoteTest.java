@@ -1,8 +1,7 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.dto.DebtDto;
-import com.helloworld.renting.dto.RulesContextDto;
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.Rules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -85,7 +84,7 @@ class DenialRuleDebtAmountLessThanMonthlyQuoteTest {
         when(rulesContext.getDebts()).thenReturn(List.of(debt));
 
         // when / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContext));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContext));
     }
 
     @Test
@@ -98,7 +97,7 @@ class DenialRuleDebtAmountLessThanMonthlyQuoteTest {
         when(rulesContext.getDebts()).thenReturn(List.of(debt));
 
         // when / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContext));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContext));
     }
 
     @Test
@@ -110,6 +109,6 @@ class DenialRuleDebtAmountLessThanMonthlyQuoteTest {
         when(rulesContext.getMonthly_quota()).thenReturn(null);
 
         // When / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContext));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContext));
     }
 }

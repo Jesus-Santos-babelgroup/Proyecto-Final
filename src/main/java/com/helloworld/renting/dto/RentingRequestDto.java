@@ -4,6 +4,7 @@ import com.helloworld.renting.entities.FinalResultType;
 import com.helloworld.renting.entities.PreResultType;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.math.BigDecimal;
@@ -15,13 +16,11 @@ public class RentingRequestDto {
     @Positive
     private Long id;
 
-    @NotNull
-    @Positive
-    private Long clientId;
+    @NotBlank
+    private ClientDto client;
 
-    @NotNull
-    @Positive
-    private Long warrantyId;
+    @NotBlank
+    private WarrantyDto warranty;
 
     @NotNull
     private BigDecimal quotaFinal;
