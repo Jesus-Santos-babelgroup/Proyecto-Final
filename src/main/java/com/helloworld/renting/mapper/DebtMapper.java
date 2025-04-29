@@ -8,6 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface DebtMapper {
-    @Select("SELECT * FROM Debt WHERE nif = #{nif}")
+    @Select("SELECT id_debt, nif, category_company, amount" +
+            "FROM Debt WHERE nif = #{nif}")
     List<Debt> findDebtsByNif(String nif);
 }

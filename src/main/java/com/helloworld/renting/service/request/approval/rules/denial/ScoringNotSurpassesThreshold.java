@@ -1,6 +1,8 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.dto.RentingRequestDto;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -8,10 +10,13 @@ import java.util.Objects;
 @Component
 public class ScoringNotSurpassesThreshold implements DenialRule {
 
+    @Value("${rules.denial-rule.scoring-threshold}")
+    private int threshold;
+
     @Override
     public boolean conditionMet(RentingRequestDto requestDto) {
         validate(requestDto);
-        return requestDto.getClient().getScoring() < 6;
+        return requestDto.getClient().getScoring() < threshold;
     }
 
     @Override

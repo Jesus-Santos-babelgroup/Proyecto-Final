@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -18,16 +19,22 @@ class ScoringNotSurpassesThresholdTest {
     Rules sut;
     @Mock
     RentingRequestDto requestDto;
+    @Value("${rules.denial-rule.scoring-threshold}")
+    Integer scoringThreshold;
+    Integer valueBelowThreshold;
+    Integer valueAboveThreshold;
 
     @BeforeEach
     void setUp() {
         sut = new ScoringNotSurpassesThreshold();
+        valueBelowThreshold = scoringThreshold - 1;
+        valueAboveThreshold = scoringThreshold + 1;
     }
 
     @Test
     void should_returnTrue_when_conditionNotMet() {
         // Given
-        when(requestDto.getClient().getScoring()).thenReturn(5);
+        when(requestDto.getClient().getScoring()).thenReturn(valueBelowThreshold);
 
         // When
         boolean ruleState = sut.conditionMet(requestDto);
@@ -39,7 +46,7 @@ class ScoringNotSurpassesThresholdTest {
     @Test
     void should_returnFalse_when_conditionMet() {
         // Given
-        when(requestDto.getClient().getScoring()).thenReturn(6);
+        when(requestDto.getClient().getScoring()).thenReturn(scoringThreshold);
 
         // When
         boolean ruleState = sut.conditionMet(requestDto);

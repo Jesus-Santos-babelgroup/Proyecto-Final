@@ -61,7 +61,7 @@ public class RequestService {
     }
 
     private boolean validDto(RentingRequestDto dto) {
-        Client client = clientMapper.findById(dto.getClientId());
+        Client client = clientMapper.findById(dto.getClient().getId());
         if (client == null) {
             return false;
         }

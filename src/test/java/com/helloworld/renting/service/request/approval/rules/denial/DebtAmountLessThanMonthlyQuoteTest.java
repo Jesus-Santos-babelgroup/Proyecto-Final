@@ -5,6 +5,7 @@ import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.entities.Debt;
 import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.mapper.DebtMapper;
+import com.helloworld.renting.mapper.MapStructDebt;
 import com.helloworld.renting.service.request.approval.Rules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,10 +27,12 @@ class DebtAmountLessThanMonthlyQuoteTest {
     RentingRequestDto requestDto;
     @Mock
     DebtMapper debtMapper;
+    @Mock
+    MapStructDebt mapStructDebt;
 
     @BeforeEach
     void setUp() {
-        sut = new DebtAmountLessThanMonthlyQuote(debtMapper);
+        sut = new DebtAmountLessThanMonthlyQuote(debtMapper, mapStructDebt);
     }
 
     @Test
