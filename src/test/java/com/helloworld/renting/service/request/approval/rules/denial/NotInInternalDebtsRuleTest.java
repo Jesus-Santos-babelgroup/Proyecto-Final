@@ -1,7 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.dto.NonpaymentDto;
-import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

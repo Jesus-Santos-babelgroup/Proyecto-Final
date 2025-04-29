@@ -1,6 +1,5 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
-import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.AttributeException;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +22,7 @@ class AgeBelow18RuleTest {
     void should_returnTrue_when_ageIsBelow18() {
         // Given
         RulesContextDto context = new RulesContextDto();
-        context.setClientBirthDate(LocalDate.of(2010,1,1));
+        context.setClientBirthDate(LocalDate.of(2010, 1, 1));
 
         // When
         boolean result = sut.conditionMet(context);
@@ -36,7 +35,7 @@ class AgeBelow18RuleTest {
     void should_returnFalse_when_ageIsOver18() {
         // Given
         RulesContextDto context = new RulesContextDto();
-        context.setClientBirthDate(LocalDate.of(2000,1,1));
+        context.setClientBirthDate(LocalDate.of(2000, 1, 1));
 
         // When
         boolean result = sut.conditionMet(context);
@@ -63,7 +62,7 @@ class AgeBelow18RuleTest {
         // Given
         String message = "Client birth date is not valid";
         RulesContextDto context = new RulesContextDto();
-        context.setClientBirthDate(LocalDate.of(9999,12,31));
+        context.setClientBirthDate(LocalDate.of(9999, 12, 31));
 
         // When
         InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(context));
