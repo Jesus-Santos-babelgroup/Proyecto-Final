@@ -8,10 +8,3 @@ import org.mapstruct.Mapper;
 public interface StructEconomicalDataSelfEmployedMapperToEntity {
     EconomicDataSelfEmployed toEntity(EconomicDataSelfEmployedDto dto);
 }
-
-/*
-@Mapper(componentModel = "spring")
-public interface StructMapperToEntity {
-    Client toEntity(ClientDto dto);
-}
- */
