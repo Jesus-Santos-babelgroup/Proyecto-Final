@@ -23,22 +23,19 @@ public class ClientService {
         if (client == null) {
             throw new ClientNotFoundException("Cliente no encontrado");
         }
-        if (requestRepository.countPendingByClientId(id) > 0) {
-            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes pendientes");
+        if (requestRepository.countByClientId(id) > 0) {
+            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes registradas");
         }
         clientRepository.delete(id);
     }
 
     public void deleteClientByNif(String nif) {
-        if (!nif.matches("^[0-9]{8}[A-Z]$")) {
-            throw new IllegalArgumentException("Formato de NIF inválido");
-        }
         Client client = clientRepository.findByNif(nif);
         if (client == null) {
             throw new ClientNotFoundException("Cliente no encontrado");
         }
-        if (requestRepository.countPendingByClientId(client.getId()) > 0) {
-            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes pendientes");
+        if (requestRepository.countByClientId(client.getId()) > 0) {
+            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes registradas");
         }
         clientRepository.delete(client.getId());
     }
