@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DenialRuleDebtAmountLessThanMonthlyQuoteTest {
+class DebtAmountLessThanMonthlyQuoteTest {
 
     Rules sut;
     @Mock
@@ -25,7 +25,7 @@ class DenialRuleDebtAmountLessThanMonthlyQuoteTest {
 
     @BeforeEach
     void setUp() {
-        sut = new DenialRuleDebtAmountLessThanMonthlyQuote();
+        sut = new DebtAmountLessThanMonthlyQuote();
     }
 
     @Test

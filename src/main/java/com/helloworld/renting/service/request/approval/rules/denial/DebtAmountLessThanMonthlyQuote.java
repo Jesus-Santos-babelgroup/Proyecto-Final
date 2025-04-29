@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class DenialRuleDebtAmountLessThanMonthlyQuote implements DenialRule {
+public class DebtAmountLessThanMonthlyQuote implements DenialRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {

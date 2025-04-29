@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DenialRuleScoringNotSurpassesThresholdTest {
+class ScoringNotSurpassesThresholdTest {
 
     Rules sut;
     @Mock
@@ -21,7 +21,7 @@ class DenialRuleScoringNotSurpassesThresholdTest {
 
     @BeforeEach
     void setUp() {
-        sut = new DenialRuleScoringNotSurpassesThreshold();
+        sut = new ScoringNotSurpassesThreshold();
     }
 
     @Test
