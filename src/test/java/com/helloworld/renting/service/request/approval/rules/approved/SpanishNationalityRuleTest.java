@@ -3,7 +3,7 @@ package com.helloworld.renting.service.request.approval.rules.approved;
 import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.CountryDto;
 import com.helloworld.renting.dto.RentingRequestDto;
-import com.helloworld.renting.exceptions.attributes.AttributeException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,7 +63,7 @@ class SpanishNationalityRuleTest {
         rentingRequestDto.setClient(clientDto);
 
         // When
-        AttributeException exception = assertThrows(AttributeException.class, () -> sut.conditionMet(rentingRequestDto));
+        InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rentingRequestDto));
 
         // Then
         assertEquals(message, exception.getMessage());
