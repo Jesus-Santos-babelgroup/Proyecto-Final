@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
-public class InformaDataApprovalRule extends ApprovedRule {
+public class InformaDataApprovalRule implements ApprovedRule {
 
     private static final Logger logger = LoggerFactory.getLogger(InformaDataApprovalRule.class);
 
