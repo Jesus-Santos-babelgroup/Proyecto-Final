@@ -1,69 +1,110 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
+import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.NonpaymentDto;
+import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.service.request.approval.rules.denial.notInInternalDebtsRule.NotInInternalDebtsMapper;
+import com.helloworld.renting.service.request.approval.rules.denial.notInInternalDebtsRule.NotInInternalDebtsRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 class NotInInternalDebtsRuleTest {
 
+    @Mock
+    private NotInInternalDebtsMapper nonpaymentMapper;
     private NotInInternalDebtsRule rule;
 
     @BeforeEach
     void setUp() {
-        rule = new NotInInternalDebtsRule();
+        MockitoAnnotations.openMocks(this);
+        rule = new NotInInternalDebtsRule(nonpaymentMapper);
     }
 
     @Test
     void conditionMet_whenClientInInternalDebts_returnsFalse() {
-        RulesContextDto ctx = new RulesContextDto();
-        ctx.setRequestId(1L);
-        ctx.setClientNif("12345678A");
-        ctx.setDebts(Collections.emptyList());
-        ctx.setInformaRecords(Collections.emptyList());
-        List<NonpaymentDto> nonpayments = List.of(new NonpaymentDto());
-        ctx.setNonpayments(nonpayments);
+        // Arrange
+        RentingRequestDto dto = new RentingRequestDto();
+        ClientDto client = new ClientDto();
+        client.setId(10L);
+        dto.setClient(client);
 
-        assertFalse(rule.conditionMet(ctx),
-                "Si existe algún nonpayment, la regla debe devolver false");
+        when(nonpaymentMapper.findByClientId(10L))
+                .thenReturn(List.of(new NonpaymentDto(), new NonpaymentDto()));
+
+        // Act
+        boolean result = rule.conditionMet(dto);
+
+        // Assert
+        assertFalse(result,
+                "Si existe al menos un nonpayment, la regla debe devolver false");
     }
 
     @Test
     void conditionMet_whenClientNotInInternalDebts_returnsTrue() {
-        RulesContextDto ctx = new RulesContextDto();
-        ctx.setRequestId(2L);
-        ctx.setClientNif("87654321B");
-        ctx.setDebts(Collections.emptyList());
-        ctx.setInformaRecords(Collections.emptyList());
-        ctx.setNonpayments(Collections.emptyList());
+        // Arrange
+        RentingRequestDto dto = new RentingRequestDto();
+        ClientDto client = new ClientDto();
+        client.setId(20L);
+        dto.setClient(client);
 
-        assertTrue(rule.conditionMet(ctx),
+        when(nonpaymentMapper.findByClientId(20L))
+                .thenReturn(List.of()); // sin impagos
+
+        // Act
+        boolean result = rule.conditionMet(dto);
+
+        // Assert
+        assertTrue(result,
                 "Con lista de nonpayments vacía, la regla debe devolver true");
     }
 
     @Test
-    void conditionMet_whenContextIsNull_throwsNullPointerException() {
-        assertThrows(NullPointerException.class,
+    void conditionMet_whenDtoIsNull_throwsNullPointerException() {
+        // Arrange / Act / Assert
+        assertThrows(
+                NullPointerException.class,
                 () -> rule.conditionMet(null),
-                "Si el contexto es null, debe lanzarse NullPointerException");
+                "Si el DTO es null, debe lanzarse NullPointerException"
+        );
     }
 
     @Test
-    void conditionMet_whenClientNifBlank_throwsIllegalArgumentException() {
-        RulesContextDto ctx = new RulesContextDto();
-        ctx.setRequestId(3L);
-        ctx.setClientNif("");
-        ctx.setDebts(Collections.emptyList());
-        ctx.setInformaRecords(Collections.emptyList());
-        ctx.setNonpayments(Collections.emptyList());
+    void conditionMet_whenClientIsNull_throwsNullPointerException() {
+        // Arrange
+        RentingRequestDto dto = new RentingRequestDto();
+        dto.setClient(null);
 
-        assertThrows(InvalidRulesContextDtoException.class,
-                () -> rule.conditionMet(ctx),
-                "Si el NIF está en formato inválido (vacío), debe lanzarse InvalidRulesContextDtoException");
+        // Act / Assert
+        NullPointerException ex = assertThrows(
+                NullPointerException.class,
+                () -> rule.conditionMet(dto),
+                "Si el client es null, debe lanzarse NullPointerException"
+        );
+        assertEquals("client no puede ser null", ex.getMessage());
+    }
+
+    @Test
+    void conditionMet_whenClientIdIsNull_throwsInvalidRulesContextDtoException() {
+        // Arrange
+        RentingRequestDto dto = new RentingRequestDto();
+        ClientDto client = new ClientDto();
+        client.setId(null);
+        dto.setClient(client);
+
+        // Act / Assert
+        InvalidRulesContextDtoException ex = assertThrows(
+                InvalidRulesContextDtoException.class,
+                () -> rule.conditionMet(dto),
+                "Si client.id es null, debe lanzarse InvalidRulesContextDtoException"
+        );
+        assertEquals("Client.id es obligatorio", ex.getMessage());
     }
 }
