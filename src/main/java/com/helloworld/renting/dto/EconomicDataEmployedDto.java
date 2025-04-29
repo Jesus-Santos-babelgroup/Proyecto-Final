@@ -14,7 +14,6 @@ public class EconomicDataEmployedDto {
     @Positive
     private Long id;
 
-    @NotNull
     @Positive
     private Long clientId;
 
@@ -29,6 +28,8 @@ public class EconomicDataEmployedDto {
 
     @NotNull
     private LocalDate startDate;
+
+    private LocalDate endDate;
 
     @NotNull
     @Positive

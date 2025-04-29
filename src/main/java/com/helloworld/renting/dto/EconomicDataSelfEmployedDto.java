@@ -12,7 +12,6 @@ public class EconomicDataSelfEmployedDto {
     @Positive
     private Long id;
 
-    @NotNull
     @Positive
     private Long clientId;
 
