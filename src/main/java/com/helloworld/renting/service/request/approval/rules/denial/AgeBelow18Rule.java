@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class AgeBelow18Rule extends DenialRule {
+public class AgeBelow18Rule implements DenialRule {
 
     private static final Logger logger = LoggerFactory.getLogger(AgeBelow18Rule.class);
 

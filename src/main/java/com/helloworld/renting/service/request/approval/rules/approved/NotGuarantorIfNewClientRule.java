@@ -5,7 +5,7 @@ import com.helloworld.renting.mapper.RulesMapper;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NotGuarantorIfNewClientRule extends ApprovedRule{
+public class NotGuarantorIfNewClientRule implements ApprovedRule {
     private final RulesMapper mapper;
 
     public NotGuarantorIfNewClientRule(RulesMapper mapper) {
