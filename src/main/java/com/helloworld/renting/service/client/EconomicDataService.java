@@ -43,33 +43,43 @@ public class EconomicDataService {
     @Transactional
     public EconomicDataSelfEmployedDto addEconomicDataSelfEmployed(
             EconomicDataSelfEmployedDto economicDataSelfEmployedDto,
-            Long clientId){
+            Long clientId) {
+
         economicDataSelfEmployedDto.setClientId(clientId);
 
         checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
 
-        EconomicDataSelfEmployed economicDataSelfEmployed = selfEmployedMapperToEntity.toEntity(economicDataSelfEmployedDto);
+        EconomicDataSelfEmployed economicDataSelfEmployed =
+                selfEmployedMapperToEntity.toEntity(economicDataSelfEmployedDto);
+
         economicalDataSelfEmployedMapper.insert(economicDataSelfEmployed);
 
-        return economicDataSelfEmployedDto;
+        return selfEmployedMapperToDto.toDto(economicDataSelfEmployed);
     }
-
 
     @Transactional
     public EconomicDataEmployedDto addEconomicDataEmployed(
             EconomicDataEmployedDto economicDataEmployedDto,
-            Long clientId){
+            Long clientId) {
+
         economicDataEmployedDto.setClientId(clientId);
 
         checkDuplicateYearEmployed(clientId, economicDataEmployedDto.getYearEntry());
         checkDateNotInFuture(economicDataEmployedDto.getStartDate());
         checkDateNotInFuture(economicDataEmployedDto.getEndDate());
-        checkStartDateMatchesYearEntry(economicDataEmployedDto.getStartDate(), economicDataEmployedDto.getYearEntry());
+        checkStartDateMatchesYearEntry(
+                economicDataEmployedDto.getStartDate(),
+                economicDataEmployedDto.getYearEntry()
+        );
 
-        EconomicDataEmployed economicDataEmployed = employedMapperToEntity.toEntity(economicDataEmployedDto);
+        EconomicDataEmployed economicDataEmployed =
+                employedMapperToEntity.toEntity(economicDataEmployedDto);
+
         economicalDataEmployedMapper.insert(economicDataEmployed);
-        return economicDataEmployedDto;
+
+        return employedMapperToDto.toDto(economicDataEmployed);
     }
+
 
     private void checkDuplicateYearSelfEmployed(Long clientId, Integer yearEntry) {
         if (economicalDataSelfEmployedMapper.existsSelfEmployedByClientIdAndYear(clientId, yearEntry)) {
