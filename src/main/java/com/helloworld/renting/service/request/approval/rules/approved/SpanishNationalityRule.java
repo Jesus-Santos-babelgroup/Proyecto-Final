@@ -1,6 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ public class SpanishNationalityRule implements ApprovedRule {
     public boolean conditionMet(RulesContextDto context) {
         if (context.getClientNationality() == null) {
             logger.warn("Client nationality is null");
-            throw new InvalidRulesContextDtoException("Client nationality is null");
+            throw new InvalidRentingRequestDtoException("Client nationality is null");
         } else {
             logger.debug("SpanishNationalityRule checked");
             return context.getClientNationality().equalsIgnoreCase("Spain");
