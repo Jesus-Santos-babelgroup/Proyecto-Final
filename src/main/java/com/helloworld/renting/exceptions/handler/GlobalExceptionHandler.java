@@ -1,5 +1,6 @@
 package com.helloworld.renting.exceptions.handler;
 
+import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,5 +26,16 @@ public class GlobalExceptionHandler {
         errorResponse.put("path", ((ServletWebRequest)request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+    }
+    @ExceptionHandler(InvalidClientDtoException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidClientDtoException(InvalidClientDtoException ex, WebRequest request) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("error", "Bad Request");
+        errorResponse.put("message", ex.getMessage());
+        errorResponse.put("path", ((ServletWebRequest)request).getRequest().getRequestURI());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 }
