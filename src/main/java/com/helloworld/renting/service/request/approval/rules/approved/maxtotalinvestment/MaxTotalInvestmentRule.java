@@ -4,10 +4,11 @@ import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
+
 import java.math.BigDecimal;
 
 @Component
-public class MaxTotalInvestmentRule extends ApprovedRule {
+public class MaxTotalInvestmentRule implements ApprovedRule {
 
     private final MaxTotalInvestmentProperties rulesProperties;
 
@@ -27,7 +28,7 @@ public class MaxTotalInvestmentRule extends ApprovedRule {
         return (totalInvestment.compareTo(limit) < 0);
     }
 
-    void validateTotalInvestment(BigDecimal totalInvestment){
+    void validateTotalInvestment(BigDecimal totalInvestment) {
 
         if (totalInvestment == null) {
             throw new InvalidRulesContextDtoException("Total Investment cannot be null");
@@ -37,7 +38,7 @@ public class MaxTotalInvestmentRule extends ApprovedRule {
         }
     }
 
-    void validateMaxTotalInvestment(BigDecimal limit){
+    void validateMaxTotalInvestment(BigDecimal limit) {
 
         if (limit == null) {
             throw new InvalidRulesContextDtoException("Max Total Investment cannot be null");

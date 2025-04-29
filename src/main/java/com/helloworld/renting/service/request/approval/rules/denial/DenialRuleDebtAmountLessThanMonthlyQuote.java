@@ -3,12 +3,14 @@ package com.helloworld.renting.service.request.approval.rules.denial;
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
-public class DenialRuleDebtAmountLessThanMonthlyQuote extends DenialRule {
+@Component
+public class DenialRuleDebtAmountLessThanMonthlyQuote implements DenialRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
