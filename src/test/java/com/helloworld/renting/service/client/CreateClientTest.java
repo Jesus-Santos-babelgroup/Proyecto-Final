@@ -202,5 +202,23 @@ class CreateClientTest {
         assertTrue(exception.getMessage().contains("La dirección con ID"));
         verify(clientMapper, never()).insert(any());
     }
+    @Test
+    void createClient_WithDuplicatePhone_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNif("12345678A");
+        inputDto.setEmail("test@example.com");
+        inputDto.setPhone("666123456");
 
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(false);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(true);
+
+        // When & Then
+        DuplicateModel exception = assertThrows(DuplicateModel.class,
+                () -> clientService.createClient(inputDto));
+
+        assertTrue(exception.getMessage().contains(inputDto.getPhone()));
+        verify(clientMapper, never()).insert(any());
+    }
 }

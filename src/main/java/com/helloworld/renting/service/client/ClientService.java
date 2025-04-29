@@ -34,24 +34,40 @@ public class ClientService {
 
     @Transactional
     public ClientDto createClient(ClientDto clientDto) {
+        validateClientNotNull(clientDto);
+        validateDateOfBirth(clientDto.getDateOfBirth());
+        checkForDuplicates(clientDto);
+        validateScoring(clientDto.getScoring());
+        validateCountry(clientDto.getCountryId());
+        validateAddress(clientDto.getAddressId());
+
+        // Converting to entity
+        Client client = toEntity.toEntity(clientDto);
+        clientMapper.insert(client);
+
+        // Converting to DTO
+        return toDto.toDto(client);
+    }
+
+    private void validateClientNotNull(ClientDto clientDto) {
         if (clientDto == null) {
             throw new InvalidClientDtoException("El DTO del cliente no puede ser nulo");
         }
+    }
 
-        // Validación de formato de fecha de nacimiento y que no sea futura
+    private void validateDateOfBirth(LocalDate dateOfBirth) {
         try {
-            if (clientDto.getDateOfBirth() != null) {
-                LocalDate birthDate = clientDto.getDateOfBirth();
-                if (birthDate.isAfter(LocalDate.now())) {
-                    throw new InvalidClientDtoException("La fecha de nacimiento no puede ser futura");
-                }
+            if (dateOfBirth != null && dateOfBirth.isAfter(LocalDate.now())) {
+                throw new InvalidClientDtoException("La fecha de nacimiento no puede ser futura");
             }
         } catch (InvalidClientDtoException e) {
             throw e;
         } catch (Exception e) {
             throw new InvalidClientDtoException("Error al procesar la fecha de nacimiento: " + e.getMessage());
         }
+    }
 
+    private void checkForDuplicates(ClientDto clientDto) {
         if (clientMapper.existsByNif(clientDto.getNif())) {
             throw new DuplicateModel("Ya existe un cliente con este NIF: " + clientDto.getNif());
         }
@@ -59,41 +75,41 @@ public class ClientService {
         if (clientMapper.existsByEmail(clientDto.getEmail())) {
             throw new DuplicateModel("Ya existe un cliente con este email: " + clientDto.getEmail());
         }
+        if (clientDto.getPhone() != null && clientMapper.existsByPhone(clientDto.getPhone())) {
+            throw new DuplicateModel("Ya existe un cliente con este teléfono: " + clientDto.getPhone());
+        }
+    }
 
-        if (clientDto.getScoring() == null || clientDto.getScoring() < 0) {
+    private void validateScoring(Integer scoring) {
+        if (scoring == null || scoring < 0) {
             throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
         }
+    }
 
-        // Validación de existencia del país
-        if (clientDto.getCountryId() == null) {
+    private void validateCountry(String countryId) {
+        if (countryId == null) {
             throw new InvalidClientDtoException("El ID del país no puede ser nulo");
         }
 
-        Long countryId;
+        Long countryIdLong;
         try {
-            countryId = Long.parseLong(clientDto.getCountryId());
+            countryIdLong = Long.parseLong(countryId);
         } catch (NumberFormatException e) {
             throw new InvalidClientDtoException("El ID del país debe ser un número válido");
         }
 
-        if (!countryMapper.existsByCountryId(countryId)) {
-            throw new InvalidClientDtoException("El país con ID " + clientDto.getCountryId() + " no existe en la base de datos");
+        if (!countryMapper.existsByCountryId(countryIdLong)) {
+            throw new InvalidClientDtoException("El país con ID " + countryId + " no existe en la base de datos");
         }
+    }
 
-        // Validación de existencia de la dirección
-        if (clientDto.getAddressId() == null) {
+    private void validateAddress(Long addressId) {
+        if (addressId == null) {
             throw new InvalidClientDtoException("El ID de la dirección no puede ser nulo");
         }
 
-        if (!addressMapper.existsByAddressId(clientDto.getAddressId())) {
-            throw new InvalidClientDtoException("La dirección con ID " + clientDto.getAddressId() + " no existe en la base de datos");
+        if (!addressMapper.existsByAddressId(addressId)) {
+            throw new InvalidClientDtoException("La dirección con ID " + addressId + " no existe en la base de datos");
         }
-
-        // Converting to entity
-        Client client = toEntity.toEntity(clientDto);
-
-        clientMapper.insert(client);
-
-        // Converting to DTO
-        return toDto.toDto(client);
-    }}
+    }
+}
