@@ -1,10 +1,11 @@
 package com.helloworld.renting.mapper;
 
 import com.helloworld.renting.entities.Client;
-import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
-
 @Mapper
 public interface ClientMapper {
     @Update("""
@@ -24,17 +25,21 @@ public interface ClientMapper {
             """)
     int updateClient(Client client);
 
+    @Insert("INSERT INTO Client (Name, First_surname, Second_surname, ID_address, ID_country, Phone, NIF, Date_of_birth, Email, Scoring, ID_notification_address) " +
+            "VALUES (#{name}, #{firstSurname}, #{secondSurname}, #{addressId}, #{countryId}, #{phone}, #{nif}, #{dateOfBirth}, #{email}, #{scoring}, #{notificationAddressId})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "ID_client")
+    int insert(Client client);
+
     @Select("SELECT COUNT(*) FROM Client WHERE Email = #{email}")
-    boolean existByEmail(String email);
+    boolean existsByEmail(String email);
 
     @Select("SELECT COUNT(*) FROM Client WHERE NIF = #{nif}")
-    boolean existByNif(String nif);
+    boolean existsByNif(String nif);
 
     @Select("SELECT COUNT(*) FROM Client WHERE ID_client = #{id}")
-    boolean existById(Long id);
+    boolean existsById(Long id);
 
     @Select("SELECT COUNT(*) FROM Client WHERE Phone = #{tlf}")
-    boolean existByTlf(String tlf);
-
+    boolean existsByTlf(String tlf);
 
 }

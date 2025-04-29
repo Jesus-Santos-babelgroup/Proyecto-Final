@@ -98,4 +98,24 @@ public interface RulesMapper {
                  AND Contracting_date > DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
             """)
     boolean wasPreviouslyApprovedWithGuarantee(@Param("requestId") Long requestId);
+
+    @Select("""
+                SELECT CASE WHEN COUNT(*) = 0 THEN TRUE ELSE FALSE END
+                FROM renting_request
+                WHERE ID_client = (
+                    SELECT ID_client FROM renting_request WHERE ID_request = #{requestId}
+                )
+                  AND Final_result IN ('APPROVED', 'APPROVED_WITH_GUARANTEE')
+            """)
+    boolean isNewClient(@Param("requestId") Long requestId);
+
+    @Select("""
+                SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+                FROM renting_request r
+                JOIN warranty w ON r.ID_warranty = w.ID_warranty
+                WHERE w.NIF_guarantor = #{nif}
+                  AND r.Final_result = 'APPROVED_WITH_GUARANTEE'
+            """)
+    boolean hasBeenGuarantorInApprovedWithGuarantee(@Param("nif") String nif);
+
 }
