@@ -1,14 +1,14 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentProperties;
-import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentProperties;
 import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MaxTotalInvestmentRuleTest {
 

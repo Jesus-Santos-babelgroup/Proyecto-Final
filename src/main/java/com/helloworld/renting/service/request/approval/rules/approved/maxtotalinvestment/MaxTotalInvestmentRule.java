@@ -1,6 +1,5 @@
 package com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment;
 
-import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;

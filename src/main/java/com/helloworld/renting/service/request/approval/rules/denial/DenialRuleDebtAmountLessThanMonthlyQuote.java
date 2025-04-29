@@ -1,7 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.dto.DebtDto;
-import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import org.springframework.stereotype.Component;
 

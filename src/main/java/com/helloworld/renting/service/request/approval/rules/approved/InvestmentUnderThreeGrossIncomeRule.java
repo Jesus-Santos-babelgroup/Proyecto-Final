@@ -1,6 +1,5 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.dto.RulesContextDto;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
