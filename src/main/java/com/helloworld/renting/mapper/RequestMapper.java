@@ -2,21 +2,23 @@ package com.helloworld.renting.mapper;
 
 import com.helloworld.renting.entities.RentingRequest;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+@Mapper
 public interface RequestMapper {
 
-    @Insert("INSERT INTO RentingRequest (clientId, warrantyId, quotaFinal, quotaBaseMonthlyFee, contractingDate, startDate, preResultType, finalResultType, monthsHired) " +
-            "VALUES (#{clientId}, #{warrantyId}, #{quotaFinal}, #{quotaBaseMonthlyFee}, #{contractingDate}, #{startDate}, #{preResultType}, #{finalResultType}, #{monthsHired})")
-    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    Integer insert(RentingRequest rentingRequest);
+    @Select("SELECT * FROM Renting_request")
+    List<RentingRequest> getAll();
 
-    @Select("SELECT * FROM RentingRequest WHERE id = #{id}")
+    @Select("SELECT * FROM Renting_request WHERE id_request = #{id}")
     RentingRequest findById(Long id);
 
-    @Select("SELECT * FROM RentingRequest")
-    List<RentingRequest> getAll();
+    @Insert("INSERT INTO Renting_request (id_client, quota_final, contracting_date, start_date, preresult_type, finalresul_type) " +
+            "VALUES (#{clientId}, #{quotaFinal}, #{contractingDate}, #{startDate}, #{preResultType}, #{finalResultType})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
+    Long insert(RentingRequest rentingRequest);
 }
