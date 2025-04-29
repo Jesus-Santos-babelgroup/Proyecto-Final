@@ -18,6 +18,7 @@ public class RulesContextDto {
     private String clientNationality;
     private Integer clientScoring;
     private LocalDate employmentStartDate;
+    private LocalDate employmentEndDate;
     private BigDecimal netIncomeEmployed;
     private BigDecimal netIncomeSelfEmployed;
     private BigDecimal grossIncomeSelfEmployed;
