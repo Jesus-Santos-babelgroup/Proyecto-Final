@@ -24,20 +24,18 @@ public class RequestController {
         this.requestService = requestService;
     }
 
-    @PostMapping("")
+    @PostMapping()
     @Operation(
             summary = "Crear solicitud",
             description = "Crea una nueva solicitud de renting y calcula inversión/cuota",
             tags = {"requests"},
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Solicitud creada")
+                    @ApiResponse(responseCode = "201", description = "Solicitud creada"),
+                    @ApiResponse(responseCode = "400", description = "Solicitud con formato inválido"),
+                    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
             }
     )
     public ResponseEntity<RentingRequestDto> createRequest(@Valid @RequestBody RentingRequestDto requestDto) {
-        if (!validRequestDto()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-
         try {
             RentingRequestDto dto = requestService.create(requestDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(dto);
@@ -53,7 +51,8 @@ public class RequestController {
             tags = {"requests"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Solicitud encontrada"),
-                    @ApiResponse(responseCode = "404", description = "Solicitud no encontrada")
+                    @ApiResponse(responseCode = "404", description = "Solicitud no encontrada"),
+                    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
             }
     )
     public ResponseEntity<RentingRequestDto> getRequest(@PathVariable Long id) {
@@ -71,13 +70,14 @@ public class RequestController {
         }
     }
 
-    @GetMapping("")
+    @GetMapping()
     @Operation(
             summary = "Listar solicitudes",
             description = "Obtiene un listado paginado de solicitudes, con filtros opcionales",
             tags = {"requests"},
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Listado de solicitudes")
+                    @ApiResponse(responseCode = "200", description = "Listado de solicitudes"),
+                    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
             }
     )
     public ResponseEntity<List<RentingRequestDto>> listRequests() {
@@ -87,9 +87,5 @@ public class RequestController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-    }
-
-    private boolean validRequestDto() {
-        return true;
     }
 }
