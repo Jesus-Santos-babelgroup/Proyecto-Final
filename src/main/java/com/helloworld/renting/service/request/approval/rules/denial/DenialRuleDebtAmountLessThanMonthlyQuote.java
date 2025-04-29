@@ -1,7 +1,7 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.dto.DebtDto;
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -36,11 +36,11 @@ public class DenialRuleDebtAmountLessThanMonthlyQuote implements DenialRule {
         Objects.requireNonNull(rulesContextDto, "RulesContextDto no puede ser null");
 
         if (rulesContextDto.getMonthly_quota() == null) {
-            throw new InvalidRulesContextDtoException("Cuota mensual no puede ser null.");
+            throw new InvalidRentingRequestDtoException("Cuota mensual no puede ser null.");
         } else if (rulesContextDto.getDebts() == null) {
-            throw new InvalidRulesContextDtoException("Lista de deudas no puede ser null.");
+            throw new InvalidRentingRequestDtoException("Lista de deudas no puede ser null.");
         } else if (!validDebts(rulesContextDto.getDebts())) {
-            throw new InvalidRulesContextDtoException("Algún valor de deuda es negativo.");
+            throw new InvalidRentingRequestDtoException("Algún valor de deuda es negativo.");
         }
     }
 

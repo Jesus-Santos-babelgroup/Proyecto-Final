@@ -1,42 +1,43 @@
-package com.helloworld.renting.service.request.approval.rules.denial;
+package com.helloworld.renting.service.request.approval.rules.denial.notInInternalDebtsRule;
 
 import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.NonpaymentDto;
 import com.helloworld.renting.dto.RentingRequestDto;
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
-import com.helloworld.renting.service.request.approval.rules.denial.notInInternalDebtsRule.NotInInternalDebtsMapper;
-import com.helloworld.renting.service.request.approval.rules.denial.notInInternalDebtsRule.NotInInternalDebtsRule;
+import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class NotInInternalDebtsRuleTest {
 
     @Mock
-    private NotInInternalDebtsMapper nonpaymentMapper;
+    private NotInInternalDebtsMapper mapper;
+
     private NotInInternalDebtsRule rule;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-        rule = new NotInInternalDebtsRule(nonpaymentMapper);
+        rule = new NotInInternalDebtsRule(mapper);
     }
 
     @Test
-    void conditionMet_whenClientInInternalDebts_returnsFalse() {
+    void conditionMet_whenClientHasNonpayments_returnsFalse() {
         // Arrange
         RentingRequestDto dto = new RentingRequestDto();
         ClientDto client = new ClientDto();
-        client.setId(10L);
+        client.setId(100L);
         dto.setClient(client);
 
-        when(nonpaymentMapper.findByClientId(10L))
+        when(mapper.findByClientId(100L))
                 .thenReturn(List.of(new NonpaymentDto(), new NonpaymentDto()));
 
         // Act
@@ -48,15 +49,15 @@ class NotInInternalDebtsRuleTest {
     }
 
     @Test
-    void conditionMet_whenClientNotInInternalDebts_returnsTrue() {
+    void conditionMet_whenClientHasNoNonpayments_returnsTrue() {
         // Arrange
         RentingRequestDto dto = new RentingRequestDto();
         ClientDto client = new ClientDto();
-        client.setId(20L);
+        client.setId(200L);
         dto.setClient(client);
 
-        when(nonpaymentMapper.findByClientId(20L))
-                .thenReturn(List.of()); // sin impagos
+        when(mapper.findByClientId(200L))
+                .thenReturn(List.of()); // lista vacía
 
         // Act
         boolean result = rule.conditionMet(dto);
@@ -67,43 +68,44 @@ class NotInInternalDebtsRuleTest {
     }
 
     @Test
-    void conditionMet_whenDtoIsNull_throwsNullPointerException() {
-        // Arrange / Act / Assert
-        assertThrows(
-                NullPointerException.class,
+    void conditionMet_whenDtoIsNull_throwsInvalidRentingRequestDtoException() {
+        // Act & Assert
+        InvalidRentingRequestDtoException ex = assertThrows(
+                InvalidRentingRequestDtoException.class,
                 () -> rule.conditionMet(null),
-                "Si el DTO es null, debe lanzarse NullPointerException"
+                "Si el DTO es null, debe lanzarse InvalidRentingRequestDtoException"
         );
+        assertEquals("RentingRequestDto no puede ser null", ex.getMessage());
     }
 
     @Test
-    void conditionMet_whenClientIsNull_throwsNullPointerException() {
+    void conditionMet_whenClientIsNull_throwsInvalidRentingRequestDtoException() {
         // Arrange
         RentingRequestDto dto = new RentingRequestDto();
         dto.setClient(null);
 
-        // Act / Assert
-        NullPointerException ex = assertThrows(
-                NullPointerException.class,
+        // Act & Assert
+        InvalidRentingRequestDtoException ex = assertThrows(
+                InvalidRentingRequestDtoException.class,
                 () -> rule.conditionMet(dto),
-                "Si el client es null, debe lanzarse NullPointerException"
+                "Si el client es null, debe lanzarse InvalidRentingRequestDtoException"
         );
-        assertEquals("client no puede ser null", ex.getMessage());
+        assertEquals("Client no puede ser null", ex.getMessage());
     }
 
     @Test
-    void conditionMet_whenClientIdIsNull_throwsInvalidRulesContextDtoException() {
+    void conditionMet_whenClientIdIsNull_throwsInvalidRentingRequestDtoException() {
         // Arrange
         RentingRequestDto dto = new RentingRequestDto();
         ClientDto client = new ClientDto();
         client.setId(null);
         dto.setClient(client);
 
-        // Act / Assert
-        InvalidRulesContextDtoException ex = assertThrows(
-                InvalidRulesContextDtoException.class,
+        // Act & Assert
+        InvalidClientDtoException ex = assertThrows(
+                InvalidClientDtoException.class,
                 () -> rule.conditionMet(dto),
-                "Si client.id es null, debe lanzarse InvalidRulesContextDtoException"
+                "Si client.id es null, debe lanzarse InvalidRentingRequestDtoException"
         );
         assertEquals("Client.id es obligatorio", ex.getMessage());
     }
