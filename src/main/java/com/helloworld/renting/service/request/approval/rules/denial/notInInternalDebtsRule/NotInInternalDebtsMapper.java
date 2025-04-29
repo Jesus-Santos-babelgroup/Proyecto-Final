@@ -9,6 +9,18 @@ import java.util.List;
 
 @Mapper
 public interface NotInInternalDebtsMapper {
-    @Select("SELECT * FROM nonpayment WHERE ID_client = #{clientId}")
+
+    @Select("""
+            SELECT
+              ID_nonpayment        AS id,
+              ID_client            AS clientId,
+              Category             AS category,
+              Start_year           AS startYear,
+              Payment_amount       AS paymentAmount,
+              Initial_total_import AS initialTotalImport
+            FROM nonpayment
+            WHERE ID_client = #{clientId}
+            """)
     List<NonpaymentDto> findByClientId(@Param("clientId") Long clientId);
+
 }
