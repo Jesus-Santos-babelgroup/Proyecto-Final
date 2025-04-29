@@ -1,6 +1,7 @@
 package com.helloworld.renting.controller;
 
-import com.helloworld.renting.exceptions.RentingException;
+import com.helloworld.renting.exceptions.attributes.ClientWithPendingRequestsException;
+import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
 import com.helloworld.renting.service.client.ClientService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ class ClientControllerTest {
     void deleteClientByIdNotFound() throws Exception {
         Long id = 999L;
 
-        Mockito.doThrow(new RentingException("Cliente no encontrado"))
+        Mockito.doThrow(new ClientNotFoundException("Cliente no encontrado"))
                 .when(clientService).deleteClientById(id);
 
         mockMvc.perform(delete("/api/clients/{id}", id))
@@ -44,47 +45,35 @@ class ClientControllerTest {
     }
 
     @Test
-    @DisplayName("✅ Borrar cliente por CIF exitosamente")
-    void deleteClientByCifSuccess() throws Exception {
-        String cif = "B12345678";
+    @DisplayName("✅ Borrar cliente por NIF exitosamente")
+    void deleteClientByNifSuccess() throws Exception {
+        String nif = "B12345678";
 
-        mockMvc.perform(delete("/api/clients").param("cif", cif))
+        mockMvc.perform(delete("/api/clients").param("nif", nif))
                 .andExpect(status().isNoContent()); // 204
     }
 
     @Test
-    @DisplayName("❌ Borrar cliente por CIF - formato inválido")
-    void deleteClientByCifBadFormat() throws Exception {
-        String cif = "BAD123";
+    @DisplayName("❌ Borrar cliente por NIF - no existe")
+    void deleteClientByNifNotFound() throws Exception {
+        String nif = "Z9999999X";
 
-        Mockito.doThrow(new RentingException("Formato de CIF inválido"))
-                .when(clientService).deleteClientByCIF(cif);
+        Mockito.doThrow(new ClientNotFoundException("Cliente no encontrado por NIF"))
+                .when(clientService).deleteClientByNif(nif);
 
-        mockMvc.perform(delete("/api/clients").param("cif", cif))
+        mockMvc.perform(delete("/api/clients").param("nif", nif))
                 .andExpect(status().isNotFound()); // 404
     }
 
     @Test
-    @DisplayName("❌ Borrar cliente por CIF - no existe")
-    void deleteClientByCifNotFound() throws Exception {
-        String cif = "Z9999999X";
-
-        Mockito.doThrow(new RentingException("Cliente no encontrado por CIF"))
-                .when(clientService).deleteClientByCIF(cif);
-
-        mockMvc.perform(delete("/api/clients").param("cif", cif))
-                .andExpect(status().isNotFound()); // 404
-    }
-
-    @Test
-    @DisplayName("❌ No se puede eliminar cliente con solicitudes pendientes")
-    void deleteClientWithPendingRequests() throws Exception {
+    @DisplayName("❌ No se puede eliminar cliente con solicitudes registradas")
+    void deleteClientWithRequests() throws Exception {
         Long clientId = 99L;
 
-        Mockito.doThrow(new RentingException("Cliente con solicitudes pendientes. No se puede eliminar."))
+        Mockito.doThrow(new ClientWithPendingRequestsException("Cliente con solicitudes registradas"))
                 .when(clientService).deleteClientById(clientId);
 
         mockMvc.perform(delete("/api/clients/{id}", clientId))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isConflict()); // 409
     }
 }
