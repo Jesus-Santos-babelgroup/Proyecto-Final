@@ -2,6 +2,7 @@ package com.helloworld.renting.service.request.approval.rules.denial.minagepermi
 
 import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.RentingRequestDto;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

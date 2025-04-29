@@ -1,6 +1,7 @@
 package com.helloworld.renting.service.request.approval.rules.denial.minagepermittedrule;
 
 import com.helloworld.renting.dto.RentingRequestDto;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.rules.denial.DenialRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
