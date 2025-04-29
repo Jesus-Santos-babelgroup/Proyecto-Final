@@ -1,6 +1,5 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
-import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +23,9 @@ public class ScoringNotSurpassesThreshold implements DenialRule {
         Objects.requireNonNull(requestDto, "RulesContextDto no puede ser null");
 
         if (requestDto.getClient().getScoring() == null) {
-            throw new InvalidRulesContextDtoException("Scoring no puede ser null.");
+            throw new InvalidRentingRequestDtoException("Scoring no puede ser null.");
         } else if (requestDto.getClient().getScoring() < 0) {
-            throw new InvalidRulesContextDtoException("Scoring no puede ser negativo.");
+            throw new InvalidRentingRequestDtoException("Scoring no puede ser negativo.");
         }
     }
 }

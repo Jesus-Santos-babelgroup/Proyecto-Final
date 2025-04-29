@@ -1,6 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentProperties;
 import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentRule;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,7 +54,7 @@ public class MaxTotalInvestmentRuleTest {
         RulesContextDto rulesContextDto = new RulesContextDto();
 
         // When
-        InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContextDto));
+        InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContextDto));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -68,7 +68,7 @@ public class MaxTotalInvestmentRuleTest {
         rulesContextDto.setTotalInvestment(BigDecimal.valueOf(-10000));
 
         // When
-        InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContextDto));
+        InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContextDto));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -87,7 +87,7 @@ public class MaxTotalInvestmentRuleTest {
         rulesContextDto.setTotalInvestment(BigDecimal.valueOf(50000));
 
         // When
-        InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContextDto));
+        InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContextDto));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -106,7 +106,7 @@ public class MaxTotalInvestmentRuleTest {
         rulesContextDto.setTotalInvestment(BigDecimal.valueOf(50000));
 
         // When
-        InvalidRulesContextDtoException exception = assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContextDto));
+        InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContextDto));
 
         // Then
         assertEquals(message, exception.getMessage());

@@ -3,7 +3,7 @@ package com.helloworld.renting.service.request.approval.rules.denial;
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.entities.Debt;
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.mapper.DebtMapper;
 import com.helloworld.renting.service.request.approval.Rules;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class DebtAmountLessThanMonthlyQuoteTest {
 class DebtAmountLessThanMonthlyQuoteTest {
 
     Rules sut;
@@ -94,7 +93,7 @@ class DebtAmountLessThanMonthlyQuoteTest {
         when(debtMapper.findDebtsByNif("12345678A")).thenReturn(List.of(debt));
 
         // when / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(requestDto));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(requestDto));
     }
 
     @Test
@@ -108,7 +107,7 @@ class DebtAmountLessThanMonthlyQuoteTest {
         when(debtMapper.findDebtsByNif("12345678A")).thenReturn(List.of(debt));
 
         // when / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(requestDto));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(requestDto));
     }
 
     @Test
@@ -120,6 +119,6 @@ class DebtAmountLessThanMonthlyQuoteTest {
         when(requestDto.getQuotaFinal()).thenReturn(null);
 
         // When / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(requestDto));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(requestDto));
     }
 }
