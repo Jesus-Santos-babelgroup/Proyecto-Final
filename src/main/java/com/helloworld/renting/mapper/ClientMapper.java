@@ -1,8 +1,8 @@
 package com.helloworld.renting.mapper;
 
-
 import com.helloworld.renting.entities.Client;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 @Mapper
@@ -23,4 +23,18 @@ public interface ClientMapper {
                 WHERE ID_client = #{id}
             """)
     int updateClient(Client client);
+
+    @Select("SELECT COUNT(*) FROM Client WHERE Email = #{email}")
+    boolean existByEmail(String email);
+
+    @Select("SELECT COUNT(*) FROM Client WHERE NIF = #{nif}")
+    boolean existByNif(String nif);
+
+    @Select("SELECT COUNT(*) FROM Client WHERE ID_client = #{id}")
+    boolean existById(Long id);
+
+    @Select("SELECT COUNT(*) FROM Client WHERE Phone = #{tlf}")
+    boolean existByTlf(String tlf);
+
+
 }
