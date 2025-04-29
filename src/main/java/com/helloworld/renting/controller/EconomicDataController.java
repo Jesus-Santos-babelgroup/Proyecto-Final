@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,7 +38,9 @@ public class EconomicDataController{
         EconomicDataSelfEmployedDto economicDataCreated = economicDataService.addEconomicDataSelfEmployed(
                 economicDataSelfEmployedDto,
                 clientId);
-        return null;
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(economicDataCreated);
     }
 
     @PostMapping("{clientId}/employed")
@@ -55,7 +58,9 @@ public class EconomicDataController{
         EconomicDataEmployedDto economicDataCreated = economicDataService.addEconomicDataEmployed(
                 economicDataEmployedDto,
                 clientId);
-        return null;
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(economicDataCreated);
     }
 
 

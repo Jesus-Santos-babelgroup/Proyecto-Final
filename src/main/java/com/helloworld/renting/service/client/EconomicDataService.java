@@ -6,8 +6,12 @@ import com.helloworld.renting.entities.EconomicDataEmployed;
 import com.helloworld.renting.entities.EconomicDataSelfEmployed;
 import com.helloworld.renting.mapper.ClientMapper;
 import com.helloworld.renting.mapper.economicalData.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
 
 @Service
 public class EconomicDataService {
@@ -41,6 +45,9 @@ public class EconomicDataService {
             EconomicDataSelfEmployedDto economicDataSelfEmployedDto,
             Long clientId){
         economicDataSelfEmployedDto.setClientId(clientId);
+
+        checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
+
         EconomicDataSelfEmployed economicDataSelfEmployed = selfEmployedMapperToEntity.toEntity(economicDataSelfEmployedDto);
         economicalDataSelfEmployedMapper.insert(economicDataSelfEmployed);
 
@@ -53,13 +60,44 @@ public class EconomicDataService {
             EconomicDataEmployedDto economicDataEmployedDto,
             Long clientId){
         economicDataEmployedDto.setClientId(clientId);
+
+        checkDuplicateYearEmployed(clientId, economicDataEmployedDto.getYearEntry());
+        checkDateNotInFuture(economicDataEmployedDto.getStartDate());
+        checkDateNotInFuture(economicDataEmployedDto.getEndDate());
+        checkStartDateMatchesYearEntry(economicDataEmployedDto.getStartDate(), economicDataEmployedDto.getYearEntry());
+
         EconomicDataEmployed economicDataEmployed = employedMapperToEntity.toEntity(economicDataEmployedDto);
-        System.out.println(economicDataEmployed);
         economicalDataEmployedMapper.insert(economicDataEmployed);
         return economicDataEmployedDto;
     }
 
+    private void checkDuplicateYearSelfEmployed(Long clientId, Integer yearEntry) {
+        if (economicalDataSelfEmployedMapper.existsSelfEmployedByClientIdAndYear(clientId, yearEntry)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Ya existe información de autónomo para este cliente en el año " + yearEntry);
+        }
+    }
 
-    //TODO: Validar datos: no se puede tener mas de 2 datos bancarios del mismo tipo en el mismo año, valores negativos
+    private void checkDuplicateYearEmployed(Long clientId, Integer yearEntry) {
+        if (economicalDataEmployedMapper.existsEmployedByClientIdAndYear(clientId, yearEntry)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Ya existe información de asalariado para este cliente en el año " + yearEntry);
+        }
+    }
+
+    private void checkDateNotInFuture(LocalDate date) {
+        if (date.isAfter(LocalDate.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La fecha no puede estar en el futuro");
+        }
+    }
+
+    private void checkStartDateMatchesYearEntry(LocalDate startDate, Integer yearEntry) {
+        if (startDate.getYear() != yearEntry) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El año de entrada debe coincidir con el año de la fecha de inicio");
+        }
+    }
+
+
+    //TODO: Validar datos: , valores negativos
 
 }

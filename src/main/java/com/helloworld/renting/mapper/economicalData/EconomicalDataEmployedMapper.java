@@ -1,9 +1,7 @@
 package com.helloworld.renting.mapper.economicalData;
 
 import com.helloworld.renting.entities.EconomicDataEmployed;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface EconomicalDataEmployedMapper {
@@ -13,4 +11,6 @@ public interface EconomicalDataEmployedMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "ID_employed_data")
     int insert(EconomicDataEmployed economicDataEmployed);
 
+    @Select("SELECT COUNT(*) FROM Economic_data_employed WHERE ID_client = #{clientId} AND Year_entry = #{yearEntry}")
+    boolean existsEmployedByClientIdAndYear(@Param("clientId") Long clientId, @Param("yearEntry") Integer yearEntry);
 }
