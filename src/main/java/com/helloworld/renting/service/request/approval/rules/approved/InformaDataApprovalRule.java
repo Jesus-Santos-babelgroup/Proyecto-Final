@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 
 @Component
@@ -57,9 +56,9 @@ public class InformaDataApprovalRule extends ApprovedRule {
     }
 
     private double calculateAverageProfit3LatestYears(List<InformaDto> informaRecords) {
+        int currentYear = LocalDate.now().getYear();
         return informaRecords.stream()
-                .sorted(Comparator.comparing(InformaDto::getFiscalYear).reversed())
-                .limit(3)
+                .filter(informa -> informa.getFiscalYear() >= currentYear - 2)
                 .mapToDouble(informa -> informa.getProfitBeforeTax().doubleValue())
                 .average()
                 .orElse(0);
