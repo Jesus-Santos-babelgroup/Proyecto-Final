@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class SeniorityGreaterThan3YearsRule extends ApprovedRule {
+public class SeniorityGreaterThan3YearsRule implements ApprovedRule {
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
         int seniority = LocalDate.now().getYear() - rulesContextDto.getEmploymentStartDate().getYear();

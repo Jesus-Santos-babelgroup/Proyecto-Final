@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class CheckExternalDebtsCompanyTypeRule extends DenialRule {
+public class CheckExternalDebtsCompanyTypeRule implements DenialRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {

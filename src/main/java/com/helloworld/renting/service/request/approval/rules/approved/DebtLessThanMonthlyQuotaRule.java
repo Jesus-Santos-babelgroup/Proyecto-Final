@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class DebtLessThanMonthlyQuotaRule extends ApprovedRule {
+public class DebtLessThanMonthlyQuotaRule implements ApprovedRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
