@@ -1,6 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class AgeBelow18Rule implements DenialRule {
 
         if (birthDateIsNotValid(birthDate, today)) {
             logger.warn("Client birth date is not valid");
-            throw new InvalidRulesContextDtoException("Client birth date is not valid");
+            throw new InvalidRentingRequestDtoException("Client birth date is not valid");
         } else {
             logger.debug("AgeBelow18Rule checked");
             return birthDate.isAfter(today.minusYears(18));
