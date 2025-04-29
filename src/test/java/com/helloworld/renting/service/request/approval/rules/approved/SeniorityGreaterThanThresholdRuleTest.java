@@ -1,6 +1,8 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.RulesContextDto;
+import com.helloworld.renting.service.request.approval.rules.approved.seniorityThresholdRule.SeniorityGreaterThanThresholdRule;
+import com.helloworld.renting.service.request.approval.rules.approved.seniorityThresholdRule.SeniorityThresholdRuleProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -8,13 +10,16 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class SeniorityGreaterThan3YearsRuleTest {
+class SeniorityGreaterThanThresholdRuleTest {
 
-    private SeniorityGreaterThan3YearsRule rule;
+    private SeniorityGreaterThanThresholdRule rule;
+    private SeniorityThresholdRuleProperties properties;
 
     @BeforeEach
     void setUp() {
-        rule = new SeniorityGreaterThan3YearsRule();
+        properties = new SeniorityThresholdRuleProperties();
+        properties.setRequiredYears(3);
+        rule = new SeniorityGreaterThanThresholdRule(properties);
     }
 
     @Test
