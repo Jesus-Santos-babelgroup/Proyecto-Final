@@ -4,7 +4,7 @@ import com.helloworld.renting.dto.RulesContextDto;
 import org.springframework.stereotype.Component;
 
 @Component
-public class NoRecentApprovalWithGuaranteeRule extends ApprovedRule{
+public class NoRecentApprovalWithGuaranteeRule implements ApprovedRule {
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {
         return !rulesContextDto.isPreviouslyApprovedWithGuarantee();
