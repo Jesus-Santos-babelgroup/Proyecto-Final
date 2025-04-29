@@ -1,4 +1,4 @@
-package com.helloworld.renting.service.request.approval.rules.approved.seniorityThresholdRule;
+package com.helloworld.renting.service.request.approval.rules.approved.minimumSeniorityRule;
 
 import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class SeniorityGreaterThanThresholdRule extends ApprovedRule {
+public class MinimumSeniorityRule extends ApprovedRule {
 
-    private final SeniorityThresholdRuleProperties seniorityRuleProperties;
+    private final MinimumSeniorityProperties seniorityRuleProperties;
 
     @Autowired
-    public SeniorityGreaterThanThresholdRule(SeniorityThresholdRuleProperties seniorityRuleProperties) {
+    public MinimumSeniorityRule(MinimumSeniorityProperties seniorityRuleProperties) {
         this.seniorityRuleProperties = seniorityRuleProperties;
     }
 

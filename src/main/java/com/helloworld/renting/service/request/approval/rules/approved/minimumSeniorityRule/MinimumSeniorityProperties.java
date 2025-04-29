@@ -1,12 +1,11 @@
-package com.helloworld.renting.service.request.approval.rules.approved.seniorityThresholdRule;
+package com.helloworld.renting.service.request.approval.rules.approved.minimumSeniorityRule;
 
-import lombok.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "seniority-rule")
-public class SeniorityThresholdRuleProperties {
+public class MinimumSeniorityProperties {
 
     private int requiredYears;
 
