@@ -4,9 +4,7 @@ import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
-import com.helloworld.renting.mapper.ClientMapper;
-import com.helloworld.renting.mapper.StructMapperToDto;
-import com.helloworld.renting.mapper.StructMapperToEntity;
+import com.helloworld.renting.mapper.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +31,12 @@ class CreateClientTest {
     @Mock
     private StructMapperToEntity toEntity;
 
+    @Mock
+    private CountryMapper countryMapper;
+
+    @Mock
+    private AddressMapper addressMapper; // Agregar el mock
+
     @InjectMocks
     private ClientService clientService;
 
@@ -46,6 +50,8 @@ class CreateClientTest {
         inputDto.setNif("12345678A");
         inputDto.setEmail("test@example.com");
         inputDto.setScoring(100); // Valor válido para scoring
+        inputDto.setCountryId("1"); // ID de país válido como String
+        inputDto.setAddressId(1L); // Agregar ID de dirección válido
 
         Client client = new Client();
         ClientDto outputDto = new ClientDto();
@@ -55,6 +61,10 @@ class CreateClientTest {
         when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(false);
         when(toEntity.toEntity(inputDto)).thenReturn(client);
         when(toDto.toDto(client)).thenReturn(outputDto);
+
+        // Mockear validaciones
+        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
+        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(true); // Añadir mock de dirección
 
         // When
         ClientDto result = clientService.createClient(inputDto);
@@ -69,6 +79,40 @@ class CreateClientTest {
         verify(toEntity).toEntity(inputDto);
         verify(clientMapper).insert(client);
         verify(toDto).toDto(client);
+        verify(countryMapper).existsByCountryId(Long.valueOf(inputDto.getCountryId()));
+        verify(addressMapper).existsByAddressId(inputDto.getAddressId()); // Verificar que se llama al método
+    }
+
+    @Test
+    void createClient_ShouldInsertClientCorrectly() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNif("12345678A");
+        inputDto.setEmail("test@example.com");
+        inputDto.setName("Juan");
+        inputDto.setScoring(50); // Valor válido para scoring
+        inputDto.setCountryId("1"); // Agregar ID de país válido
+        inputDto.setAddressId(1L); // Agregar ID de dirección válido
+
+        Client mappedClient = new Client();
+        mappedClient.setNif("12345678A");
+
+        when(clientMapper.existsByNif(any())).thenReturn(false);
+        when(clientMapper.existsByEmail(any())).thenReturn(false);
+        when(toEntity.toEntity(inputDto)).thenReturn(mappedClient);
+        when(toDto.toDto(any())).thenReturn(new ClientDto());
+
+        // Mockear validaciones
+        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
+        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(true);
+
+        // When
+        clientService.createClient(inputDto);
+
+        // Then
+        verify(clientMapper).insert(clientCaptor.capture());
+        Client insertedClient = clientCaptor.getValue();
+        assertEquals("12345678A", insertedClient.getNif());
     }
 
     @Test
@@ -117,31 +161,7 @@ class CreateClientTest {
         verify(clientMapper, never()).insert(any());
     }
 
-    @Test
-    void createClient_ShouldInsertClientCorrectly() {
-        // Given
-        ClientDto inputDto = new ClientDto();
-        inputDto.setNif("12345678A");
-        inputDto.setEmail("test@example.com");
-        inputDto.setName("Juan");
-        inputDto.setScoring(50); // Valor válido para scoring
 
-        Client mappedClient = new Client();
-        mappedClient.setNif("12345678A");
-
-        when(clientMapper.existsByNif(any())).thenReturn(false);
-        when(clientMapper.existsByEmail(any())).thenReturn(false);
-        when(toEntity.toEntity(inputDto)).thenReturn(mappedClient);
-        when(toDto.toDto(any())).thenReturn(new ClientDto());
-
-        // When
-        clientService.createClient(inputDto);
-
-        // Then
-        verify(clientMapper).insert(clientCaptor.capture());
-        Client insertedClient = clientCaptor.getValue();
-        assertEquals("12345678A", insertedClient.getNif());
-    }
     @Test
     void createClient_WithFutureBirthDate_ShouldThrowException() {
         // Given
@@ -160,4 +180,27 @@ class CreateClientTest {
         assertTrue(exception.getMessage().contains("fecha de nacimiento"));
         verify(clientMapper, never()).insert(any());
     }
+    @Test
+    void createClient_WithInvalidAddress_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setNif("12345678A");
+        inputDto.setEmail("test@example.com");
+        inputDto.setScoring(100);
+        inputDto.setCountryId("1");
+        inputDto.setAddressId(999L); // Dirección inexistente
+
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(false);
+        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
+        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(false); // Mock de dirección inexistente
+
+        // When & Then
+        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
+                () -> clientService.createClient(inputDto));
+
+        assertTrue(exception.getMessage().contains("La dirección con ID"));
+        verify(clientMapper, never()).insert(any());
+    }
+
 }
