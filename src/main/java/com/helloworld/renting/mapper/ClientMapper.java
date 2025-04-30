@@ -25,4 +25,7 @@ public interface ClientMapper {
 
     @Select("SELECT COUNT(*) FROM Client WHERE Phone = #{phone}")
     boolean existsByPhone(String phone);
+
+    @Select("SELECT COUNT(*) FROM Client WHERE ID_client = #{id}")
+    boolean existsById(Long id);
 }
