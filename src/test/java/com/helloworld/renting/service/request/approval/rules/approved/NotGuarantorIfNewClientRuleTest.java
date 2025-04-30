@@ -1,6 +1,7 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.mapper.RulesMapper;
+import com.helloworld.renting.service.request.approval.rules.approved.notGuarantorIfNewClient.NotGuarantorIfNewClientRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
