@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/clients/")
+@RequestMapping("/api/clients")
 @Tag(name = "clients_economic_data", description = "Operaciones sobre la información bancaria de los clientes")
 public class EconomicDataController{
 
@@ -22,7 +22,7 @@ public class EconomicDataController{
         this.economicDataService = economicDataService;
     }
 
-    @PostMapping("{clientId}/self_employed")
+    @PostMapping("/{clientId}/economic_data/self_employed")
     @Operation(
             summary = "Añadir ingresos del cliente",
             description = "Añadir ingresos autónomos de un cliente",
@@ -47,7 +47,7 @@ public class EconomicDataController{
                 .body(economicDataCreated);
     }
 
-    @PostMapping("{clientId}/employed")
+    @PostMapping("/{clientId}/economic_data/employed")
     @Operation(
             summary = "Añadir ingresos de un cliente",
             description = "Añadir ingresos de tipo asalariado de un cliente",
