@@ -1,11 +1,7 @@
 package com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet;
 
-
-import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.RentingRequestDto;
-import com.helloworld.renting.entities.EconomicDataEmployed;
 import com.helloworld.renting.exceptions.attributes.InvalidMappedDataException;
-import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
 

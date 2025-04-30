@@ -1,6 +1,5 @@
 package com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet;
 
-import com.helloworld.renting.dto.RentingRequestDto;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;

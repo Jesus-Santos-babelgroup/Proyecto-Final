@@ -1,5 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
+import com.helloworld.renting.service.request.approval.rules.approved.notrejectedinlastyears.NotRejectedInLast2YearsRule;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
