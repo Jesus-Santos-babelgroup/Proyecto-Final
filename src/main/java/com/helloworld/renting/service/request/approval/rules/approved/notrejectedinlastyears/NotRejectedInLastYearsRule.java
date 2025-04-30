@@ -6,6 +6,8 @@ import com.helloworld.renting.exceptions.attributes.InvalidMappedDataException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
+
 @Component
 public class NotRejectedInLastYearsRule implements ApprovedRule {
 
@@ -21,15 +23,23 @@ public class NotRejectedInLastYearsRule implements ApprovedRule {
     @Override
     public boolean conditionMet(RentingRequestDto rentingRequestDto) {
         Long clientId = rentingRequestDto.getClient().getId();
+        validateClientId(clientId);
+        int years = rulesProperties.getYears();
+        int rejectedCount = mapper.countRejectedRequestsInLastYears(clientId, years);
+        validateRejectedCount(rejectedCount);
+        return rejectedCount == 0;
+    }
+
+    void validateRejectedCount(int investment) {
+        if (investment < 0) {
+            throw new InvalidMappedDataException("Investment cannot be negative");
+        }
+    }
+
+    void validateClientId(Long clientId) {
         if (clientId == null) {
             throw new InvalidClientDtoException("Client ID cannot be null");
         }
-        int years = rulesProperties.getYears();
-        int rejectedCount = mapper.countRejectedRequestsInLastYears(clientId, years);
-        if (rejectedCount < 0) {
-            throw new InvalidMappedDataException("Rejected count cannot be negative");
-        }
-        return rejectedCount == 0;
     }
 
     @Override
