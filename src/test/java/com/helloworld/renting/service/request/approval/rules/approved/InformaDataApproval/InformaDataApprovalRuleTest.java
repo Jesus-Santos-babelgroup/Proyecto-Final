@@ -21,11 +21,12 @@ public class InformaDataApprovalRuleTest {
     private InformaDataApprovalRule rule;
     private RentingRequestDto rentingRequestDto;
     private InformaDataApprovalMapper mapper;
+    private InformaDataApprovalProperties properties;
 
     @BeforeEach
     public void setup() {
         mapper = mock(InformaDataApprovalMapper.class);
-        rule = new InformaDataApprovalRule(mapper);
+        rule = new InformaDataApprovalRule(properties, mapper);
         rentingRequestDto = mock(RentingRequestDto.class);
     }
 
