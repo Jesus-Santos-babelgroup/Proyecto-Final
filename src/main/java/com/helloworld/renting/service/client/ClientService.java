@@ -1,32 +1,32 @@
 package com.helloworld.renting.service.client;
 
 import com.helloworld.renting.dto.ClientDto;
-import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
 import com.helloworld.renting.mapper.ClientMapper;
-import com.helloworld.renting.mapper.StructMapperToEntity;
 import com.helloworld.renting.mapper.StructMapperToDto;
+import com.helloworld.renting.mapper.StructMapperToEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 
 
 @Service
 public class ClientService {
 
     private final ClientMapper clientMapper;
+    // private final MapStructClient mapStruct;
     private final StructMapperToDto toDto;
     private final StructMapperToEntity toEntity;
 
     public ClientService(ClientMapper clientMapper,
+                         //MapStructClient mapStruct
                          StructMapperToDto toDto,
                          StructMapperToEntity toEntity) {
         this.clientMapper = clientMapper;
+        //this.mapStruct = mapStruct;
         this.toDto = toDto;
         this.toEntity = toEntity;
     }
@@ -65,11 +65,12 @@ public class ClientService {
         }
 
         // Converting to entity
+        // Client client = mapStruct.toEntity(clientDto);
         Client client = toEntity.toEntity(clientDto);
 
         clientMapper.insert(client);
-
         // Converting to DTO
+        //return mapStruct.toDto(client);
         return toDto.toDto(client);
     }
 }
