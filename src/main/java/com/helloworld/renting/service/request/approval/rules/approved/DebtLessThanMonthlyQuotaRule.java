@@ -2,10 +2,12 @@ package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.RulesContextDto;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-public class DebtLessThanMonthlyQuotaRule extends ApprovedRule {
+@Component
+public class DebtLessThanMonthlyQuotaRule implements ApprovedRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {

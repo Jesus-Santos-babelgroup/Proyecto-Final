@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SpanishNationalityRule extends ApprovedRule {
+public class SpanishNationalityRule implements ApprovedRule {
 
     Logger logger = LoggerFactory.getLogger(SpanishNationalityRule.class);
 
