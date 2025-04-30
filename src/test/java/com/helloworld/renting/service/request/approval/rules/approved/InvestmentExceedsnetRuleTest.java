@@ -28,7 +28,7 @@ public class InvestmentExceedsnetRuleTest {
     public void shouldReturnTrue_whenInvestmentIsLessThanNetIncome() {
         when(mapper.getNetIncomeEmployed(rentingRequestDto.getId())).thenReturn(new BigDecimal("20000"));
         when(mapper.getNetIncomeSelfEmployed(rentingRequestDto.getId())).thenReturn(new BigDecimal("10000"));
-        when(rentingRequestDto.getQuotaFinal()).thenReturn(new BigDecimal("25000"));
+        when(mapper.getInvestment(rentingRequestDto.getId())).thenReturn(new BigDecimal("25000"));
 
         boolean result = rule.conditionMet(rentingRequestDto);
         assertTrue(result);
@@ -38,7 +38,7 @@ public class InvestmentExceedsnetRuleTest {
     public void shouldReturnTrue_whenInvestmentEqualsNetIncome() {
         when(mapper.getNetIncomeEmployed(rentingRequestDto.getId())).thenReturn(new BigDecimal("15000"));
         when(mapper.getNetIncomeSelfEmployed(rentingRequestDto.getId())).thenReturn(new BigDecimal("5000"));
-        when(rentingRequestDto.getQuotaFinal()).thenReturn(new BigDecimal("20000"));
+        when(mapper.getInvestment(rentingRequestDto.getId())).thenReturn(new BigDecimal("20000"));
 
         boolean result = rule.conditionMet(rentingRequestDto);
         assertTrue(result);
@@ -48,7 +48,7 @@ public class InvestmentExceedsnetRuleTest {
     public void shouldReturnFalse_whenInvestmentIsGreaterThanNetIncome() {
         when(mapper.getNetIncomeEmployed(rentingRequestDto.getId())).thenReturn(new BigDecimal("10000"));
         when(mapper.getNetIncomeSelfEmployed(rentingRequestDto.getId())).thenReturn(new BigDecimal("5000"));
-        when(rentingRequestDto.getQuotaFinal()).thenReturn(new BigDecimal("20000"));
+        when(mapper.getInvestment(rentingRequestDto.getId())).thenReturn(new BigDecimal("20000"));
 
         boolean result = rule.conditionMet(rentingRequestDto);
         assertFalse(result);
