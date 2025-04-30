@@ -35,6 +35,9 @@ public class ClientService {
     @Transactional
     public ClientDto createClient(ClientDto clientDto) {
         validateClientNotNull(clientDto);
+        validateName(clientDto.getName());
+        validateFirstSurname(clientDto.getFirstSurname());
+        validateSecondSurname(clientDto.getSecondSurname());
         validateDateOfBirth(clientDto.getDateOfBirth());
         checkForDuplicates(clientDto);
         validateScoring(clientDto.getScoring());
@@ -110,6 +113,37 @@ public class ClientService {
 
         if (!addressMapper.existsByAddressId(addressId)) {
             throw new InvalidClientDtoException("La dirección con ID " + addressId + " no existe en la base de datos");
+        }
+    }
+    private void validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new InvalidClientDtoException("El nombre no puede ser nulo o vacío");
+        }
+
+        String namePattern = "^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' -]{1,60}$";
+        if (!name.matches(namePattern)) {
+            throw new InvalidClientDtoException("El nombre debe contener solo letras, espacios, apóstrofes o guiones y tener máximo 60 caracteres");
+        }
+    }
+
+    private void validateFirstSurname(String surname) {
+        if (surname == null || surname.isEmpty()) {
+            throw new InvalidClientDtoException("El primer apellido no puede ser nulo o vacío");
+        }
+
+        String namePattern = "^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' -]{1,60}$";
+        if (!surname.matches(namePattern)) {
+            throw new InvalidClientDtoException("El primer apellido debe contener solo letras, espacios, apóstrofes o guiones y tener máximo 60 caracteres");
+        }
+    }
+
+    private void validateSecondSurname(String surname) {
+        // El segundo apellido puede ser nulo o vacío, solo validamos si tiene contenido
+        if (surname != null && !surname.isEmpty()) {
+            String namePattern = "^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' -]{1,60}$";
+            if (!surname.matches(namePattern)) {
+                throw new InvalidClientDtoException("El segundo apellido debe contener solo letras, espacios, apóstrofes o guiones y tener máximo 60 caracteres");
+            }
         }
     }
 }
