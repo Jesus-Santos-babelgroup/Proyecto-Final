@@ -1,12 +1,12 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.dto.RulesContextDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InvestmentUnderThreeGrossIncomeRuleTest {
 

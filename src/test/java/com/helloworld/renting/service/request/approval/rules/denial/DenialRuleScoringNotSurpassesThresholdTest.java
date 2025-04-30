@@ -1,7 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
-import com.helloworld.renting.dto.RulesContextDto;
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.Rules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,7 +53,7 @@ class DenialRuleScoringNotSurpassesThresholdTest {
         when(rulesContext.getClientScoring()).thenReturn(null);
 
         // When / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContext));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContext));
     }
 
     @Test
@@ -63,6 +62,6 @@ class DenialRuleScoringNotSurpassesThresholdTest {
         when(rulesContext.getClientScoring()).thenReturn(-3);
 
         // When / Then
-        assertThrows(InvalidRulesContextDtoException.class, () -> sut.conditionMet(rulesContext));
+        assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rulesContext));
     }
 }
