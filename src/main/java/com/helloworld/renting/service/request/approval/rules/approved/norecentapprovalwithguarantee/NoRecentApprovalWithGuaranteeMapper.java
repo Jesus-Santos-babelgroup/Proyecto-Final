@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public interface NoRecentApprovalWithGuaranteeMapper {
 
     @Select("""
-        SELECT COUNT(*) 
+        SELECT COUNT(ID_request) 
         FROM Renting_request
         WHERE ID_client = #{clientId}
           AND Final_result = 'APPROVED_WITH_WARRANTY'
