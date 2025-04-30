@@ -26,4 +26,15 @@ public interface InvestmentExceedsNetMapper {
               WHERE r.ID_request = #{requestId}
             """)
     BigDecimal getNetIncomeSelfEmployed(@Param("requestId") Long requestId);
+
+    @Select("""
+              SELECT v.Investment
+                FROM Renting_request rr
+                JOIN Vehicle_requested vr ON rr.ID_request = vr.ID_request
+                JOIN Vehicle v ON vr.ID_vehicle = v.ID_vehicle
+                WHERE rr.ID_request = #{requestId}
+            """)
+    BigDecimal getInvestment(@Param("requestId") Long requestId);
+
+
 }
