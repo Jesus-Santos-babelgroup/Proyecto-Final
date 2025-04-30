@@ -45,11 +45,11 @@ public class ClientService {
         validateAddress(clientDto.getAddressId());
 
         // Converting to entity
-        Client client = toEntity.toEntity(clientDto);
+        Client client = toEntity.clientToEntity(clientDto);
         clientMapper.insert(client);
 
         // Converting to DTO
-        return toDto.toDto(client);
+        return toDto.clientToDto(client);
     }
 
     private void validateClientNotNull(ClientDto clientDto) {
