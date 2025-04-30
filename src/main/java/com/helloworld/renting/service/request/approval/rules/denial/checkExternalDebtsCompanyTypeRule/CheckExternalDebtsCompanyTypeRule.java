@@ -25,7 +25,7 @@ public class CheckExternalDebtsCompanyTypeRule implements DenialRule {
     public boolean conditionMet(RentingRequestDto rentingRequestDto) {
         ClientDto client  = rentingRequestDto.getClient();
         List<Debt> debts = debtMapper.findDebtsByNif(client.getNif());
-        if (debts == null) {
+        if (debts == null || debts.isEmpty()) {
             return true;
         }
         return debts.stream()
@@ -36,6 +36,6 @@ public class CheckExternalDebtsCompanyTypeRule implements DenialRule {
 
     @Override
     public String getName() {
-        return "Comprobar deudas externas que no sean tipo: " +  debtProperties.getInvalidCategories();
+        return "CheckExternalDebtsCompanyTypeRule";
     }
 }
