@@ -1,5 +1,6 @@
 package com.helloworld.renting.exceptions.handler;
 
+import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
