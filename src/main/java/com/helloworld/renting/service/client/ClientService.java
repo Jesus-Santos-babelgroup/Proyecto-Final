@@ -37,10 +37,8 @@ public class ClientService {
             throw new InvalidClientDtoException("El DTO del cliente no puede ser nulo");
         }
 
-// Validación de formato de fecha de nacimiento y que no sea futura
         try {
             if (clientDto.getDateOfBirth() != null) {
-                // No necesitas parsear si ya es un LocalDate
                 LocalDate birthDate = clientDto.getDateOfBirth();
                 if (birthDate.isAfter(LocalDate.now())) {
                     throw new InvalidClientDtoException("La fecha de nacimiento no puede ser futura");
@@ -64,12 +62,10 @@ public class ClientService {
             throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
         }
 
-        // Converting to entity
         // Client client = mapStruct.toEntity(clientDto);
         Client client = toEntity.toEntity(clientDto);
 
         clientMapper.insert(client);
-        // Converting to DTO
         //return mapStruct.toDto(client);
         return toDto.toDto(client);
     }
