@@ -28,7 +28,7 @@ public interface InvestmentExceedsNetMapper {
     BigDecimal getNetIncomeSelfEmployed(@Param("requestId") Long requestId);
 
     @Select("""
-              SELECT v.Investment
+              SELECT SUM(v.Investment)
                 FROM Renting_request rr
                 JOIN Vehicle_requested vr ON rr.ID_request = vr.ID_request
                 JOIN Vehicle v ON vr.ID_vehicle = v.ID_vehicle
