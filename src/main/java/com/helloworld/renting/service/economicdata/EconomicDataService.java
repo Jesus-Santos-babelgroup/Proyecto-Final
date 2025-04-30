@@ -6,6 +6,7 @@ import com.helloworld.renting.mapper.EconomicDataMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EconomicDataService {
@@ -17,6 +18,7 @@ public class EconomicDataService {
         this.economicDataMapper = economicDataMapper;
     }
 
+    @Transactional
     public void deleteEconomicDataEmployedFromClient(Long id) {
         if (noEconomicDataEmployedExists(id)) {
             throw new EconomicDataNotFoundException("No economic data employed found for client");
@@ -38,6 +40,7 @@ public class EconomicDataService {
         }
     }
 
+    @Transactional
     public void deleteEconomicDataSelfEmployedFromClient(Long id) {
         if (noEconomicDataSelfEmployedExists(id)) {
             throw new EconomicDataNotFoundException("No economic data self employed found for client");
