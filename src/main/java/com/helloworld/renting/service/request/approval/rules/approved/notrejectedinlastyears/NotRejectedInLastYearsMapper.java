@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 public interface NotRejectedInLastYearsMapper {
 
     @Select("""
-              SELECT COUNT(*)
+              SELECT COUNT(ID_request) AS count
                 FROM Renting_request
                 WHERE ID_client = #{clientId}
                   AND Final_result = 'Rejected'
