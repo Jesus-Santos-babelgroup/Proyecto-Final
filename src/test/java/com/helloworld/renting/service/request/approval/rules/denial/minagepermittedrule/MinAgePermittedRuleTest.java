@@ -1,31 +1,33 @@
-package com.helloworld.renting.service.request.approval.rules.approved;
+package com.helloworld.renting.service.request.approval.rules.denial.minagepermittedrule;
 
 import com.helloworld.renting.dto.ClientDto;
-import com.helloworld.renting.dto.CountryDto;
 import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-class SpanishNationalityRuleTest {
+class MinAgePermittedRuleTest {
 
-    private SpanishNationalityRule sut;
+    private MinAgePermittedProperties minAgePermittedProperties;
+    private MinAgePermittedRule sut;
 
     @BeforeEach
     void setUp() {
-        sut = new SpanishNationalityRule();
+        minAgePermittedProperties = new MinAgePermittedProperties();
+        minAgePermittedProperties.setMinimumAge(18);
+        sut = new MinAgePermittedRule(minAgePermittedProperties);
     }
 
     @Test
-    void should_returnTrue_when_clientIsSpanish() {
+    void should_returnTrue_when_ageIsBelowMinimum() {
         // Given
-        CountryDto countryDto = new CountryDto();
         ClientDto clientDto = new ClientDto();
         RentingRequestDto rentingRequestDto = new RentingRequestDto();
-        countryDto.setIsoA2("ES");
-        clientDto.setCountry(countryDto);
+        clientDto.setDateOfBirth(LocalDate.of(2020,1,1));
         rentingRequestDto.setClient(clientDto);
 
         // When
@@ -36,13 +38,11 @@ class SpanishNationalityRuleTest {
     }
 
     @Test
-    void should_returnFalse_when_clientIsNotSpanish() {
+    void should_returnFalse_when_ageIsOverMinimum() {
         // Given
-        CountryDto countryDto = new CountryDto();
         ClientDto clientDto = new ClientDto();
         RentingRequestDto rentingRequestDto = new RentingRequestDto();
-        countryDto.setIsoA2("AR");
-        clientDto.setCountry(countryDto);
+        clientDto.setDateOfBirth(LocalDate.of(2000,1,1));
         rentingRequestDto.setClient(clientDto);
 
         // When
@@ -53,14 +53,11 @@ class SpanishNationalityRuleTest {
     }
 
     @Test
-    void should_raiseException_when_nationalityIsNull() {
+    void should_raiseException_when_birthDateIsNull() {
         // Given
-        String message = "Client nationality is null";
-        CountryDto countryDto = new CountryDto();
+        String message = "Client birth date is not valid";
         ClientDto clientDto = new ClientDto();
         RentingRequestDto rentingRequestDto = new RentingRequestDto();
-        clientDto.setCountry(countryDto);
-        rentingRequestDto.setClient(clientDto);
 
         // When
         InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rentingRequestDto));
@@ -68,4 +65,20 @@ class SpanishNationalityRuleTest {
         // Then
         assertEquals(message, exception.getMessage());
     }
+
+    @Test
+    void should_raiseException_when_birthDateIsFuture() {
+        // Given
+        String message = "Client birth date is not valid";
+        ClientDto clientDto = new ClientDto();
+        RentingRequestDto rentingRequestDto = new RentingRequestDto();
+        clientDto.setDateOfBirth(LocalDate.of(9999,12,31));
+
+        // When
+        InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rentingRequestDto));
+
+        // Then
+        assertEquals(message, exception.getMessage());
+    }
+
 }

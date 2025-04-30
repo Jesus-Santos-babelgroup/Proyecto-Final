@@ -1,9 +1,9 @@
+/*
 package com.helloworld.renting.mapper;
 
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.dto.InformaDto;
 import com.helloworld.renting.dto.NonpaymentDto;
-import com.helloworld.renting.dto.RulesContextDto;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -118,4 +118,4 @@ public interface RulesMapper {
             """)
     boolean hasBeenGuarantorInApprovedWithGuarantee(@Param("nif") String nif);
 
-}
+}*/
