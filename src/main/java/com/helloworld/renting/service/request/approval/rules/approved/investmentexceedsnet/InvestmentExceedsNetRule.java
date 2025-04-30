@@ -2,7 +2,6 @@ package com.helloworld.renting.service.request.approval.rules.approved.investmen
 
 import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidMappedDataException;
-import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +23,7 @@ public class InvestmentExceedsNetRule implements ApprovedRule {
         validateNetIncome(netIncomeEmployed, "Employed");
         validateNetIncome(netIncomeSelfEmployed, "Self-employed");
         BigDecimal netIncome = netIncomeEmployed.add(netIncomeSelfEmployed);
-        BigDecimal investment = rentingRequestDto.getQuotaFinal();
+        BigDecimal investment = mapper.getInvestment(rentingRequestDto.getId());
         validateInvestment(investment);
         return investment.compareTo(netIncome) <= 0;
     }
@@ -32,10 +31,10 @@ public class InvestmentExceedsNetRule implements ApprovedRule {
     void validateInvestment(BigDecimal investment) {
 
         if (investment == null) {
-            throw new InvalidRentingRequestDtoException("Investment cannot be null");
+            throw new InvalidMappedDataException("Investment cannot be null");
         }
         if (investment.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidRentingRequestDtoException("Investment cannot be negative");
+            throw new InvalidMappedDataException("Investment cannot be negative");
         }
     }
 
