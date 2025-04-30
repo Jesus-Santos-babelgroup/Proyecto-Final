@@ -25,11 +25,14 @@ public class EconomicDataController{
     @PostMapping("{clientId}/self_employed")
     @Operation(
             summary = "Añadir información bancaria a un cliente",
-            description = "Crea un nuevo cliente potencial",
+            description = "Añadir información bancaria de tipo autónomo de un cliente",
             tags = {"clients_economic_data"},
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Cliente creado")
+                    @ApiResponse(responseCode = "201", description = "Datos económicos creados correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Solicitud incorrecta: cliente no existe o datos inválidos"),
+                    @ApiResponse(responseCode = "409", description = "Ya existen datos para ese cliente en el año especificado")
             }
+
     )
     public ResponseEntity<EconomicDataSelfEmployedDto> addEconomicalDataSelfEmployee(
             @Valid @RequestBody EconomicDataSelfEmployedDto economicDataSelfEmployedDto,
@@ -46,10 +49,12 @@ public class EconomicDataController{
     @PostMapping("{clientId}/employed")
     @Operation(
             summary = "Añadir información bancaria a un cliente",
-            description = "Crea un nuevo cliente potencial",
+            description = "Añadir información bancaria de tipo asalariado de un cliente",
             tags = {"clients_economic_data"},
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Cliente creado")
+                    @ApiResponse(responseCode = "201", description = "Datos económicos creados correctamente"),
+                    @ApiResponse(responseCode = "400", description = "Solicitud incorrecta: fechas inválidas o cliente no existe"),
+                    @ApiResponse(responseCode = "409", description = "Ya existen datos para ese cliente en el año especificado")
             }
     )
     public ResponseEntity<EconomicDataEmployedDto> addEconomicalDataEmployee(
