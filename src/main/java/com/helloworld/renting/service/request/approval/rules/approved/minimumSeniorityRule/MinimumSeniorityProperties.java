@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "seniority-rule")
+@ConfigurationProperties(prefix = "rules.seniority")
 public class MinimumSeniorityProperties {
 
     private int requiredYears;
