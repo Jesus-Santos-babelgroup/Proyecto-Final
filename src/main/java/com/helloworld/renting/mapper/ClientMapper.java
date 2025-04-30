@@ -22,4 +22,7 @@ public interface ClientMapper {
 
     @Select("SELECT COUNT(*) FROM Client WHERE ID_client = #{id}")
     boolean existsById(Long id);
+
+    @Delete("DELETE FROM CLIENT WHERE ID_client=#{id}")
+    boolean deleteById(Long id);
 }

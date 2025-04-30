@@ -161,8 +161,10 @@ public class ClientController {
             }
     )
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        return null;
+        clientService.deleteClientById(id);
+        return ResponseEntity.noContent().build();
     }
+
 
     @GetMapping("/{id}")
     @Operation(

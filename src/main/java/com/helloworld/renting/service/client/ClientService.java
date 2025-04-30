@@ -7,6 +7,10 @@ import com.helloworld.renting.exceptions.db.DuplicateModel;
 import com.helloworld.renting.mapper.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
+//import com.helloworld.renting.exceptions.attributes.ClientWithPendingRequestsException;
+import com.helloworld.renting.mapper.RequestMapper;
+
 
 import java.time.LocalDate;
 
@@ -19,18 +23,22 @@ public class ClientService {
     private final StructMapperToEntity toEntity;
     private final CountryMapper countryMapper;
     private final AddressMapper addressMapper;
+    private final RequestMapper requestMapper;
 
     public ClientService(ClientMapper clientMapper,
                          StructMapperToDto toDto,
                          StructMapperToEntity toEntity,
                          CountryMapper countryMapper,
-                         AddressMapper addressMapper) {
+                         AddressMapper addressMapper,
+                         RequestMapper requestMapper) {
         this.clientMapper = clientMapper;
         this.toDto = toDto;
         this.toEntity = toEntity;
         this.countryMapper = countryMapper;
         this.addressMapper = addressMapper;
+        this.requestMapper = requestMapper;
     }
+
 
     @Transactional
     public ClientDto createClient(ClientDto clientDto) {
@@ -146,4 +154,22 @@ public class ClientService {
             }
         }
     }
+
+    @Transactional
+    public void deleteClientById(Long id) {
+
+        if (clientMapper.existsById(id)) {
+            throw new ClientNotFoundException("Cliente no encontrado con ID " + id);
+        }
+
+        /*if (requestMapper.countByClientId(id) > 0) {
+            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes registradas");
+        }*/
+
+        boolean deleted = clientMapper.deleteById(id);
+        if (!deleted) {
+            throw new RuntimeException("No se pudo eliminar el cliente con ID " + id);
+        }
+    }
+
 }
