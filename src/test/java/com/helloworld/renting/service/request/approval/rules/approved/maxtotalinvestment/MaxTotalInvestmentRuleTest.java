@@ -1,10 +1,7 @@
-package com.helloworld.renting.service.request.approval.rules.approved;
+package com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment;
 
 import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
-import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentMapper;
-import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentProperties;
-import com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment.MaxTotalInvestmentRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
