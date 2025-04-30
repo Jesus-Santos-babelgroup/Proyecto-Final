@@ -1,4 +1,4 @@
-package com.helloworld.renting.service.request.approval.rules.denial;
+package com.helloworld.renting.service.request.approval.rules.denial.checkExternalDebtsCompanyTypeRule;
 
 import com.helloworld.renting.dto.DebtDto;
 import com.helloworld.renting.service.request.approval.rules.denial.checkExternalDebtsCompanyTypeRule.CheckExternalDebtsCompanyTypeRule;
