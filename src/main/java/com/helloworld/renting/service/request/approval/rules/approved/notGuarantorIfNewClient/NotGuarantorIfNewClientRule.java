@@ -1,7 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved.notGuarantorIfNewClient;
 
 import com.helloworld.renting.dto.RentingRequestDto;
-import com.helloworld.renting.mapper.RulesMapper;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
 

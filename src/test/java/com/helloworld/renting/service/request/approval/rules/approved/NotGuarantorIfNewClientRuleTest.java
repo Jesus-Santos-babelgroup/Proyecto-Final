@@ -1,6 +1,8 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.mapper.RulesMapper;
+import com.helloworld.renting.dto.ClientDto;
+import com.helloworld.renting.dto.RentingRequestDto;
+import com.helloworld.renting.service.request.approval.rules.approved.notGuarantorIfNewClient.NotGuarantorIfNewClientMapper;
 import com.helloworld.renting.service.request.approval.rules.approved.notGuarantorIfNewClient.NotGuarantorIfNewClientRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,60 +13,58 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class NotGuarantorIfNewClientRuleTest {
-    private RulesMapper rulesMapper;
+    private NotGuarantorIfNewClientMapper mapper;
     private NotGuarantorIfNewClientRule rule;
 
     @BeforeEach
     void setUp() {
-        rulesMapper = mock(RulesMapper.class);
-        rule = new NotGuarantorIfNewClientRule(rulesMapper);
+        mapper = mock(NotGuarantorIfNewClientMapper.class);
+        rule = new NotGuarantorIfNewClientRule(mapper);
+    }
+
+    private RentingRequestDto createRequest(Long id, String nif) {
+        ClientDto client = new ClientDto();
+        client.setNif(nif);
+
+        RentingRequestDto dto = new RentingRequestDto();
+        dto.setId(id);
+        dto.setClient(client);
+        return dto;
     }
 
     @Test
     void testNewClientAndNotGuarantor() {
-        RulesContextDto ctx = new RulesContextDto();
-        ctx.setRequestId(1L);
-        ctx.setClientNif("12345678A");
+        RentingRequestDto dto = createRequest(1L, "12345678A");
+        when(mapper.isNewClientByRequestId(1L)).thenReturn(true);
+        when(mapper.hasBeenGuarantorInApprovedWithGuarantee("12345678A")).thenReturn(false);
 
-        when(rulesMapper.isNewClient(1L)).thenReturn(true);
-        when(rulesMapper.hasBeenGuarantorInApprovedWithGuarantee("12345678A")).thenReturn(false);
-
-        assertTrue(rule.conditionMet(ctx));
+        assertTrue(rule.conditionMet(dto));
     }
 
     @Test
     void testNewClientAndGuarantor() {
-        RulesContextDto ctx = new RulesContextDto();
-        ctx.setRequestId(2L);
-        ctx.setClientNif("12345678B");
+        RentingRequestDto dto = createRequest(2L, "12345678B");
+        when(mapper.isNewClientByRequestId(2L)).thenReturn(true);
+        when(mapper.hasBeenGuarantorInApprovedWithGuarantee("12345678B")).thenReturn(true);
 
-        when(rulesMapper.isNewClient(2L)).thenReturn(true);
-        when(rulesMapper.hasBeenGuarantorInApprovedWithGuarantee("12345678B")).thenReturn(true);
-
-        assertFalse(rule.conditionMet(ctx));
+        assertFalse(rule.conditionMet(dto));
     }
 
     @Test
     void testNotNewClientAndGuarantor() {
-        RulesContextDto ctx = new RulesContextDto();
-        ctx.setRequestId(3L);
-        ctx.setClientNif("12345678C");
+        RentingRequestDto dto = createRequest(3L, "12345678C");
+        when(mapper.isNewClientByRequestId(3L)).thenReturn(false);
+        when(mapper.hasBeenGuarantorInApprovedWithGuarantee("12345678C")).thenReturn(true);
 
-        when(rulesMapper.isNewClient(3L)).thenReturn(false);
-        when(rulesMapper.hasBeenGuarantorInApprovedWithGuarantee("12345678C")).thenReturn(true);
-
-        assertTrue(rule.conditionMet(ctx));
+        assertTrue(rule.conditionMet(dto));
     }
 
     @Test
     void testNotNewClientAndNotGuarantor() {
-        RulesContextDto ctx = new RulesContextDto();
-        ctx.setRequestId(4L);
-        ctx.setClientNif("12345678D");
+        RentingRequestDto dto = createRequest(4L, "12345678D");
+        when(mapper.isNewClientByRequestId(4L)).thenReturn(false);
+        when(mapper.hasBeenGuarantorInApprovedWithGuarantee("12345678D")).thenReturn(false);
 
-        when(rulesMapper.isNewClient(4L)).thenReturn(false);
-        when(rulesMapper.hasBeenGuarantorInApprovedWithGuarantee("12345678D")).thenReturn(false);
-
-        assertTrue(rule.conditionMet(ctx));
+        assertTrue(rule.conditionMet(dto));
     }
 }

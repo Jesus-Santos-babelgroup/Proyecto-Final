@@ -1,5 +1,7 @@
 package com.helloworld.renting.service.request.approval.rules.approved.scoringBelowThresholdRule;
 
+import com.helloworld.renting.dto.RentingRequestDto;
+import com.helloworld.renting.dto.ClientDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -22,66 +24,66 @@ class ScoringBelowThresholdRuleTest {
         rule = new ScoringBelowThresholdRule(properties);
     }
 
+    private RentingRequestDto createDto(Integer scoring) {
+        ClientDto client = new ClientDto();
+        client.setScoring(scoring);
+
+        RentingRequestDto dto = new RentingRequestDto();
+        dto.setClient(client);
+        return dto;
+    }
+
     @Test
     void testScoringExactlyAtThresholdShouldFail() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(5);
+        RentingRequestDto dto = createDto(5);
         assertFalse(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringJustBelowThresholdShouldPass() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(4);
+        RentingRequestDto dto = createDto(4);
         assertTrue(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringBelowMinRangeShouldFail() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(0);
+        RentingRequestDto dto = createDto(0);
         assertFalse(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringAboveMaxRangeShouldFail() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(9);
+        RentingRequestDto dto = createDto(9);
         assertFalse(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringWellWithinRangeButAboveThresholdShouldFail() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(6);
+        RentingRequestDto dto = createDto(6);
         assertFalse(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringNullShouldFail() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(null);
+        RentingRequestDto dto = createDto(null);
         assertFalse(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringAtMinShouldPassIfBelowThreshold() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(1);
+        RentingRequestDto dto = createDto(1);
         assertTrue(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringAtMaxBelowThresholdShouldPass() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(4);
+        RentingRequestDto dto = createDto(4);
         assertTrue(rule.conditionMet(dto));
     }
 
     @Test
     void testScoringAtMaxAndEqualToThresholdShouldFail() {
-        RulesContextDto dto = new RulesContextDto();
-        dto.setClientScoring(5);
+        RentingRequestDto dto = createDto(5);
         assertFalse(rule.conditionMet(dto));
     }
 }
