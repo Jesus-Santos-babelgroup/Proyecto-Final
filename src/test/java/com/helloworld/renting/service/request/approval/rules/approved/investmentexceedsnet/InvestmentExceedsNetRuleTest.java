@@ -1,8 +1,6 @@
-package com.helloworld.renting.service.request.approval.rules.approved;
+package com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet;
 
 import com.helloworld.renting.dto.RentingRequestDto;
-import com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet.InvestmentExceedsNetMapper;
-import com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet.InvestmentExceedsNetRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -13,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class InvestmentExceedsnetRuleTest {
+public class InvestmentExceedsNetRuleTest {
     private InvestmentExceedsNetRule rule;
     private RentingRequestDto rentingRequestDto;
     private InvestmentExceedsNetMapper mapper;

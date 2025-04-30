@@ -44,6 +44,6 @@ public class NotRejectedInLastYearsRule implements ApprovedRule {
 
     @Override
     public String getName() {
-        return "NotRejectedInLast2YearsRule";
+        return "NotRejectedInLastYearsRule";
     }
 }
