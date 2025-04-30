@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
 //import com.helloworld.renting.exceptions.attributes.ClientWithPendingRequestsException;
-import com.helloworld.renting.mapper.RequestMapper;
 
 
 import java.time.LocalDate;
@@ -23,20 +22,17 @@ public class ClientService {
     private final StructMapperToEntity toEntity;
     private final CountryMapper countryMapper;
     private final AddressMapper addressMapper;
-    private final RequestMapper requestMapper;
 
     public ClientService(ClientMapper clientMapper,
                          StructMapperToDto toDto,
                          StructMapperToEntity toEntity,
                          CountryMapper countryMapper,
-                         AddressMapper addressMapper,
-                         RequestMapper requestMapper) {
+                         AddressMapper addressMapper) {
         this.clientMapper = clientMapper;
         this.toDto = toDto;
         this.toEntity = toEntity;
         this.countryMapper = countryMapper;
         this.addressMapper = addressMapper;
-        this.requestMapper = requestMapper;
     }
 
 
@@ -158,7 +154,7 @@ public class ClientService {
     @Transactional
     public void deleteClientById(Long id) {
 
-        if (clientMapper.existsById(id)) {
+        if (!clientMapper.existsById(id)) {
             throw new ClientNotFoundException("Cliente no encontrado con ID " + id);
         }
 
