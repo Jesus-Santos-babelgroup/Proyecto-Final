@@ -24,8 +24,8 @@ public class EconomicDataController{
 
     @PostMapping("{clientId}/self_employed")
     @Operation(
-            summary = "Añadir información bancaria a un cliente",
-            description = "Añadir información bancaria de tipo autónomo de un cliente",
+            summary = "Añadir ingresos del cliente",
+            description = "Añadir ingresos autónomos de un cliente",
             tags = {"clients_economic_data"},
             responses = {
                     @ApiResponse(responseCode = "201", description = "Datos económicos creados correctamente"),
@@ -49,8 +49,8 @@ public class EconomicDataController{
 
     @PostMapping("{clientId}/employed")
     @Operation(
-            summary = "Añadir información bancaria a un cliente",
-            description = "Añadir información bancaria de tipo asalariado de un cliente",
+            summary = "Añadir ingresos de un cliente",
+            description = "Añadir ingresos de tipo asalariado de un cliente",
             tags = {"clients_economic_data"},
             responses = {
                     @ApiResponse(responseCode = "201", description = "Datos económicos creados correctamente"),
