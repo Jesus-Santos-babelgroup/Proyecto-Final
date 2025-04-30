@@ -1,9 +1,7 @@
-package com.helloworld.renting.service.request.approval.rules.approved;
+package com.helloworld.renting.service.request.approval.rules.approved.notGuarantorIfNewClient;
 
 import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.RentingRequestDto;
-import com.helloworld.renting.service.request.approval.rules.approved.notGuarantorIfNewClient.NotGuarantorIfNewClientMapper;
-import com.helloworld.renting.service.request.approval.rules.approved.notGuarantorIfNewClient.NotGuarantorIfNewClientRule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
