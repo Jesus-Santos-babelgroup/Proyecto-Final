@@ -1,5 +1,7 @@
 package com.helloworld.renting.controller;
 
+import com.helloworld.renting.exceptions.db.DBException;
+import com.helloworld.renting.exceptions.notfound.NotFoundException;
 import com.helloworld.renting.service.economicdata.EconomicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,7 +32,8 @@ public class EconomicDataController {
             description = "Deletes a client's economic data employed if it exists given the client's ID",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Economic data employed deleted"),
-                    @ApiResponse(responseCode = "404", description = "No economic data employed was found for this client")
+                    @ApiResponse(responseCode = "404", description = "No economic data employed was found for this client"),
+                    @ApiResponse(responseCode = "500", description = "Failed to connect to the database")
             }
     )
     public ResponseEntity<Void> deleteEconomicDataEmployedFromClient(@PathVariable Long id) {
@@ -38,8 +41,10 @@ public class EconomicDataController {
             logger.debug("Starting to delete economic data employed for client");
             economicDataService.deleteEconomicDataEmployedFromClient(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (DBException e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
@@ -49,7 +54,8 @@ public class EconomicDataController {
             description = "Deletes a client's economic data self employed if it exists given the client's ID",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Economic data self employed deleted"),
-                    @ApiResponse(responseCode = "404", description = "No economic data self employed was found for this client")
+                    @ApiResponse(responseCode = "404", description = "No economic data self employed was found for this client"),
+                    @ApiResponse(responseCode = "500", description = "Failed to connect to the database")
             }
     )
     public ResponseEntity<Void> deleteEconomicDataSelfEmployedFromClient(@PathVariable Long id) {
@@ -57,8 +63,10 @@ public class EconomicDataController {
             logger.debug("Starting to delete economic data self employed for client");
             economicDataService.deleteEconomicDataSelfEmployedFromClient(id);
             return ResponseEntity.noContent().build();
-        } catch (Exception e) {
+        } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
+        } catch (DBException e) {
+            return ResponseEntity.internalServerError().build();
         }
     }
 
