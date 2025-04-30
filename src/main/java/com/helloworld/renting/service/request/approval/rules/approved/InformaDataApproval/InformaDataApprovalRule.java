@@ -5,7 +5,6 @@ import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -19,14 +18,17 @@ public class InformaDataApprovalRule implements ApprovedRule {
 
     private InformaDataApprovalMapper mapper;
 
-    @Autowired
-    public InformaDataApprovalRule(InformaDataApprovalMapper informaMapper) {
-        this.mapper = informaMapper;
+    private final InformaDataApprovalProperties rulesProperties;
+
+    public InformaDataApprovalRule(InformaDataApprovalProperties rulesProperties, InformaDataApprovalMapper mapper) {
+        this.rulesProperties = rulesProperties;
+        this.mapper = mapper;
     }
 
     @Override
     public boolean conditionMet(RentingRequestDto requestDto) {
 
+        BigDecimal limit = rulesProperties.getLimit();
         long idClient = requestDto.getClient().getId();
         String cif = mapper.getCifByClientID(idClient);
 
@@ -49,9 +51,10 @@ public class InformaDataApprovalRule implements ApprovedRule {
                 .average()
                 .orElse(0);
 
+        BigDecimal averageProfitBD = BigDecimal.valueOf(averageProfit);
 
         logger.debug("Employer average profit before taxes ({}): {}", cif, averageProfit);
-        return averageProfit > 150000;
+        return averageProfitBD.compareTo(limit) > 0;
 
     }
 
