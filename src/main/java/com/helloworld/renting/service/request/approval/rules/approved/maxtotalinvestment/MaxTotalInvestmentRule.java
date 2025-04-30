@@ -1,7 +1,9 @@
 package com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment;
 
+import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
+import com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet.InvestmentExceedsNetMapper;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -11,14 +13,17 @@ public class MaxTotalInvestmentRule implements ApprovedRule {
 
     private final MaxTotalInvestmentProperties rulesProperties;
 
-    public MaxTotalInvestmentRule(MaxTotalInvestmentProperties rulesProperties) {
+    private final MaxTotalInvestmentMapper mapper;
+
+    public MaxTotalInvestmentRule(MaxTotalInvestmentProperties rulesProperties, MaxTotalInvestmentMapper mapper) {
         this.rulesProperties = rulesProperties;
+        this.mapper = mapper;
     }
 
     @Override
-    public boolean conditionMet(RulesContextDto rulesContextDto) {
+    public boolean conditionMet(RentingRequestDto rentingRequestDto) {
 
-        BigDecimal totalInvestment = rulesContextDto.getTotalInvestment();
+        BigDecimal totalInvestment = mapper.getTotalInvestment(rentingRequestDto.getId());
         BigDecimal limit = rulesProperties.getLimit();
 
         validateTotalInvestment(totalInvestment);
