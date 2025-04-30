@@ -43,8 +43,10 @@ class EconomicDataServiceTest {
         dto.setYearEntry(2024);
 
         EconomicDataSelfEmployed entity = new EconomicDataSelfEmployed();
-        when(selfEmployedEntityMapper.toEntity(dto)).thenReturn(entity);
+
+        when(clientMapper.existsById(1L)).thenReturn(true);
         when(selfEmployedMapper.existsSelfEmployedByClientIdAndYear(1L, 2024)).thenReturn(false);
+        when(selfEmployedEntityMapper.toEntity(dto)).thenReturn(entity);
         when(selfEmployedDtoMapper.toDto(entity)).thenReturn(dto);
 
         EconomicDataSelfEmployedDto result = service.addEconomicDataSelfEmployed(dto, 1L);
@@ -55,14 +57,30 @@ class EconomicDataServiceTest {
 
     @Test
     void shouldThrowWhenDuplicateSelfEmployedYear() {
-        when(selfEmployedMapper.existsSelfEmployedByClientIdAndYear(1L, 2024)).thenReturn(true);
         EconomicDataSelfEmployedDto dto = new EconomicDataSelfEmployedDto();
         dto.setYearEntry(2024);
+
+        when(clientMapper.existsById(1L)).thenReturn(true);
+        when(selfEmployedMapper.existsSelfEmployedByClientIdAndYear(1L, 2024)).thenReturn(true);
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
                 service.addEconomicDataSelfEmployed(dto, 1L));
 
         assertEquals(409, ex.getStatusCode().value());
+    }
+
+    @Test
+    void shouldThrowWhenClientDoesNotExist() {
+        EconomicDataSelfEmployedDto dto = new EconomicDataSelfEmployedDto();
+        dto.setYearEntry(2024);
+
+        when(clientMapper.existsById(1L)).thenReturn(false);
+
+        ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
+                service.addEconomicDataSelfEmployed(dto, 1L));
+
+        assertEquals(400, ex.getStatusCode().value());
+        assertEquals("El cliente no existe", ex.getReason());
     }
 
     @Test
@@ -75,8 +93,10 @@ class EconomicDataServiceTest {
         dto.setYearEntry(2024);
 
         EconomicDataEmployed entity = new EconomicDataEmployed();
-        when(employedEntityMapper.toEntity(dto)).thenReturn(entity);
+
+        when(clientMapper.existsById(1L)).thenReturn(true);
         when(employedMapper.existsEmployedByClientIdAndYear(1L, 2024)).thenReturn(false);
+        when(employedEntityMapper.toEntity(dto)).thenReturn(entity);
         when(employedDtoMapper.toDto(entity)).thenReturn(dto);
 
         EconomicDataEmployedDto result = service.addEconomicDataEmployed(dto, 1L);
@@ -92,6 +112,7 @@ class EconomicDataServiceTest {
         dto.setEndDate(LocalDate.now());
         dto.setYearEntry(LocalDate.now().getYear());
 
+        when(clientMapper.existsById(1L)).thenReturn(true);
         when(employedMapper.existsEmployedByClientIdAndYear(anyLong(), anyInt())).thenReturn(false);
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
@@ -108,6 +129,7 @@ class EconomicDataServiceTest {
         dto.setEndDate(LocalDate.of(2023, 12, 31));
         dto.setYearEntry(2024);
 
+        when(clientMapper.existsById(1L)).thenReturn(true);
         when(employedMapper.existsEmployedByClientIdAndYear(anyLong(), anyInt())).thenReturn(false);
 
         ResponseStatusException ex = assertThrows(ResponseStatusException.class, () ->
@@ -116,5 +138,4 @@ class EconomicDataServiceTest {
         assertEquals(400, ex.getStatusCode().value());
         assertTrue(ex.getReason().contains("El año de entrada debe coincidir"));
     }
-
 }

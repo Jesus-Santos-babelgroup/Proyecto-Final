@@ -45,6 +45,7 @@ public class EconomicDataService {
             EconomicDataSelfEmployedDto economicDataSelfEmployedDto,
             Long clientId) {
 
+        checkIfClientExist(clientId);
         economicDataSelfEmployedDto.setClientId(clientId);
 
         checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
@@ -62,6 +63,7 @@ public class EconomicDataService {
             EconomicDataEmployedDto economicDataEmployedDto,
             Long clientId) {
 
+        checkIfClientExist(clientId);
         economicDataEmployedDto.setClientId(clientId);
 
         checkDuplicateYearEmployed(clientId, economicDataEmployedDto.getYearEntry());
@@ -107,7 +109,10 @@ public class EconomicDataService {
         }
     }
 
-
-    //TODO: Validar datos: , valores negativos
+    private void checkIfClientExist(Long clientId){
+        if(!clientMapper.existsById(clientId)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El cliente no existe");
+        }
+    }
 
 }
