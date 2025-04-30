@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @Component
-public class MinimumSeniorityRule extends ApprovedRule {
+public class MinimumSeniorityRule implements ApprovedRule {
 
     private final MinimumSeniorityProperties seniorityRuleProperties;
 
