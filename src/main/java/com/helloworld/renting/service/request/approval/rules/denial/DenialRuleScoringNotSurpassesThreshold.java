@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class DenialRuleScoringNotSurpassesThreshold extends DenialRule {
+public class DenialRuleScoringNotSurpassesThreshold implements DenialRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
-public class NotInInternalDebtsRule extends DenialRule {
+public class NotInInternalDebtsRule implements DenialRule {
 
     @Override
     public boolean conditionMet(RulesContextDto rulesContextDto) {

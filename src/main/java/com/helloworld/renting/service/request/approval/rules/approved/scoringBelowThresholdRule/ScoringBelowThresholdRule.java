@@ -5,9 +5,10 @@ import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRu
 import org.springframework.stereotype.Component;
 
 @Component
-public class ScoringBelowThresholdRule extends ApprovedRule {
+public class ScoringBelowThresholdRule implements ApprovedRule {
 
     private final ScoringBelowThresholdProperties scoringBelowThresholdProperties;
+
     public ScoringBelowThresholdRule(ScoringBelowThresholdProperties scoringBelowThresholdProperties) {
         this.scoringBelowThresholdProperties = scoringBelowThresholdProperties;
     }
