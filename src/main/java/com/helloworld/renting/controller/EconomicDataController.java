@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/clients")
+@RequestMapping("/api/economic-data")
 @Tag(name = "Economic data", description = "Operations with clients economic data")
 public class EconomicDataController {
 
@@ -24,7 +24,7 @@ public class EconomicDataController {
         this.economicDataService = economicDataService;
     }
 
-    @DeleteMapping("/{id}/economic-data/employed")
+    @DeleteMapping("/employed/clients/{id}")
     @Operation(
             summary = "Deletes a client's economic data employed",
             description = "Deletes a client's economic data employed if it exists given the client's ID",
@@ -43,7 +43,7 @@ public class EconomicDataController {
         }
     }
 
-    @DeleteMapping("/{id}/economic-data/employed")
+    @DeleteMapping("/self-employed/clients/{id}")
     @Operation(
             summary = "Deletes a client's economic data self employed",
             description = "Deletes a client's economic data self employed if it exists given the client's ID",
