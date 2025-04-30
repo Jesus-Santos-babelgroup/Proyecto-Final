@@ -30,7 +30,8 @@ public class EconomicDataController{
             responses = {
                     @ApiResponse(responseCode = "201", description = "Datos económicos creados correctamente"),
                     @ApiResponse(responseCode = "400", description = "Solicitud incorrecta: cliente no existe o datos inválidos"),
-                    @ApiResponse(responseCode = "409", description = "Ya existen datos para ese cliente en el año especificado")
+                    @ApiResponse(responseCode = "409", description = "Ya existen datos para ese cliente en el año especificado"),
+                    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
             }
 
     )
@@ -54,7 +55,8 @@ public class EconomicDataController{
             responses = {
                     @ApiResponse(responseCode = "201", description = "Datos económicos creados correctamente"),
                     @ApiResponse(responseCode = "400", description = "Solicitud incorrecta: fechas inválidas o cliente no existe"),
-                    @ApiResponse(responseCode = "409", description = "Ya existen datos para ese cliente en el año especificado")
+                    @ApiResponse(responseCode = "409", description = "Ya existen datos para ese cliente en el año especificado"),
+                    @ApiResponse(responseCode = "500", description = "Error interno del servidor")
             }
     )
     public ResponseEntity<EconomicDataEmployedDto> addEconomicalDataEmployee(
