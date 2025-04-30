@@ -27,30 +27,59 @@ class EconomicDataControllerTest {
     }
 
     @Test
-    void should_returnNoContent_when_economicDataIsDeleted() {
+    void should_returnNoContent_when_economicDataEmployedIsDeleted() {
         // Given
         Long id = 1L;
         ResponseEntity<Void> expectedResponse = ResponseEntity.noContent().build();
-        doNothing().when(economicDataService).deleteEconomicDataFromClient(id);
+        doNothing().when(economicDataService).deleteEconomicDataEmployedFromClient(id);
 
         // When
-        ResponseEntity<Void> response = sut.deleteEconomicDataFromClient(id);
+        ResponseEntity<Void> response = sut.deleteEconomicDataEmployedFromClient(id);
 
         // Then
         assertEquals(expectedResponse, response);
     }
 
     @Test
-    void should_returnNotFound_when_serviceThrowsException() {
+    void should_returnNotFound_when_deleteEconomicDataEmployedThrowsException() {
         // Given
         Long id = 1L;
         ResponseEntity<Void> expectedResponse = ResponseEntity.notFound().build();
-        doThrow(RentingException.class).when(economicDataService).deleteEconomicDataFromClient(id);
+        doThrow(RentingException.class).when(economicDataService).deleteEconomicDataEmployedFromClient(id);
 
         // When
-        ResponseEntity<Void> response = sut.deleteEconomicDataFromClient(id);
+        ResponseEntity<Void> response = sut.deleteEconomicDataEmployedFromClient(id);
 
         // Then
         assertEquals(expectedResponse, response);
     }
+
+    @Test
+    void should_returnNoContent_when_economicDataSelfEmployedIsDeleted() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.noContent().build();
+        doNothing().when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataSelfEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnNotFound_when_deleteEconomicDataSelfEmployedThrowsException() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.notFound().build();
+        doThrow(RentingException.class).when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataSelfEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
 }

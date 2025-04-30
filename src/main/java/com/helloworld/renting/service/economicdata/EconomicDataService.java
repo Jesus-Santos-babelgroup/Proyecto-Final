@@ -17,29 +17,45 @@ public class EconomicDataService {
         this.economicDataMapper = economicDataMapper;
     }
 
-    public void deleteEconomicDataFromClient(Long id) {
-        if (noEconomicDataExists(id)) {
-            logger.warn("No economic data found for client");
-            throw new EconomicDataNotFoundException("No economic data found for client");
+    public void deleteEconomicDataEmployedFromClient(Long id) {
+        if (noEconomicDataEmployedExists(id)) {
+            throw new EconomicDataNotFoundException("No economic data employed found for client");
         }
 
         try {
             logger.debug("Deleting economic data for client");
             economicDataMapper.deleteEconomicDataEmployedByClientId(id);
-            economicDataMapper.deleteEconomicDataSelfEmployedByClientId(id);
         } catch (Exception e) {
-            logger.error("Error deleting economic data from client");
-            throw new DBException("Error deleting economic data from client");
+            throw new DBException("Error deleting economic data employed from client");
         }
     }
 
-    private boolean noEconomicDataExists(Long id) {
+    private boolean noEconomicDataEmployedExists(Long id) {
         try {
-            return economicDataMapper.getEconomicDataEmployedByClientId(id).isEmpty() &&
-                    economicDataMapper.getEconomicDataSelfEmployedByClientId(id).isEmpty();
+            return economicDataMapper.getEconomicDataEmployedByClientId(id).isEmpty();
         } catch (Exception e) {
-            logger.error("Error checking if economic data exists for client");
-            throw new DBException("Error checking if economic data exists for client");
+            throw new DBException("Error checking if economic data employed exists for client");
+        }
+    }
+
+    public void deleteEconomicDataSelfEmployedFromClient(Long id) {
+        if (noEconomicDataSelfEmployedExists(id)) {
+            throw new EconomicDataNotFoundException("No economic data self employed found for client");
+        }
+
+        try {
+            logger.debug("Deleting economic data self employed for client");
+            economicDataMapper.deleteEconomicDataSelfEmployedByClientId(id);
+        } catch (Exception e) {
+            throw new DBException("Error deleting economic data self employed from client");
+        }
+    }
+
+    private boolean noEconomicDataSelfEmployedExists(Long id) {
+        try {
+            return economicDataMapper.getEconomicDataSelfEmployedByClientId(id).isEmpty();
+        } catch (Exception e) {
+            throw new DBException("Error checking if economic data self employed exists for client");
         }
     }
 

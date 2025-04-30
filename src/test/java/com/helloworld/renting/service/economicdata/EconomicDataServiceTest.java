@@ -33,34 +33,58 @@ class EconomicDataServiceTest {
     }
 
     @Test
-    void should_delete_when_economicDataExists() {
+    void should_delete_when_economicDataEmployedExists() {
         // Given
         Long id = 1L;
         lenient().doNothing().when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
         lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataSelfEmployed())).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
 
         // When
-        sut.deleteEconomicDataFromClient(id);
+        sut.deleteEconomicDataEmployedFromClient(id);
 
         // Then
         verify(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
+    }
+
+    @Test
+    void should_throwException_when_noEconomicDataEmployedExists() {
+        // Given
+        String message = "No economic data employed found for client";
+        Long id = 1L;
+        lenient().doNothing().when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
+        lenient().doReturn(List.of()).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
+
+        // When
+        EconomicDataNotFoundException exception = assertThrows(EconomicDataNotFoundException.class, () -> sut.deleteEconomicDataEmployedFromClient(id));
+
+        // Then
+        assertEquals(message, exception.getMessage());
+    }
+
+    @Test
+    void should_delete_when_economicDataSelfEmployedExists() {
+        // Given
+        Long id = 1L;
+        lenient().doNothing().when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
+        lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
+
+        // When
+        sut.deleteEconomicDataSelfEmployedFromClient(id);
+
+        // Then
         verify(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
     }
 
     @Test
-    void should_throwException_when_noEconomicDataExists() {
+    void should_throwException_when_noEconomicDataSelfEmployedExists() {
         // Given
-        String message = "No economic data found for client";
+        String message = "No economic data self employed found for client";
         Long id = 1L;
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
         lenient().doNothing().when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doReturn(List.of()).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
         lenient().doReturn(List.of()).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
 
         // When
-        EconomicDataNotFoundException exception = assertThrows(EconomicDataNotFoundException.class, () -> sut.deleteEconomicDataFromClient(id));
+        EconomicDataNotFoundException exception = assertThrows(EconomicDataNotFoundException.class, () -> sut.deleteEconomicDataSelfEmployedFromClient(id));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -69,15 +93,13 @@ class EconomicDataServiceTest {
     @Test
     void should_throwException_when_deleteEconomicDataEmployedFails() {
         // Given
-        String message = "Error deleting economic data from client";
+        String message = "Error deleting economic data employed from client";
         Long id = 1L;
         lenient().doThrow(RentingException.class).when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
         lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataSelfEmployed())).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
 
         // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataFromClient(id));
+        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataEmployedFromClient(id));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -86,32 +108,13 @@ class EconomicDataServiceTest {
     @Test
     void should_throwException_when_deleteEconomicDataSelfEmployedFails() {
         // Given
-        String message = "Error deleting economic data from client";
+        String message = "Error deleting economic data self employed from client";
         Long id = 1L;
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
         lenient().doThrow(RentingException.class).when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
         lenient().doReturn(List.of(new EconomicDataSelfEmployed())).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
 
         // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataFromClient(id));
-
-        // Then
-        assertEquals(message, exception.getMessage());
-    }
-
-    @Test
-    void should_throwException_when_deleteEconomicDataFails() {
-        // Given
-        String message = "Error deleting economic data from client";
-        Long id = 1L;
-        lenient().doThrow(RentingException.class).when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doThrow(RentingException.class).when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataSelfEmployed())).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
-
-        // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataFromClient(id));
+        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataSelfEmployedFromClient(id));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -120,15 +123,13 @@ class EconomicDataServiceTest {
     @Test
     void should_throwException_when_getEconomicDataEmployedFails() {
         // Given
-        String message = "Error checking if economic data exists for client";
+        String message = "Error checking if economic data employed exists for client";
         Long id = 1L;
         lenient().doNothing().when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
         lenient().doThrow(DBException.class).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataSelfEmployed())).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
 
         // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataFromClient(id));
+        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataEmployedFromClient(id));
 
         // Then
         assertEquals(message, exception.getMessage());
@@ -137,32 +138,13 @@ class EconomicDataServiceTest {
     @Test
     void should_throwException_when_getEconomicDataSelfEmployedFails() {
         // Given
-        String message = "Error checking if economic data exists for client";
+        String message = "Error checking if economic data self employed exists for client";
         Long id = 1L;
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
         lenient().doNothing().when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doReturn(List.of()).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
         lenient().doThrow(DBException.class).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
 
         // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataFromClient(id));
-
-        // Then
-        assertEquals(message, exception.getMessage());
-    }
-
-    @Test
-    void should_throwException_when_getEconomicDataFails() {
-        // Given
-        String message = "Error checking if economic data exists for client";
-        Long id = 1L;
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doNothing().when(economicDataMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doThrow(DBException.class).when(economicDataMapper).getEconomicDataEmployedByClientId(id);
-        lenient().doThrow(DBException.class).when(economicDataMapper).getEconomicDataSelfEmployedByClientId(id);
-
-        // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataFromClient(id));
+        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataSelfEmployedFromClient(id));
 
         // Then
         assertEquals(message, exception.getMessage());

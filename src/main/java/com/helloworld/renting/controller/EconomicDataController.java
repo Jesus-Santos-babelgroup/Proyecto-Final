@@ -26,17 +26,36 @@ public class EconomicDataController {
 
     @DeleteMapping("/clients/{id}")
     @Operation(
-            summary = "Deletes a client's economic data",
-            description = "Deletes a client's economic data if it exists given the client's ID",
+            summary = "Deletes a client's economic data employed",
+            description = "Deletes a client's economic data employed if it exists given the client's ID",
             responses = {
-                    @ApiResponse(responseCode = "204", description = "Economic data deleted"),
-                    @ApiResponse(responseCode = "404", description = "No economic data was found for this client")
+                    @ApiResponse(responseCode = "204", description = "Economic data employed deleted"),
+                    @ApiResponse(responseCode = "404", description = "No economic data employed was found for this client")
             }
     )
-    public ResponseEntity<Void> deleteEconomicDataFromClient(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteEconomicDataEmployedFromClient(@PathVariable Long id) {
         try {
-            logger.debug("Starting to delete economic data for client");
-            economicDataService.deleteEconomicDataFromClient(id);
+            logger.debug("Starting to delete economic data employed for client");
+            economicDataService.deleteEconomicDataEmployedFromClient(id);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @DeleteMapping("/clients/{id}")
+    @Operation(
+            summary = "Deletes a client's economic data self employed",
+            description = "Deletes a client's economic data self employed if it exists given the client's ID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "Economic data self employed deleted"),
+                    @ApiResponse(responseCode = "404", description = "No economic data self employed was found for this client")
+            }
+    )
+    public ResponseEntity<Void> deleteEconomicDataSelfEmployedFromClient(@PathVariable Long id) {
+        try {
+            logger.debug("Starting to delete economic data self employed for client");
+            economicDataService.deleteEconomicDataSelfEmployedFromClient(id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
