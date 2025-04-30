@@ -1,5 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved.scoringBelowThresholdRule;
 
+import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +14,11 @@ public class ScoringBelowThresholdRule implements ApprovedRule {
     }
 
     @Override
-    public boolean conditionMet(RulesContextDto rulesContextDto) {
-        Integer scoring = rulesContextDto.getClientScoring();
+    public boolean conditionMet(RentingRequestDto rentingRequestDto) {
+        Integer scoring = rentingRequestDto.getClient().getScoring();
         int threshold = scoringBelowThresholdProperties.getScoringThreshold();
-
         if (scoring == null) {
-            return false; // o lo que consideres si es null
+            return false;
         }
 
         boolean isScoringInRange = scoringBelowThresholdProperties.getMinScoring() <= scoring
