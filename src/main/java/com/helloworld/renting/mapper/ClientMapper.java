@@ -23,9 +23,9 @@ public interface ClientMapper {
     @Select("SELECT COUNT(*) FROM Client WHERE ID_client = #{id}")
     boolean existsById(Long id);
 
-    @Delete("DELETE FROM CLIENT WHERE ID_client=#{id}")
+    @Delete("DELETE FROM Client WHERE ID_client=#{id}")
     boolean deleteById(Long id);
 
-    @Delete("DELETE FROM Client WHERE NIF = #{nif}")
-    boolean deleteByNif(String nif);
+    //@Delete("DELETE FROM Client WHERE NIF = #{nif}")
+    //boolean deleteByNif(String nif);
 }
