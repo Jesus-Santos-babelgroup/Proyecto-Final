@@ -1,8 +1,8 @@
-package com.helloworld.renting.service.request.approval.rules.denial;
+package com.helloworld.renting.service.request.approval.rules.denial.scoringnotsurpassesthreshold;
 
 import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
-import org.springframework.beans.factory.annotation.Value;
+import com.helloworld.renting.service.request.approval.rules.denial.DenialRule;
 import org.springframework.stereotype.Component;
 
 import java.util.Objects;
@@ -10,11 +10,16 @@ import java.util.Objects;
 @Component
 public class ScoringNotSurpassesThreshold implements DenialRule {
 
-    @Value("${rules.denial-rule.scoring-threshold}")
-    private int threshold;
+
+    private ScoringNotSurpassesThresholdProperties properties;
+
+    public ScoringNotSurpassesThreshold(ScoringNotSurpassesThresholdProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public boolean conditionMet(RentingRequestDto requestDto) {
+        Integer threshold = properties.getScoringThreshold();
         validate(requestDto);
         return requestDto.getClient().getScoring() < threshold;
     }
@@ -25,7 +30,7 @@ public class ScoringNotSurpassesThreshold implements DenialRule {
     }
 
     private void validate(RentingRequestDto requestDto) {
-        Objects.requireNonNull(requestDto, "RulesContextDto no puede ser null");
+        Objects.requireNonNull(requestDto, "RentingRequestDto no puede ser null");
 
         if (requestDto.getClient().getScoring() == null) {
             throw new InvalidRentingRequestDtoException("Scoring no puede ser null.");
