@@ -26,6 +26,7 @@ public class InformaDataApprovalRuleTest {
     @BeforeEach
     public void setup() {
         mapper = mock(InformaDataApprovalMapper.class);
+        properties.setLimit(BigDecimal.valueOf(150000));
         rule = new InformaDataApprovalRule(properties, mapper);
         rentingRequestDto = mock(RentingRequestDto.class);
     }
