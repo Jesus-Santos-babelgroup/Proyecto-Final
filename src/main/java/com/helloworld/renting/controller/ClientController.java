@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/clients")
@@ -51,7 +50,6 @@ public class ClientController {
                                             name = "clienteCreado",
                                             summary = "Cliente creado correctamente",
                                             value = "{\n" +
-                                                    "  \"id\": 1,\n" +
                                                     "  \"name\": \"Juan\",\n" +
                                                     "  \"firstSurname\": \"García\",\n" +
                                                     "  \"secondSurname\": \"López\",\n" +
@@ -136,6 +134,7 @@ public class ClientController {
         ClientDto createdClient = clientService.createClient(clientDto);
         return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
     }
+
     @PutMapping("/{id}")
     @Operation(
             summary = "Actualizar un cliente",
@@ -147,20 +146,11 @@ public class ClientController {
             }
     )
 
-    public ResponseEntity<?> updateClient(@PathVariable Long id, @Valid @RequestBody ClientDto clientDto) {
+    public ResponseEntity<ClientDto> updateClient(@PathVariable Long id, @Valid @RequestBody ClientDto clientDto) {
         clientDto.setId(id);
         ClientDto updated = clientService.updateClient(clientDto);
-        if (updated != null) {
-            return ResponseEntity.ok(
-                    Map.of(
-                            "message", "Cliente actualizado correctamente",
-                            "client", updated
-                    )
-            );
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of("message", "Cliente no encontrado"));
-        }
+
+        return new ResponseEntity<>(updated, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")

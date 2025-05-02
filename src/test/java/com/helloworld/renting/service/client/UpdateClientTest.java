@@ -1,16 +1,18 @@
 package com.helloworld.renting.service.client;
 
+import com.helloworld.renting.dto.AddressDto;
 import com.helloworld.renting.dto.ClientDto;
+import com.helloworld.renting.dto.CountryDto;
 import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.exceptions.attributes.AttributeException;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DBException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
 import com.helloworld.renting.mapper.*;
+import com.helloworld.renting.service.address.AddressService;
+import com.helloworld.renting.service.country.CountryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,8 +43,11 @@ class UpdateClientTest {
     @InjectMocks
     private ClientService clientService;
 
-    @Captor
-    private ArgumentCaptor<Client> clientCaptor;
+    @Mock
+    private AddressService addressService;
+
+    @Mock
+    private CountryService countryService;
 
     @Test
     void updateClient_BasicFunctionality() {
@@ -57,23 +62,33 @@ class UpdateClientTest {
         inputDto.setNif("12345678A");
         inputDto.setPhone("+34123456789");
         inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-        inputDto.setScoring(750);
-        inputDto.setCountryId("1");
-        inputDto.setAddressId(1L);
-        inputDto.setNotificationAddressId(1L);
+        inputDto.setScoring(7);
+
+        AddressDto address = new AddressDto();
+        address.setId(1L);
+        address.setCity("Madrid");
+        address.setStreet("Calle Mayor, 45");
+        address.setZipCode("28013");
+
+        CountryDto country = new CountryDto();
+        country.setIsoA2("AL");
+
+        inputDto.setAddress(address);
+        inputDto.setCountry(country);
+        inputDto.setNotificationAddress(address);
 
         Client client = new Client();
         ClientDto outputDto = new ClientDto();
         outputDto.setId(1L);
 
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
-        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(false);
-        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(false);
-        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
-        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(true);
-        when(toEntity.toEntity(inputDto)).thenReturn(client);
-        when(toDto.toDto(client)).thenReturn(outputDto);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(1);
+        when(countryMapper.existsByISOA2(country.getIsoA2())).thenReturn(true);
+        when(addressMapper.existsByCity(address.getCity())).thenReturn(true);
+        when(toEntity.clientToEntity(any(ClientDto.class))).thenReturn(client);
+        when(toDto.clientToDto(client)).thenReturn(outputDto);
 
         // When
         ClientDto result = clientService.updateClient(inputDto);
@@ -82,16 +97,13 @@ class UpdateClientTest {
         assertNotNull(result);
         assertEquals(1L, result.getId());
 
-        // Verificamos que los métodos se llamaron con los parámetros correctos
         verify(clientMapper).existsByEmail(inputDto.getEmail());
         verify(clientMapper).existsById(inputDto.getId());
         verify(clientMapper).existsByNif(inputDto.getNif());
         verify(clientMapper).existsByPhone(inputDto.getPhone());
-        verify(toEntity).toEntity(inputDto);
+        verify(toEntity).clientToEntity(inputDto);
         verify(clientMapper).updateClient(client);
-        verify(toDto).toDto(client);
-        verify(countryMapper).existsByCountryId(Long.valueOf(inputDto.getCountryId()));
-        verify(addressMapper).existsByAddressId(inputDto.getAddressId());
+        verify(toDto).clientToDto(client);
     }
 
     @Test
@@ -241,7 +253,7 @@ class UpdateClientTest {
     }
 
     @Test
-    void updateClient_NotInBBDDIDCountry_ShouldThrowException() {
+    void updateClient_BadFormatNif_ShouldThrowException() {
 
         // Given
         ClientDto inputDto = new ClientDto();
@@ -251,76 +263,16 @@ class UpdateClientTest {
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
-        inputDto.setNif("12345678A");
-        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-        inputDto.setCountryId("0");
+        inputDto.setNif("1");
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(false);
 
 
         // When & Then
-        DBException exception = assertThrows(DBException.class,
+        AttributeException exception = assertThrows(AttributeException.class,
                 () -> clientService.updateClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
-        assertTrue(exception.getMessage().contains("El país con ID " + inputDto.getCountryId() + " no existe en la base de datos"));
-        verify(clientMapper, never()).updateClient(any());
-    }
-
-    @Test
-    void updateClient_NullIDAddress_ShouldThrowException() {
-
-        // Given
-        ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        inputDto.setName("Test");
-        inputDto.setFirstSurname("SurnameTest1");
-        inputDto.setSecondSurname("SurnameTest2");
-        inputDto.setPhone("+34123456789");
-        inputDto.setEmail("test@example.com");
-        inputDto.setNif("12345678A");
-        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-        inputDto.setCountryId("68");
-
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
-
-
-        // When & Then
-        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
-                () -> clientService.updateClient(inputDto));
-
-        verifyNoInteractions(toEntity, toDto);
-        assertTrue(exception.getMessage().contains("El ID de la dirección no puede ser nulo"));
-        verify(clientMapper, never()).updateClient(any());
-    }
-
-    @Test
-    void updateClient_NotInBBDDIDAddress_ShouldThrowException() {
-
-        // Given
-        ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        inputDto.setName("Test");
-        inputDto.setFirstSurname("SurnameTest1");
-        inputDto.setSecondSurname("SurnameTest2");
-        inputDto.setPhone("+34123456789");
-        inputDto.setEmail("test@example.com");
-        inputDto.setNif("12345678A");
-        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-        inputDto.setCountryId("68");
-        inputDto.setAddressId(1L);
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
-        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(false);
-
-
-        // When & Then
-        DBException exception = assertThrows(DBException.class,
-                () -> clientService.updateClient(inputDto));
-
-        verifyNoInteractions(toEntity, toDto);
-        assertTrue(exception.getMessage().contains("La dirección con ID " + inputDto.getAddressId() + " no existe en la base de datos"));
+        assertTrue(exception.getMessage().contains("El NIF no tiene el formato correcto"));
         verify(clientMapper, never()).updateClient(any());
     }
 
@@ -337,13 +289,9 @@ class UpdateClientTest {
         inputDto.setEmail("test@example.com");
         inputDto.setNif("12345678A");
         inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-        inputDto.setAddressId(1L);
-        inputDto.setCountryId("68");
 
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
-        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(true);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(2);
 
         // When & Then
         DuplicateModel exception = assertThrows(DuplicateModel.class,
@@ -367,14 +315,11 @@ class UpdateClientTest {
         inputDto.setEmail("test@example.com");
         inputDto.setNif("12345678A");
         inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-        inputDto.setAddressId(1L);
-        inputDto.setCountryId("68");
+
 
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
-        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
-        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(true);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(2);
 
         // When & Then
         DuplicateModel exception = assertThrows(DuplicateModel.class,
@@ -399,15 +344,11 @@ class UpdateClientTest {
         inputDto.setNif("12345678A");
         inputDto.setPhone("+34123456789");
         inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-        inputDto.setAddressId(1L);
-        inputDto.setCountryId("68");
 
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
-        when(addressMapper.existsByAddressId(inputDto.getAddressId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
-        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(false);
-        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(true);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(2);
 
 
         // When & Then
@@ -418,6 +359,154 @@ class UpdateClientTest {
         assertTrue(exception.getMessage().contains("Ya existe un cliente con este teléfono: " + inputDto.getPhone()));
         verify(clientMapper, never()).updateClient(any());
     }
+
+    @Test
+    void updateClient_NotInBBDDCountry_ShouldThrowException() {
+
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setId(1L);
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+
+        CountryDto country = new CountryDto();
+        country.setIsoA2("si");
+
+
+        inputDto.setCountry(country);
+
+        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(1);
+        //when(countryMapper.existsByISOA2(country.getIsoA2())).thenReturn(false);
+
+
+        // When & Then
+        DBException exception = assertThrows(DBException.class,
+                () -> clientService.updateClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("El país añadido no existe en la base de datos"));
+        verify(clientMapper, never()).updateClient(any());
+    }
+
+    @Test
+    void updateClient_NullCountry_ShouldThrowException() {
+
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setId(1L);
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+
+        CountryDto country = new CountryDto();
+
+        inputDto.setCountry(country);
+
+        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(1);
+
+
+        // When & Then
+        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
+                () -> clientService.updateClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("El ID del país no puede ser nulo"));
+        verify(clientMapper, never()).updateClient(any());
+    }
+
+    @Test
+    void updateClient_NullAddress_ShouldThrowException() {
+
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setId(1L);
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+
+        AddressDto address = new AddressDto();
+
+        CountryDto country = new CountryDto();
+        country.setIsoA2("AL");
+
+        inputDto.setAddress(address);
+        inputDto.setCountry(country);
+        inputDto.setNotificationAddress(address);
+
+        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(1);
+        when(countryMapper.existsByISOA2(country.getIsoA2())).thenReturn(true);
+
+
+        // When & Then
+        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
+                () -> clientService.updateClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("La dirección no puede ser nulo"));
+        verify(clientMapper, never()).updateClient(any());
+    }
+
+    @Test
+    void updateClient_NotInBBDDAddress_ShouldThrowException() {
+
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setId(1L);
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        AddressDto address = new AddressDto();
+        address.setCity("Córdoba");
+
+        CountryDto country = new CountryDto();
+        country.setIsoA2("AL");
+
+        inputDto.setAddress(address);
+        inputDto.setCountry(country);
+        inputDto.setNotificationAddress(address);
+
+        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(1);
+        when(countryMapper.existsByISOA2(country.getIsoA2())).thenReturn(true);
+
+
+        // When & Then
+        DBException exception = assertThrows(DBException.class,
+                () -> clientService.updateClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("La dirección añadida no existe en la base de datos"));
+        verify(clientMapper, never()).updateClient(any());
+    }
+
 
 }
 

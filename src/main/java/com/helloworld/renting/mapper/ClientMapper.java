@@ -27,15 +27,18 @@ public interface ClientMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "ID_client")
     int insert(Client client);
 
-    @Select("SELECT COUNT(*) FROM Client WHERE NIF = #{nif}")
-    boolean existsByNif(String nif);
+    @Select("SELECT COUNT(ID_client) FROM Client WHERE NIF = #{nif}")
+    int existsByNif(String nif);
 
-    @Select("SELECT COUNT(*) FROM Client WHERE Email = #{email}")
-    boolean existsByEmail(String email);
+    @Select("SELECT COUNT(ID_client) FROM Client WHERE Email = #{email}")
+    int existsByEmail(String email);
 
-    @Select("SELECT COUNT(*) FROM Client WHERE ID_client = #{id}")
+    @Select("SELECT COUNT(ID_client) FROM Client WHERE ID_client = #{id}")
     boolean existsById(Long id);
 
-    @Select("SELECT COUNT(*) FROM Client WHERE Phone = #{phone}")
-    boolean existsByPhone(String phone);
+    @Select("SELECT COUNT(ID_client) FROM Client WHERE Phone = #{phone}")
+    int existsByPhone(String phone);
+
+    @Select("SELECT Scoring FROM Client WHERE ID_client = #{id}")
+    int recoverScoring(Long id);
 }

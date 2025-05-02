@@ -11,5 +11,5 @@ public class CountryDto {
     private String id;
 
     @NotBlank
-    private String name;
+    private String isoA2;
 }
