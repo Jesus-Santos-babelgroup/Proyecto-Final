@@ -1,8 +1,7 @@
 package com.helloworld.renting.service.request.approval;
 
-import com.helloworld.renting.dto.RulesContextDto;
+import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.entities.PreResultType;
-import com.helloworld.renting.mapper.RulesMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,47 +15,44 @@ import static org.mockito.Mockito.*;
 class ApprovalServiceTest {
 
     @Mock
-    private RulesMapper rulesMapper;
-    @Mock
     private RuleEvaluator ruleEvaluator;
+
     @InjectMocks
     private ApprovalService approvalService;
 
-    private final Long REQUEST_ID = 42L;
-    private RulesContextDto dummyCtx;
+    private RentingRequestDto dummyRequest;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        dummyCtx = new RulesContextDto();
+        dummyRequest = new RentingRequestDto();
     }
 
     @Test
-    void evaluate_callsMapperAndEvaluator_returnsEvaluatorResult() {
+    void evaluate_delegatesToRuleEvaluator_andReturnsResult() {
         // Arrange
-        when(rulesMapper.getRulesContext(REQUEST_ID)).thenReturn(dummyCtx);
-        when(ruleEvaluator.evaluate(dummyCtx)).thenReturn(PreResultType.PREAPPROVED);
+        when(ruleEvaluator.evaluate(dummyRequest))
+                .thenReturn(PreResultType.PREAPPROVED);
 
         // Act
-        var result = approvalService.evaluate(REQUEST_ID);
+        PreResultType result = approvalService.evaluate(dummyRequest);
 
         // Assert
         assertEquals(PreResultType.PREAPPROVED, result);
-        verify(rulesMapper, times(1)).getRulesContext(REQUEST_ID);
-        verify(ruleEvaluator, times(1)).evaluate(dummyCtx);
+        verify(ruleEvaluator, times(1)).evaluate(dummyRequest);
     }
 
     @Test
-    void evaluate_propagatesNullPointerException_whenMapperReturnsNull() {
+    void evaluate_propagatesException_fromRuleEvaluator() {
         // Arrange
-        when(rulesMapper.getRulesContext(REQUEST_ID)).thenReturn(null);
-        when(ruleEvaluator.evaluate(null)).thenThrow(new NullPointerException("ctx null"));
+        when(ruleEvaluator.evaluate(null))
+                .thenThrow(new NullPointerException("dto null"));
 
         // Act & Assert
-        var ex = assertThrows(
+        NullPointerException ex = assertThrows(
                 NullPointerException.class,
-                () -> approvalService.evaluate(REQUEST_ID)
+                () -> approvalService.evaluate(null)
         );
-        assertEquals("ctx null", ex.getMessage());
+        assertEquals("dto null", ex.getMessage());
     }
 }
