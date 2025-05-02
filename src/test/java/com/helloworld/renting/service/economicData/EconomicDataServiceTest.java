@@ -51,7 +51,7 @@ class EconomicDataServiceTest {
 
     @BeforeEach
     void setup() {
-        sut = new EconomicDataService(economicDataEmployedMapper, economicDataSelfEmployedMapper, clientMapper, structMapperToDto, structMapperToEntity);
+        sut = new EconomicDataService(economicDataSelfEmployedMapper, economicDataEmployedMapper, clientMapper, structMapperToDto, structMapperToEntity);
         MockitoAnnotations.openMocks(this);
     }
 

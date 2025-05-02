@@ -55,11 +55,11 @@ public class EconomicDataService {
         checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
 
         EconomicDataSelfEmployed economicDataSelfEmployed =
-                structMapperToEntity.economicDataSelfEmployedToEntity(economicDataSelfEmployedDto);
+                structMapperToEntity.economicalDataSelfEmployedToEntity(economicDataSelfEmployedDto);
 
         economicDataSelfEmployedMapper.insert(economicDataSelfEmployed);
 
-        return structMapperToDto.economicDataSelfEmployedToDto(economicDataSelfEmployed);
+        return structMapperToDto.economicalDataSelfEmployedToDto(economicDataSelfEmployed);
     }
 
     @Transactional
@@ -80,11 +80,11 @@ public class EconomicDataService {
         );
 
         EconomicDataEmployed economicDataEmployed =
-                structMapperToEntity.economicDataEmployedToEntity(economicDataEmployedDto);
+                structMapperToEntity.economicalDataEmployedToEntity(economicDataEmployedDto);
 
         economicDataEmployedMapper.insert(economicDataEmployed);
 
-        return structMapperToDto.economicDataEmployedToDto(economicDataEmployed);
+        return structMapperToDto.economicalDataEmployedToDto(economicDataEmployed);
     }
 
 

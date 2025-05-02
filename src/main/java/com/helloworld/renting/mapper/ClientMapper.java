@@ -11,6 +11,12 @@ public interface ClientMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "ID_client")
     int insert(Client client);
 
+    @Select("SELECT id_client, name, first_surname, second_surname, email, nif, phone, " +
+            "date_of_birth, scoring, id_country, id_address, id_notification_address " +
+            "FROM Client " +
+            "WHERE id = #{id}")
+    Client findById(Long id);
+
     @Select("SELECT COUNT(*) FROM Client WHERE NIF = #{nif}")
     boolean existsByNif(String nif);
 
