@@ -2,6 +2,7 @@
 package com.helloworld.renting.service.request.approval.rules.denial;
 
 
+import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.exceptions.attributes.AttributeException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -90,6 +91,7 @@ class AgeClientPlusContractTermTest {
         // Then
         assertEquals(message, exception.getMessage());
     }
+
 
 
 }

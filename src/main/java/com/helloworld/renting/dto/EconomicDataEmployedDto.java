@@ -14,8 +14,9 @@ public class EconomicDataEmployedDto {
     @Positive
     private Long id;
 
-    @NotBlank
-    private ClientDto client;
+    @NotNull
+    @Positive
+    private Long clientId;
 
     @NotBlank
     private String cif;
