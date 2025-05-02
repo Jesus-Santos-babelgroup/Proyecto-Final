@@ -10,6 +10,7 @@ import com.helloworld.renting.exceptions.attributes.AttributeException;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DBException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
+import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
 import com.helloworld.renting.mapper.*;
 import com.helloworld.renting.service.address.AddressService;
 import com.helloworld.renting.service.country.CountryService;
@@ -56,6 +57,7 @@ public class ClientService {
         validateNif(clientDto.getNif());
         validateDateOfBirth(clientDto.getDateOfBirth());
         checkForDuplicates(clientDto);
+        validateScoring(clientDto.getScoring());
         validateCountry(clientDto.getCountry());
         validateAddress(clientDto.getAddress());
         validateAddress(clientDto.getNotificationAddress());
@@ -123,6 +125,20 @@ public class ClientService {
         dto.setNotificationAddress(notiAddressDto);
 
         return dto;
+    }
+
+    @Transactional
+    public void deleteClientById(Long id) {
+
+        if (!clientMapper.existsById(id)) {
+            throw new ClientNotFoundException("Cliente no encontrado con ID " + id);
+        }
+
+
+        boolean deleted = clientMapper.deleteById(id);
+        if (!deleted) {
+            throw new RuntimeException("No se pudo eliminar el cliente con ID " + id);
+        }
     }
 
     private AddressDto validateEqualsAddresses(AddressDto address, AddressDto notificationAddress) {
@@ -228,6 +244,5 @@ public class ClientService {
             throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
         }
     }
-
 
 }

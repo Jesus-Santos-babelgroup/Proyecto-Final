@@ -28,6 +28,13 @@ public class EconomicDataEmployed {
     private LocalDate startDate;
 
     @NotNull
+    private LocalDate endDate;
+
+    @NotNull
     @Positive
     private Integer yearEntry;
+
+    @NotNull
+    private BigDecimal netIncome;
+
 }

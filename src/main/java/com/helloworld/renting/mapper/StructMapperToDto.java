@@ -1,11 +1,6 @@
 package com.helloworld.renting.mapper;
-
-import com.helloworld.renting.dto.AddressDto;
-import com.helloworld.renting.dto.ClientDto;
-import com.helloworld.renting.dto.CountryDto;
-import com.helloworld.renting.entities.Address;
-import com.helloworld.renting.entities.Client;
-import com.helloworld.renting.entities.Country;
+import com.helloworld.renting.dto.*;
+import com.helloworld.renting.entities.*;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
@@ -15,4 +10,8 @@ public interface StructMapperToDto {
     CountryDto countryToDto(Country entity);
 
     AddressDto addressToDto(Address entity);
+
+    EconomicDataEmployedDto economicalDataEmployedToDto(EconomicDataEmployed entity);
+
+    EconomicDataSelfEmployedDto economicalDataSelfEmployedToDto(EconomicDataSelfEmployed entity);
 }

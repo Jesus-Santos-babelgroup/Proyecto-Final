@@ -12,6 +12,8 @@ import com.helloworld.renting.service.address.AddressService;
 import com.helloworld.renting.service.country.CountryService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -48,6 +50,9 @@ class CreateClientTest {
 
     @Mock
     private CountryService countryService;
+
+    @Captor
+    private ArgumentCaptor<Client> clientCaptor;
 
 
     @Test
@@ -106,6 +111,49 @@ class CreateClientTest {
         verify(toDto).clientToDto(client);
     }
 
+    @Test
+    void createClient_ShouldInsertClientCorrectly() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setId(1L);
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setPhone("+34123456789");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
+
+        AddressDto address = new AddressDto();
+        address.setId(1L);
+        address.setCity("Madrid");
+        address.setStreet("Calle Mayor, 45");
+        address.setZipCode("28013");
+
+        CountryDto country = new CountryDto();
+        country.setIsoA2("AL");
+
+        inputDto.setAddress(address);
+        inputDto.setCountry(country);
+        inputDto.setNotificationAddress(address);
+
+        Client mappedClient = new Client();
+        mappedClient.setNif("12345678A");
+
+        when(clientMapper.existsByNif(any())).thenReturn(1);
+        when(clientMapper.existsByEmail(any())).thenReturn(1);
+        when(toEntity.clientToEntity(inputDto)).thenReturn(mappedClient);
+        when(toDto.clientToDto(any())).thenReturn(new ClientDto());
+
+        // When
+        clientService.createClient(inputDto);
+
+        // Then
+        verify(clientMapper).insert(clientCaptor.capture());
+        Client insertedClient = clientCaptor.getValue();
+        assertEquals("12345678A", insertedClient.getNif());
+    }
 
     @Test
     void createClient_WithNullDto_ShouldThrowException() {
@@ -229,7 +277,6 @@ class CreateClientTest {
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
@@ -375,9 +422,6 @@ class CreateClientTest {
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
-        inputDto.setNif("12345678A");
-        inputDto.setPhone("+34123456789");
-        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
 
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
         when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
@@ -393,6 +437,4 @@ class CreateClientTest {
         assertTrue(exception.getMessage().contains("Ya existe un cliente con este teléfono: " + inputDto.getPhone()));
         verify(clientMapper, never()).updateClient(any());
     }
-
-
 }
