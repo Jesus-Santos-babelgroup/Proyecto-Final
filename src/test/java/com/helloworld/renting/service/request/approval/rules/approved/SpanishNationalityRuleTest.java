@@ -1,7 +1,9 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.dto.RulesContextDto;
-import com.helloworld.renting.exceptions.attributes.AttributeException;
+import com.helloworld.renting.dto.ClientDto;
+import com.helloworld.renting.dto.CountryDto;
+import com.helloworld.renting.dto.RentingRequestDto;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,11 +21,15 @@ class SpanishNationalityRuleTest {
     @Test
     void should_returnTrue_when_clientIsSpanish() {
         // Given
-        RulesContextDto context = new RulesContextDto();
-        context.setClientNationality("Spain");
+        CountryDto countryDto = new CountryDto();
+        ClientDto clientDto = new ClientDto();
+        RentingRequestDto rentingRequestDto = new RentingRequestDto();
+        countryDto.setIsoA2("ES");
+        clientDto.setCountry(countryDto);
+        rentingRequestDto.setClient(clientDto);
 
         // When
-        boolean result = sut.conditionMet(context);
+        boolean result = sut.conditionMet(rentingRequestDto);
 
         // Then
         assertTrue(result);
@@ -32,11 +38,15 @@ class SpanishNationalityRuleTest {
     @Test
     void should_returnFalse_when_clientIsNotSpanish() {
         // Given
-        RulesContextDto context = new RulesContextDto();
-        context.setClientNationality("Poland");
+        CountryDto countryDto = new CountryDto();
+        ClientDto clientDto = new ClientDto();
+        RentingRequestDto rentingRequestDto = new RentingRequestDto();
+        countryDto.setIsoA2("AR");
+        clientDto.setCountry(countryDto);
+        rentingRequestDto.setClient(clientDto);
 
         // When
-        boolean result = sut.conditionMet(context);
+        boolean result = sut.conditionMet(rentingRequestDto);
 
         // Then
         assertFalse(result);
@@ -46,10 +56,14 @@ class SpanishNationalityRuleTest {
     void should_raiseException_when_nationalityIsNull() {
         // Given
         String message = "Client nationality is null";
-        RulesContextDto context = new RulesContextDto();
+        CountryDto countryDto = new CountryDto();
+        ClientDto clientDto = new ClientDto();
+        RentingRequestDto rentingRequestDto = new RentingRequestDto();
+        clientDto.setCountry(countryDto);
+        rentingRequestDto.setClient(clientDto);
 
         // When
-        AttributeException exception = assertThrows(AttributeException.class, () -> sut.conditionMet(context));
+        InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rentingRequestDto));
 
         // Then
         assertEquals(message, exception.getMessage());

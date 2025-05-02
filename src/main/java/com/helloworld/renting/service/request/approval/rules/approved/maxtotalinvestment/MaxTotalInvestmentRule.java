@@ -1,8 +1,9 @@
 package com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment;
 
-import com.helloworld.renting.dto.RulesContextDto;
-import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
+import com.helloworld.renting.dto.RentingRequestDto;
+import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
+import com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet.InvestmentExceedsNetMapper;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -12,14 +13,17 @@ public class MaxTotalInvestmentRule implements ApprovedRule {
 
     private final MaxTotalInvestmentProperties rulesProperties;
 
-    public MaxTotalInvestmentRule(MaxTotalInvestmentProperties rulesProperties) {
+    private final MaxTotalInvestmentMapper mapper;
+
+    public MaxTotalInvestmentRule(MaxTotalInvestmentProperties rulesProperties, MaxTotalInvestmentMapper mapper) {
         this.rulesProperties = rulesProperties;
+        this.mapper = mapper;
     }
 
     @Override
-    public boolean conditionMet(RulesContextDto rulesContextDto) {
+    public boolean conditionMet(RentingRequestDto rentingRequestDto) {
 
-        BigDecimal totalInvestment = rulesContextDto.getTotalInvestment();
+        BigDecimal totalInvestment = mapper.getTotalInvestment(rentingRequestDto.getId());
         BigDecimal limit = rulesProperties.getLimit();
 
         validateTotalInvestment(totalInvestment);
@@ -31,20 +35,20 @@ public class MaxTotalInvestmentRule implements ApprovedRule {
     void validateTotalInvestment(BigDecimal totalInvestment) {
 
         if (totalInvestment == null) {
-            throw new InvalidRulesContextDtoException("Total Investment cannot be null");
+            throw new InvalidRentingRequestDtoException("Total Investment cannot be null");
         }
         if (totalInvestment.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidRulesContextDtoException("Total Investment cannot be negative");
+            throw new InvalidRentingRequestDtoException("Total Investment cannot be negative");
         }
     }
 
     void validateMaxTotalInvestment(BigDecimal limit) {
 
         if (limit == null) {
-            throw new InvalidRulesContextDtoException("Max Total Investment cannot be null");
+            throw new InvalidRentingRequestDtoException("Max Total Investment cannot be null");
         }
         if (limit.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidRulesContextDtoException("Max Total Investment cannot be negative");
+            throw new InvalidRentingRequestDtoException("Max Total Investment cannot be negative");
         }
     }
 

@@ -14,15 +14,17 @@ public class EconomicDataEmployedDto {
     @Positive
     private Long id;
 
-    @NotNull
-    @Positive
-    private Long clientId;
+    @NotBlank
+    private ClientDto client;
 
     @NotBlank
     private String cif;
 
     @NotNull
     private BigDecimal grossIncome;
+
+    @NotNull
+    private BigDecimal netIncome;
 
     @NotNull
     private LocalDate startDate;

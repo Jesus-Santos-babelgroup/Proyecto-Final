@@ -1,6 +1,6 @@
+/*
 package com.helloworld.renting.service.request.approval.rules.approved;
 
-import com.helloworld.renting.dto.RulesContextDto;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -20,3 +20,4 @@ public class SeniorityGreaterThan3YearsRule implements ApprovedRule {
         return "SeniorityGreaterThan3Years";
     }
 }
+*/

@@ -49,9 +49,9 @@ public class ClientService {
     @Transactional
     public ClientDto createClient(ClientDto clientDto) {
         validateClientNotNull(clientDto);
-        validateIDNotNull(clientDto.getId());
         validateName(clientDto.getName());
         validateFirstSurname(clientDto.getFirstSurname());
+        validateSecondSurname(clientDto.getSecondSurname());
         validatePhone(clientDto.getPhone());
         validateEmail(clientDto.getEmail());
         validateNif(clientDto.getNif());
@@ -84,13 +84,33 @@ public class ClientService {
         Client client = toEntity.clientToEntity(clientDto);
         clientMapper.insert(client);
 
-        Address address = addressMapper.getAddress(idAddress);
-        AddressDto addressDto = toDto.addressToDto(address);
-        dto.setAddress(addressDto);
+        // Converting to DTO
+        return toDto.clientToDto(client);
+    }
 
-        dto.setNotificationAddress(notiAddressDto);
+    private void validateClientNotNull(ClientDto clientDto) {
+        if (clientDto == null) {
+            throw new InvalidClientDtoException("El DTO del cliente no puede ser nulo");
+        }
 
-        return dto;
+// Validación de formato de fecha de nacimiento y que no sea futura
+        try {
+            if (clientDto.getDateOfBirth() != null) {
+                // No necesitas parsear si ya es un LocalDate
+                LocalDate birthDate = clientDto.getDateOfBirth();
+                if (birthDate.isAfter(LocalDate.now())) {
+                    throw new InvalidClientDtoException("La fecha de nacimiento no puede ser futura");
+                }
+            }
+        } catch (InvalidClientDtoException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new InvalidClientDtoException("Error al procesar la fecha de nacimiento");
+        }
+
+        if (clientMapper.existsByNif(clientDto.getNif())) {
+            throw new DuplicateModel("Ya existe un cliente con este NIF: " + clientDto.getNif());
+        }
     }
 
 
@@ -141,6 +161,8 @@ public class ClientService {
             throw new ClientNotFoundException("Cliente no encontrado con ID " + id);
         }
 
+        if (clientDto.getScoring() == null || clientDto.getScoring() < 0) {
+            throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
 
         boolean deleted = clientMapper.deleteById(id);
         if (!deleted) {
@@ -185,6 +207,12 @@ public class ClientService {
     private void validateFirstSurname(String surname) {
         if (surname == null) {
             throw new AttributeException("Los apellidos no pueden ser NULL");
+        }
+    }
+      
+    private void validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new InvalidClientDtoException("El nombre no puede ser nulo o vacío");
         }
     }
 
