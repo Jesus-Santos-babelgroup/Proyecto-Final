@@ -62,7 +62,7 @@ class EconomicDataControllerTest {
         employedDto.setEndDate(LocalDate.of(2023, 12, 31));
         employedDto.setYearEntry(2023);
     }
-    /*
+    /* No genera el codigo de respuesta esperado
     @Test
     void shouldCreateSelfEmployedData() throws Exception {
         Mockito.when(economicDataService.addEconomicDataSelfEmployed(any(), eq(1L)))
