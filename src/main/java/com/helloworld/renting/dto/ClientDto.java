@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
 
@@ -34,10 +35,12 @@ public class ClientDto {
     private Integer scoring;
 
     @NotBlank
-    private CountryDto country;
+    private String countryId;
 
-    @NotBlank
-    private AddressDto address;
+    @NotNull
+    @Positive
+    private Long addressId;
 
-    private AddressDto notificationAddress;
+    @Positive
+    private Long notificationAddressId;
 }

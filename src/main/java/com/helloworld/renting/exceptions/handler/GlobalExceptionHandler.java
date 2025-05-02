@@ -4,7 +4,6 @@ import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -25,25 +24,18 @@ public class GlobalExceptionHandler {
         errorResponse.put("status", HttpStatus.CONFLICT.value());
         errorResponse.put("error", "Conflict");
         errorResponse.put("message", ex.getMessage());
-        errorResponse.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
+        errorResponse.put("path", ((ServletWebRequest)request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
     }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, Object>> handleValidationExceptions(MethodArgumentNotValidException ex, WebRequest request) {
-        Map<String, Object> errors = new HashMap<>();
-        ex.getBindingResult().getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage())
-        );
-
+    @ExceptionHandler(InvalidClientDtoException.class)
+    public ResponseEntity<Map<String, Object>> handleInvalidClientDtoException(InvalidClientDtoException ex, WebRequest request) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("timestamp", LocalDateTime.now());
         errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
         errorResponse.put("error", "Bad Request");
-        errorResponse.put("message", "Validation failed");
-        errorResponse.put("errors", errors);
-        errorResponse.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
+        errorResponse.put("message", ex.getMessage());
+        errorResponse.put("path", ((ServletWebRequest)request).getRequest().getRequestURI());
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

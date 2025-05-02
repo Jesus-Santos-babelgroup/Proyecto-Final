@@ -1,7 +1,6 @@
 package com.helloworld.renting.service.request.approval;
 
-import com.helloworld.renting.dto.RentingRequestDto;
-import com.helloworld.renting.entities.PreResultType;
+import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import com.helloworld.renting.service.request.approval.rules.denial.DenialRule;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,27 +8,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
 
 import java.util.List;
 
 import static com.helloworld.renting.entities.PreResultType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
+import static org.mockito.quality.Strictness.LENIENT;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = LENIENT)
 class RuleEvaluatorTest {
 
     @Mock
-    private ApprovedRule approvalRule1;
+    ApprovedRule approvalRule1;
     @Mock
-    private ApprovedRule approvalRule2;
+    ApprovedRule approvalRule2;
     @Mock
-    private DenialRule denialRule1;
+    DenialRule denialRule1;
     @Mock
-    private DenialRule denialRule2;
+    DenialRule denialRule2;
 
     private RuleEvaluator evaluator;
-    private RentingRequestDto dummyReq;
+    private RulesContextDto dummyCtx;
 
     @BeforeEach
     void setUp() {
@@ -37,49 +39,63 @@ class RuleEvaluatorTest {
                 List.of(approvalRule1, approvalRule2),
                 List.of(denialRule1, denialRule2)
         );
-        dummyReq = new RentingRequestDto();
+        dummyCtx = new RulesContextDto();
     }
 
     @Test
-    void evaluate_anyDenialRuleFails_returnsPredenied() {
+    void evaluate_whenAnyDenialRuleFalse_returnsPredenied() {
         // Arrange
-        when(denialRule1.conditionMet(dummyReq)).thenReturn(true);
-        when(denialRule2.conditionMet(dummyReq)).thenReturn(false);
+        when(denialRule1.conditionMet(dummyCtx)).thenReturn(false);
 
         // Act
-        PreResultType result = evaluator.evaluate(dummyReq);
+        var result = evaluator.evaluate(dummyCtx);
 
         // Assert
         assertEquals(PREDENIED, result);
     }
 
     @Test
-    void evaluate_allDenialPass_and_allApprovalPass_returnsPreapproved() {
+    void evaluate_whenNoDenialAndAllApprovalsTrue_returnsPreapproved() {
         // Arrange
-        when(denialRule1.conditionMet(dummyReq)).thenReturn(true);
-        when(denialRule2.conditionMet(dummyReq)).thenReturn(true);
-        when(approvalRule1.conditionMet(dummyReq)).thenReturn(true);
-        when(approvalRule2.conditionMet(dummyReq)).thenReturn(true);
+        when(denialRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(denialRule2.conditionMet(dummyCtx)).thenReturn(true);
+        when(approvalRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(approvalRule2.conditionMet(dummyCtx)).thenReturn(true);
 
         // Act
-        PreResultType result = evaluator.evaluate(dummyReq);
+        var result = evaluator.evaluate(dummyCtx);
 
         // Assert
         assertEquals(PREAPPROVED, result);
     }
 
     @Test
-    void evaluate_allDenialPass_and_someApprovalFails_returnsNeedsReview() {
+    void evaluate_whenNoDenialAndSomeApprovalFalse_returnsNeedsReview() {
         // Arrange
-        when(denialRule1.conditionMet(dummyReq)).thenReturn(true);
-        when(denialRule2.conditionMet(dummyReq)).thenReturn(true);
-        when(approvalRule1.conditionMet(dummyReq)).thenReturn(true);
-        when(approvalRule2.conditionMet(dummyReq)).thenReturn(false);
+        when(denialRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(denialRule2.conditionMet(dummyCtx)).thenReturn(true);
+        when(approvalRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(approvalRule2.conditionMet(dummyCtx)).thenReturn(false);
 
         // Act
-        PreResultType result = evaluator.evaluate(dummyReq);
+        var result = evaluator.evaluate(dummyCtx);
 
         // Assert
         assertEquals(NEEDS_REVIEW, result);
+    }
+
+    @Test
+    void evaluate_whenSomeDenialAndSomeApprovalFalse_returnsPreDenied() {
+        // Arrange
+        when(denialRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(denialRule2.conditionMet(dummyCtx)).thenReturn(false);
+        when(approvalRule1.conditionMet(dummyCtx)).thenReturn(true);
+        when(approvalRule2.conditionMet(dummyCtx)).thenReturn(false);
+
+        // Act
+        var result = evaluator.evaluate(dummyCtx);
+
+        // Assert
+        assertEquals(PREDENIED, result);
     }
 }

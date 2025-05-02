@@ -62,8 +62,8 @@ class CreateClientTest {
 
         when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(false);
         when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(false);
-        when(toEntity.clientToEntity(inputDto)).thenReturn(client);
-        when(toDto.clientToDto(client)).thenReturn(outputDto);
+        when(toEntity.toEntity(inputDto)).thenReturn(client);
+        when(toDto.toDto(client)).thenReturn(outputDto);
 
         // Mockear validaciones
         when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
@@ -78,9 +78,9 @@ class CreateClientTest {
 
         verify(clientMapper).existsByNif(inputDto.getNif());
         verify(clientMapper).existsByEmail(inputDto.getEmail());
-        verify(toEntity).clientToEntity(inputDto);
+        verify(toEntity).toEntity(inputDto);
         verify(clientMapper).insert(client);
-        verify(toDto).clientToDto(client);
+        verify(toDto).toDto(client);
         verify(countryMapper).existsByCountryId(Long.valueOf(inputDto.getCountryId()));
         verify(addressMapper).existsByAddressId(inputDto.getAddressId());
     }
@@ -103,8 +103,8 @@ class CreateClientTest {
 
         when(clientMapper.existsByNif(any())).thenReturn(false);
         when(clientMapper.existsByEmail(any())).thenReturn(false);
-        when(toEntity.clientToEntity(inputDto)).thenReturn(mappedClient);
-        when(toDto.clientToDto(any())).thenReturn(new ClientDto());
+        when(toEntity.toEntity(inputDto)).thenReturn(mappedClient);
+        when(toDto.toDto(any())).thenReturn(new ClientDto());
 
         // Mockear validaciones
         when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);
@@ -284,8 +284,8 @@ class CreateClientTest {
 
         when(clientMapper.existsByNif(any())).thenReturn(false);
         when(clientMapper.existsByEmail(any())).thenReturn(false);
-        when(toEntity.clientToEntity(inputDto)).thenReturn(mappedClient);
-        when(toDto.clientToDto(any())).thenReturn(outputDto);
+        when(toEntity.toEntity(inputDto)).thenReturn(mappedClient);
+        when(toDto.toDto(any())).thenReturn(outputDto);
 
         // Mockear validaciones
         when(countryMapper.existsByCountryId(Long.valueOf(inputDto.getCountryId()))).thenReturn(true);

@@ -14,8 +14,9 @@ public class EconomicDataEmployedDto {
     @Positive
     private Long id;
 
-    @NotBlank
-    private ClientDto client;
+    @NotNull
+    @Positive
+    private Long clientId;
 
     @NotBlank
     private String cif;
@@ -24,12 +25,7 @@ public class EconomicDataEmployedDto {
     private BigDecimal grossIncome;
 
     @NotNull
-    private BigDecimal netIncome;
-
-    @NotNull
     private LocalDate startDate;
-
-    private LocalDate endDate;
 
     @NotNull
     @Positive

@@ -12,11 +12,13 @@ public class VehicleRequestedDto {
     @Positive
     private Long id;
 
-    @NotBlank
-    private RentingRequestDto rentingRequest;
+    @NotNull
+    @Positive
+    private Long requestId;
 
-    @NotBlank
-    private VehicleDto vehicle;
+    @NotNull
+    @Positive
+    private Long vehicleId;
 
     @NotBlank
     private String licensePlate;

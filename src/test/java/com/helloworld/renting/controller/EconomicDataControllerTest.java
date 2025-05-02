@@ -3,32 +3,42 @@ package com.helloworld.renting.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
-import com.helloworld.renting.service.client.EconomicDataService;
+import com.helloworld.renting.exceptions.db.DBException;
+import com.helloworld.renting.exceptions.notfound.EconomicDataNotFoundException;
+import com.helloworld.renting.service.economicData.EconomicDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(EconomicDataController.class)
+@ExtendWith(MockitoExtension.class)
 class EconomicDataControllerTest {
+
+    private EconomicDataController sut;
+
+    @Mock
+    private EconomicDataService economicDataService;
 
     @Autowired
     private MockMvc mockMvc;
-
-    @MockBean
-    private EconomicDataService economicDataService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -38,6 +48,7 @@ class EconomicDataControllerTest {
 
     @BeforeEach
     void setup() {
+        sut = new EconomicDataController(economicDataService);
         selfEmployedDto = new EconomicDataSelfEmployedDto();
         selfEmployedDto.setClientId(1L);
         selfEmployedDto.setGrossIncome(BigDecimal.valueOf(50000));
@@ -82,4 +93,89 @@ class EconomicDataControllerTest {
                 .andExpect(jsonPath("$.netIncome").value("25000"))
                 .andExpect(jsonPath("$.yearEntry").value(2023));
     }
+
+    @Test
+    void should_returnNoContent_when_economicDataEmployedIsDeleted() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.noContent().build();
+        doNothing().when(economicDataService).deleteEconomicDataEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnNotFound_when_deleteEconomicDataEmployedThrowsException() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.notFound().build();
+        doThrow(EconomicDataNotFoundException.class).when(economicDataService).deleteEconomicDataEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnInternalServerError_when_deleteEconomicDataEmployedThrowsDBException() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.internalServerError().build();
+        doThrow(DBException.class).when(economicDataService).deleteEconomicDataEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnNoContent_when_economicDataSelfEmployedIsDeleted() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.noContent().build();
+        doNothing().when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataSelfEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnNotFound_when_deleteEconomicDataSelfEmployedThrowsNotFoundException() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.notFound().build();
+        doThrow(EconomicDataNotFoundException.class).when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataSelfEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnInternalServerError_when_deleteEconomicDataSelfEmployedThrowsDBException() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.internalServerError().build();
+        doThrow(DBException.class).when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataSelfEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
 }
