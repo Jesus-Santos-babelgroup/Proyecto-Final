@@ -1,3 +1,4 @@
+/*
 package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.exceptions.attributes.AttributeException;
@@ -48,3 +49,4 @@ public class AgeClientPlusContractTerm implements DenialRule {
     }
 }
 
+*/

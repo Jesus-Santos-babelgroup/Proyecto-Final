@@ -1,3 +1,4 @@
+/*
 package com.helloworld.renting.service.request.approval.rules.approved.minimumSeniorityRule;
 
 import com.helloworld.renting.dto.RulesContextDto;
@@ -31,3 +32,4 @@ public class MinimumSeniorityRule implements ApprovedRule {
         return "SeniorityGreaterThan" + seniorityRuleProperties.getRequiredYears() + "Years";
     }
 }
+*/

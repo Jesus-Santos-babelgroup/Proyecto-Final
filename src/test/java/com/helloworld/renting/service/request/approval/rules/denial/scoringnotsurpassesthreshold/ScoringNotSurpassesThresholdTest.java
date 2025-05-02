@@ -1,5 +1,6 @@
-package com.helloworld.renting.service.request.approval.rules.denial;
+package com.helloworld.renting.service.request.approval.rules.denial.scoringnotsurpassesthreshold;
 
+import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
 import com.helloworld.renting.service.request.approval.Rules;
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Value;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -19,22 +19,32 @@ class ScoringNotSurpassesThresholdTest {
     Rules sut;
     @Mock
     RentingRequestDto requestDto;
-    @Value("${rules.denial-rule.scoring-threshold}")
+    @Mock
+    ClientDto clientDto;
+    ScoringNotSurpassesThresholdProperties properties;
     Integer scoringThreshold;
     Integer valueBelowThreshold;
     Integer valueAboveThreshold;
 
     @BeforeEach
     void setUp() {
-        sut = new ScoringNotSurpassesThreshold();
+        properties = new ScoringNotSurpassesThresholdProperties();
+        scoringThreshold = 5;
+
+        properties.setScoringThreshold(scoringThreshold);
+
+        sut = new ScoringNotSurpassesThreshold(properties);
+
         valueBelowThreshold = scoringThreshold - 1;
         valueAboveThreshold = scoringThreshold + 1;
+
+        when(requestDto.getClient()).thenReturn(clientDto);
     }
 
     @Test
     void should_returnTrue_when_conditionNotMet() {
         // Given
-        when(requestDto.getClient().getScoring()).thenReturn(valueBelowThreshold);
+        when(clientDto.getScoring()).thenReturn(valueBelowThreshold);
 
         // When
         boolean ruleState = sut.conditionMet(requestDto);

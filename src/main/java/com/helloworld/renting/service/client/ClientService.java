@@ -26,9 +26,7 @@ public class ClientService {
     public ClientService(ClientMapper clientMapper,
                          //MapStructClient mapStruct
                          StructMapperToDto toDto,
-                         StructMapperToEntity toEntity,
-                         CountryMapper countryMapper,
-                         AddressMapper addressMapper) {
+                         StructMapperToEntity toEntity, CountryMapper countryMapper, AddressMapper addressMapper) {
         this.clientMapper = clientMapper;
         //this.mapStruct = mapStruct;
         this.toDto = toDto;
@@ -44,11 +42,11 @@ public class ClientService {
         validateName(clientDto.getName());
         validateFirstSurname(clientDto.getFirstSurname());
         validateSecondSurname(clientDto.getSecondSurname());
-        validateDateOfBirth(clientDto.getDateOfBirth());
+        /*validateDateOfBirth(clientDto.getDateOfBirth());
         checkForDuplicates(clientDto);
-        validateScoring(clientDto.getScoring());
-        validateCountry(clientDto.getCountryId());
-        validateAddress(clientDto.getAddressId());
+        validateScoring(clientDto.getScoring());*/
+        validateCountry(clientDto.getCountry().getId());
+        validateAddress(clientDto.getAddress().getId());
 
         // Converting to entity
         Client client = toEntity.clientToEntity(clientDto);
@@ -62,21 +60,22 @@ public class ClientService {
         if (clientDto == null) {
             throw new InvalidClientDtoException("El DTO del cliente no puede ser nulo");
         }
-    }
 
-    private void validateDateOfBirth(LocalDate dateOfBirth) {
+// Validación de formato de fecha de nacimiento y que no sea futura
         try {
-            if (dateOfBirth != null && dateOfBirth.isAfter(LocalDate.now())) {
-                throw new InvalidClientDtoException("La fecha de nacimiento no puede ser futura");
+            if (clientDto.getDateOfBirth() != null) {
+                // No necesitas parsear si ya es un LocalDate
+                LocalDate birthDate = clientDto.getDateOfBirth();
+                if (birthDate.isAfter(LocalDate.now())) {
+                    throw new InvalidClientDtoException("La fecha de nacimiento no puede ser futura");
+                }
             }
         } catch (InvalidClientDtoException e) {
             throw e;
         } catch (Exception e) {
-            throw new InvalidClientDtoException("Error al procesar la fecha de nacimiento: " + e.getMessage());
+            throw new InvalidClientDtoException("Error al procesar la fecha de nacimiento");
         }
-    }
 
-    private void checkForDuplicates(ClientDto clientDto) {
         if (clientMapper.existsByNif(clientDto.getNif())) {
             throw new DuplicateModel("Ya existe un cliente con este NIF: " + clientDto.getNif());
         }
@@ -84,13 +83,8 @@ public class ClientService {
         if (clientMapper.existsByEmail(clientDto.getEmail())) {
             throw new DuplicateModel("Ya existe un cliente con este email: " + clientDto.getEmail());
         }
-        if (clientDto.getPhone() != null && clientMapper.existsByPhone(clientDto.getPhone())) {
-            throw new DuplicateModel("Ya existe un cliente con este teléfono: " + clientDto.getPhone());
-        }
-    }
 
-    private void validateScoring(Integer scoring) {
-        if (scoring == null || scoring < 0) {
+        if (clientDto.getScoring() == null || clientDto.getScoring() < 0) {
             throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
         }
     }
@@ -121,6 +115,7 @@ public class ClientService {
             throw new InvalidClientDtoException("La dirección con ID " + addressId + " no existe en la base de datos");
         }
     }
+
     private void validateName(String name) {
         if (name == null || name.isEmpty()) {
             throw new InvalidClientDtoException("El nombre no puede ser nulo o vacío");
