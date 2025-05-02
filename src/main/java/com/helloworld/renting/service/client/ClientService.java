@@ -17,17 +17,20 @@ import java.time.LocalDate;
 public class ClientService {
 
     private final ClientMapper clientMapper;
+    // private final MapStructClient mapStruct;
     private final StructMapperToDto toDto;
     private final StructMapperToEntity toEntity;
     private final CountryMapper countryMapper;
     private final AddressMapper addressMapper;
 
     public ClientService(ClientMapper clientMapper,
+                         //MapStructClient mapStruct
                          StructMapperToDto toDto,
                          StructMapperToEntity toEntity,
                          CountryMapper countryMapper,
                          AddressMapper addressMapper) {
         this.clientMapper = clientMapper;
+        //this.mapStruct = mapStruct;
         this.toDto = toDto;
         this.toEntity = toEntity;
         this.countryMapper = countryMapper;
@@ -48,11 +51,11 @@ public class ClientService {
         validateAddress(clientDto.getAddressId());
 
         // Converting to entity
-        Client client = toEntity.toEntity(clientDto);
+        Client client = toEntity.clientToEntity(clientDto);
         clientMapper.insert(client);
 
         // Converting to DTO
-        return toDto.toDto(client);
+        return toDto.clientToDto(client);
     }
 
     private void validateClientNotNull(ClientDto clientDto) {
