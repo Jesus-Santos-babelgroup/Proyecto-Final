@@ -1,4 +1,4 @@
-package com.helloworld.renting.mapper.economicData;
+package com.helloworld.renting.mapper.economicalData;
 
 import com.helloworld.renting.entities.EconomicDataEmployed;
 import org.apache.ibatis.annotations.*;
