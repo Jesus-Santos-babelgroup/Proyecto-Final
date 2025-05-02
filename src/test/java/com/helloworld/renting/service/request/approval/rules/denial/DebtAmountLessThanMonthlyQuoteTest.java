@@ -106,7 +106,7 @@ class DebtAmountLessThanMonthlyQuoteTest {
         // Given
         Debt debt = new Debt();
         debt.setId(1L);
-        // debt.getAmount()==null
+        debt.setAmount(null);
         when(requestDto.getQuotaFinal()).thenReturn(BigDecimal.valueOf(1000.0));
         when(debtMapper.findDebtsByNif("12345678A")).thenReturn(List.of(debt));
 
