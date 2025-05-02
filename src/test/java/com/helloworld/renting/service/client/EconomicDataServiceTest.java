@@ -8,6 +8,7 @@ import com.helloworld.renting.mapper.ClientMapper;
 import com.helloworld.renting.mapper.StructMapperToDto;
 import com.helloworld.renting.mapper.StructMapperToEntity;
 import com.helloworld.renting.mapper.economicalData.*;
+import com.helloworld.renting.service.economicData.EconomicDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -144,4 +145,3 @@ class EconomicDataServiceTest {
     }
 }
 
-}

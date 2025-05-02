@@ -2,7 +2,7 @@ package com.helloworld.renting.controller;
 
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
-import com.helloworld.renting.service.client.EconomicDataService;
+import com.helloworld.renting.service.economicData.EconomicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "clients_economic_data", description = "Operaciones sobre la información bancaria de los clientes")
 public class EconomicDataController{
 
-    private final EconomicDataService economicDataService;
+    private final com.helloworld.renting.service.economicData.EconomicDataService economicDataService;
 
     public EconomicDataController(EconomicDataService economicDataService){
         this.economicDataService = economicDataService;
