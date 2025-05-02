@@ -2,7 +2,6 @@ package com.helloworld.renting.service.economicData;
 
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
-import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.entities.EconomicDataEmployed;
 import com.helloworld.renting.entities.EconomicDataSelfEmployed;
 import com.helloworld.renting.exceptions.db.DBException;
@@ -51,7 +50,7 @@ public class EconomicDataService {
         checkIfClientExist(clientId);
 //        Client client = clientMapper.findById(clientId);
 //        economicDataSelfEmployedDto.setClient(structMapperToDto.clientToDto(client));
-        economicDataSelfEmployedDto.setClientId(clientId);
+        economicDataSelfEmployedDto.getClient().setId(clientId);
         checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
 
         EconomicDataSelfEmployed economicDataSelfEmployed =
@@ -71,7 +70,7 @@ public class EconomicDataService {
 //        Client client = clientMapper.findById(clientId);
 //        economicDataEmployedDto.setClient(structMapperToDto.clientToDto(client));
 
-        economicDataEmployedDto.setClientId(clientId);
+        economicDataEmployedDto.getClient().setId(clientId);
 
         checkDuplicateYearEmployed(clientId, economicDataEmployedDto.getYearEntry());
         checkDateNotInFuture(economicDataEmployedDto.getStartDate());
