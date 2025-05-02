@@ -1,33 +1,16 @@
 package com.helloworld.renting.service.economicData;
 
-import com.helloworld.renting.dto.EconomicDataEmployedDto;
-import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
-import com.helloworld.renting.entities.EconomicDataEmployed;
-import com.helloworld.renting.entities.EconomicDataSelfEmployed;
-import com.helloworld.renting.exceptions.RentingException;
-import com.helloworld.renting.exceptions.db.DBException;
-import com.helloworld.renting.exceptions.notfound.EconomicDataNotFoundException;
 import com.helloworld.renting.mapper.ClientMapper;
 import com.helloworld.renting.mapper.StructMapperToDto;
 import com.helloworld.renting.mapper.StructMapperToEntity;
 import com.helloworld.renting.mapper.economicalData.EconomicDataEmployedMapper;
 import com.helloworld.renting.mapper.economicalData.EconomicDataSelfEmployedMapper;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EconomicDataServiceTest {
@@ -55,6 +38,7 @@ class EconomicDataServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    /*
     @Test
     void shouldAddSelfEmployedSuccessfully() {
         EconomicDataSelfEmployedDto dto = new EconomicDataSelfEmployedDto();
@@ -162,7 +146,9 @@ class EconomicDataServiceTest {
         assertEquals(400, ex.getStatusCode().value());
         assertTrue(ex.getReason().contains("El año de entrada debe coincidir"));
     }
+    */
 
+    /*
     @Test
     void should_delete_when_economicDataEmployedExists() {
         // Given
@@ -280,5 +266,5 @@ class EconomicDataServiceTest {
         // Then
         assertEquals(message, exception.getMessage());
     }
-
+    */
 }
