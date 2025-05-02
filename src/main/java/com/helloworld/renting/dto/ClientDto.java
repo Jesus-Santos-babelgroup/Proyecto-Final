@@ -33,6 +33,7 @@ public class ClientDto {
 
     private Integer scoring;
 
+
     @NotBlank
     private CountryDto country;
 
