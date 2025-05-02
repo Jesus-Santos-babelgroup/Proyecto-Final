@@ -1,6 +1,7 @@
 package com.helloworld.renting.controller;
 
-import com.helloworld.renting.exceptions.RentingException;
+import com.helloworld.renting.exceptions.db.DBException;
+import com.helloworld.renting.exceptions.notfound.EconomicDataNotFoundException;
 import com.helloworld.renting.service.economicdata.EconomicDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,21 @@ class EconomicDataControllerTest {
         // Given
         Long id = 1L;
         ResponseEntity<Void> expectedResponse = ResponseEntity.notFound().build();
-        doThrow(RentingException.class).when(economicDataService).deleteEconomicDataEmployedFromClient(id);
+        doThrow(EconomicDataNotFoundException.class).when(economicDataService).deleteEconomicDataEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnInternalServerError_when_deleteEconomicDataEmployedThrowsDBException() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.internalServerError().build();
+        doThrow(DBException.class).when(economicDataService).deleteEconomicDataEmployedFromClient(id);
 
         // When
         ResponseEntity<Void> response = sut.deleteEconomicDataEmployedFromClient(id);
@@ -69,11 +84,25 @@ class EconomicDataControllerTest {
     }
 
     @Test
-    void should_returnNotFound_when_deleteEconomicDataSelfEmployedThrowsException() {
+    void should_returnNotFound_when_deleteEconomicDataSelfEmployedThrowsNotFoundException() {
         // Given
         Long id = 1L;
         ResponseEntity<Void> expectedResponse = ResponseEntity.notFound().build();
-        doThrow(RentingException.class).when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
+        doThrow(EconomicDataNotFoundException.class).when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
+
+        // When
+        ResponseEntity<Void> response = sut.deleteEconomicDataSelfEmployedFromClient(id);
+
+        // Then
+        assertEquals(expectedResponse, response);
+    }
+
+    @Test
+    void should_returnInternalServerError_when_deleteEconomicDataSelfEmployedThrowsDBException() {
+        // Given
+        Long id = 1L;
+        ResponseEntity<Void> expectedResponse = ResponseEntity.internalServerError().build();
+        doThrow(DBException.class).when(economicDataService).deleteEconomicDataSelfEmployedFromClient(id);
 
         // When
         ResponseEntity<Void> response = sut.deleteEconomicDataSelfEmployedFromClient(id);
