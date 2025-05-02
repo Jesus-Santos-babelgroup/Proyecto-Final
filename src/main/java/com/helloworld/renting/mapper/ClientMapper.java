@@ -25,7 +25,4 @@ public interface ClientMapper {
 
     @Delete("DELETE FROM Client WHERE ID_client=#{id}")
     boolean deleteById(Long id);
-
-    //@Delete("DELETE FROM Client WHERE NIF = #{nif}")
-    //boolean deleteByNif(String nif);
 }

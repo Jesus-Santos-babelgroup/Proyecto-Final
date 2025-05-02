@@ -8,7 +8,6 @@ import com.helloworld.renting.mapper.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
-//import com.helloworld.renting.exceptions.attributes.ClientWithPendingRequestsException;
 
 
 import java.time.LocalDate;
@@ -158,9 +157,6 @@ public class ClientService {
             throw new ClientNotFoundException("Cliente no encontrado con ID " + id);
         }
 
-        /*if (requestMapper.countByClientId(id) > 0) {
-            throw new ClientWithPendingRequestsException("El cliente tiene solicitudes registradas");
-        }*/
 
         boolean deleted = clientMapper.deleteById(id);
         if (!deleted) {
