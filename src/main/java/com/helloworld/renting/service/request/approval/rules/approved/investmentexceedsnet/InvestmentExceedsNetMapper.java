@@ -1,6 +1,5 @@
 package com.helloworld.renting.service.request.approval.rules.approved.investmentexceedsnet;
 
-import com.helloworld.renting.dto.RentingRequestDto;
 import org.apache.ibatis.annotations.*;
 
 import java.math.BigDecimal;
@@ -26,4 +25,15 @@ public interface InvestmentExceedsNetMapper {
               WHERE r.ID_request = #{requestId}
             """)
     BigDecimal getNetIncomeSelfEmployed(@Param("requestId") Long requestId);
+
+    @Select("""
+              SELECT SUM(v.Investment)
+                FROM Renting_request rr
+                JOIN Vehicle_requested vr ON rr.ID_request = vr.ID_request
+                JOIN Vehicle v ON vr.ID_vehicle = v.ID_vehicle
+                WHERE rr.ID_request = #{requestId}
+            """)
+    BigDecimal getInvestment(@Param("requestId") Long requestId);
+
+
 }
