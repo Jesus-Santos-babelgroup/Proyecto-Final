@@ -1,10 +1,7 @@
 package com.helloworld.renting.mapper;
 
 import com.helloworld.renting.entities.Client;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Options;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface ClientMapper {
@@ -54,4 +51,5 @@ public interface ClientMapper {
 
     @Delete("DELETE FROM Client WHERE ID_client=#{id}")
     boolean deleteById(Long id);
+
 }

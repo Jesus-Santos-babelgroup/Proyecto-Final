@@ -27,7 +27,7 @@ class MinAgePermittedRuleTest {
         // Given
         ClientDto clientDto = new ClientDto();
         RentingRequestDto rentingRequestDto = new RentingRequestDto();
-        clientDto.setDateOfBirth(LocalDate.of(2020,1,1));
+        clientDto.setDateOfBirth(LocalDate.of(2020, 1, 1));
         rentingRequestDto.setClient(clientDto);
 
         // When
@@ -42,7 +42,7 @@ class MinAgePermittedRuleTest {
         // Given
         ClientDto clientDto = new ClientDto();
         RentingRequestDto rentingRequestDto = new RentingRequestDto();
-        clientDto.setDateOfBirth(LocalDate.of(2000,1,1));
+        clientDto.setDateOfBirth(LocalDate.of(2000, 1, 1));
         rentingRequestDto.setClient(clientDto);
 
         // When
@@ -58,6 +58,7 @@ class MinAgePermittedRuleTest {
         String message = "Client birth date is not valid";
         ClientDto clientDto = new ClientDto();
         RentingRequestDto rentingRequestDto = new RentingRequestDto();
+        rentingRequestDto.setClient(clientDto);
 
         // When
         InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rentingRequestDto));
@@ -72,7 +73,8 @@ class MinAgePermittedRuleTest {
         String message = "Client birth date is not valid";
         ClientDto clientDto = new ClientDto();
         RentingRequestDto rentingRequestDto = new RentingRequestDto();
-        clientDto.setDateOfBirth(LocalDate.of(9999,12,31));
+        clientDto.setDateOfBirth(LocalDate.of(9999, 12, 31));
+        rentingRequestDto.setClient(clientDto);
 
         // When
         InvalidRentingRequestDtoException exception = assertThrows(InvalidRentingRequestDtoException.class, () -> sut.conditionMet(rentingRequestDto));
