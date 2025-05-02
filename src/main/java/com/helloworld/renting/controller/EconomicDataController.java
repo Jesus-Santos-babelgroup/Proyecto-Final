@@ -2,28 +2,23 @@ package com.helloworld.renting.controller;
 
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
-import com.helloworld.renting.exceptions.db.DBException;
-import com.helloworld.renting.exceptions.notfound.NotFoundException;
 import com.helloworld.renting.service.economicData.EconomicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/clients/")
-@Tag(name = "Economic data", description = "Operations with clients economic data")
-public class EconomicDataController {
+@Tag(name = "clients_economic_data", description = "Operaciones sobre la información bancaria de los clientes")
+public class EconomicDataController{
 
-    private EconomicDataService economicDataService;
-    private Logger logger = LoggerFactory.getLogger(EconomicDataController.class);
+    private final com.helloworld.renting.service.economicData.EconomicDataService economicDataService;
 
-    public EconomicDataController(EconomicDataService economicDataService) {
+    public EconomicDataController(EconomicDataService economicDataService){
         this.economicDataService = economicDataService;
     }
 
@@ -75,48 +70,5 @@ public class EconomicDataController {
                 .body(economicDataCreated);
     }
 
-    @DeleteMapping("{id}/economic-data/employed")
-    @Operation(
-            summary = "Deletes a client's economic data employed",
-            description = "Deletes a client's economic data employed if it exists given the client's ID",
-            responses = {
-                    @ApiResponse(responseCode = "204", description = "Economic data employed deleted"),
-                    @ApiResponse(responseCode = "404", description = "No economic data employed was found for this client"),
-                    @ApiResponse(responseCode = "500", description = "Failed to connect to the database")
-            }
-    )
-    public ResponseEntity<Void> deleteEconomicDataEmployedFromClient(@PathVariable Long id) {
-        try {
-            logger.debug("Starting to delete economic data employed for client");
-            economicDataService.deleteEconomicDataEmployedFromClient(id);
-            return ResponseEntity.noContent().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (DBException e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @DeleteMapping("{id}/economic-data/self-employed")
-    @Operation(
-            summary = "Deletes a client's economic data self employed",
-            description = "Deletes a client's economic data self employed if it exists given the client's ID",
-            responses = {
-                    @ApiResponse(responseCode = "204", description = "Economic data self employed deleted"),
-                    @ApiResponse(responseCode = "404", description = "No economic data self employed was found for this client"),
-                    @ApiResponse(responseCode = "500", description = "Failed to connect to the database")
-            }
-    )
-    public ResponseEntity<Void> deleteEconomicDataSelfEmployedFromClient(@PathVariable Long id) {
-        try {
-            logger.debug("Starting to delete economic data self employed for client");
-            economicDataService.deleteEconomicDataSelfEmployedFromClient(id);
-            return ResponseEntity.noContent().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (DBException e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
 
 }
