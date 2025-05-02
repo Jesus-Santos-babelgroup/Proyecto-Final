@@ -26,8 +26,8 @@ public class RequestController {
 
     @PostMapping()
     @Operation(
-            summary = "Crear solicitud",
-            description = "Crea una nueva solicitud de renting y calcula inversión/cuota",
+            summary = "Crea una nueva solicitud de renting",
+            description = "Calcula cuota y da un prerresultado automático de resolución",
             tags = {"requests"},
             responses = {
                     @ApiResponse(responseCode = "201", description = "Solicitud creada"),
@@ -55,13 +55,13 @@ public class RequestController {
                     @ApiResponse(responseCode = "500", description = "Error interno del servidor")
             }
     )
-    public ResponseEntity<RentingRequestDto> getRequest(@PathVariable Long id) {
+    public ResponseEntity<List<RentingRequestDto>> getRequest(@PathVariable Long id) {
         if (id == null || id < 0) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
 
         try {
-            RentingRequestDto dto = requestService.getById(id);
+            List<RentingRequestDto> dto = requestService.getByClientId(id);
             return ResponseEntity.status(HttpStatus.OK).body(dto);
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -73,7 +73,7 @@ public class RequestController {
     @GetMapping()
     @Operation(
             summary = "Listar solicitudes",
-            description = "Obtiene un listado paginado de solicitudes, con filtros opcionales",
+            description = "Obtiene un listado de solicitudes",
             tags = {"requests"},
             responses = {
                     @ApiResponse(responseCode = "200", description = "Listado de solicitudes"),

@@ -8,6 +8,7 @@ import com.helloworld.renting.exceptions.notfound.NotFoundException;
 import com.helloworld.renting.mapper.ClientMapper;
 import com.helloworld.renting.mapper.MapStructRequest;
 import com.helloworld.renting.mapper.RequestMapper;
+import com.helloworld.renting.service.request.approval.ApprovalService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,35 +21,43 @@ public class RequestService {
     private final RequestMapper requestMapper;
     private final ClientMapper clientMapper;
     private final MapStructRequest mapStruct;
+    private final ApprovalService approvalService;
 
     public RequestService(RequestMapper requestMapper,
                           ClientMapper clientMapper,
-                          MapStructRequest mapStruct) {
+                          MapStructRequest mapStruct,
+                          ApprovalService approvalService) {
 
         this.requestMapper = requestMapper;
         this.clientMapper = clientMapper;
         this.mapStruct = mapStruct;
+        this.approvalService = approvalService;
     }
 
     public RentingRequestDto create(RentingRequestDto requestDto) {
 
-        if (!validDto(requestDto)) {
-            throw new InvalidRequestDtoException("DTO is incompatible with the system.");
-        }
+        validateDto(requestDto);
+        requestDto.setPreResultType(approvalService.evaluate(requestDto));
 
         RentingRequest rentingRequest = mapStruct.toEntity(requestDto);
         Long requestId = requestMapper.insert(rentingRequest);
         requestDto.setId(requestId);
+
         return requestDto;
     }
 
-    public RentingRequestDto getById(Long requestId) {
-        RentingRequest request = requestMapper.findById(requestId);
-        if (request == null) {
-            throw new NotFoundException("Request not found from the given ID.");
+    public List<RentingRequestDto> getByClientId(Long clientId) {
+        List<RentingRequest> requestList = requestMapper.findByClientId(clientId);
+        if (requestList == null || requestList.isEmpty()) {
+            throw new NotFoundException("Requests not found for the given client ID.");
         }
 
-        return mapStruct.toDto(request);
+        List<RentingRequestDto> requestDtoList = new ArrayList<>();
+        for (RentingRequest request : requestList) {
+            requestDtoList.add(mapStruct.toDto(request));
+        }
+
+        return requestDtoList;
     }
 
     public List<RentingRequestDto> getAll() {
@@ -60,16 +69,14 @@ public class RequestService {
         return requestDtosList;
     }
 
-    private boolean validDto(RentingRequestDto dto) {
+    private void validateDto(RentingRequestDto dto) {
         Client client = clientMapper.findById(dto.getClient().getId());
         if (client == null) {
-            return false;
+            throw new InvalidRequestDtoException("There is no client with the given ID.");
         }
 
         if (dto.getStartDate().isAfter(LocalDate.now())) {
-            return false;
+            throw new InvalidRequestDtoException("Invalid value for start date. It cannot be set in the future.");
         }
-
-        return true;
     }
 }

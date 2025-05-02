@@ -4,9 +4,7 @@ import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
-import com.helloworld.renting.mapper.ClientMapper;
-import com.helloworld.renting.mapper.StructMapperToDto;
-import com.helloworld.renting.mapper.StructMapperToEntity;
+import com.helloworld.renting.mapper.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +31,25 @@ public class ClientService {
 
     @Transactional
     public ClientDto createClient(ClientDto clientDto) {
+        validateClientNotNull(clientDto);
+        validateName(clientDto.getName());
+        validateFirstSurname(clientDto.getFirstSurname());
+        validateSecondSurname(clientDto.getSecondSurname());
+        validateDateOfBirth(clientDto.getDateOfBirth());
+        checkForDuplicates(clientDto);
+        validateScoring(clientDto.getScoring());
+        validateCountry(clientDto.getCountryId());
+        validateAddress(clientDto.getAddressId());
+
+        // Converting to entity
+        Client client = toEntity.clientToEntity(clientDto);
+        clientMapper.insert(client);
+
+        // Converting to DTO
+        return toDto.clientToDto(client);
+    }
+
+    private void validateClientNotNull(ClientDto clientDto) {
         if (clientDto == null) {
             throw new InvalidClientDtoException("El DTO del cliente no puede ser nulo");
         }
@@ -63,14 +80,63 @@ public class ClientService {
         if (clientDto.getScoring() == null || clientDto.getScoring() < 0) {
             throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
         }
+    }
 
-        // Converting to entity
-        // Client client = mapStruct.toEntity(clientDto);
-        Client client = toEntity.toEntity(clientDto);
+    private void validateCountry(String countryId) {
+        if (countryId == null) {
+            throw new InvalidClientDtoException("El ID del país no puede ser nulo");
+        }
 
-        clientMapper.insert(client);
-        // Converting to DTO
-        //return mapStruct.toDto(client);
-        return toDto.toDto(client);
+        Long countryIdLong;
+        try {
+            countryIdLong = Long.parseLong(countryId);
+        } catch (NumberFormatException e) {
+            throw new InvalidClientDtoException("El ID del país debe ser un número válido");
+        }
+
+        if (!countryMapper.existsByCountryId(countryIdLong)) {
+            throw new InvalidClientDtoException("El país con ID " + countryId + " no existe en la base de datos");
+        }
+    }
+
+    private void validateAddress(Long addressId) {
+        if (addressId == null) {
+            throw new InvalidClientDtoException("El ID de la dirección no puede ser nulo");
+        }
+
+        if (!addressMapper.existsByAddressId(addressId)) {
+            throw new InvalidClientDtoException("La dirección con ID " + addressId + " no existe en la base de datos");
+        }
+    }
+    private void validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new InvalidClientDtoException("El nombre no puede ser nulo o vacío");
+        }
+
+        String namePattern = "^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' -]{1,60}$";
+        if (!name.matches(namePattern)) {
+            throw new InvalidClientDtoException("El nombre debe contener solo letras, espacios, apóstrofes o guiones y tener máximo 60 caracteres");
+        }
+    }
+
+    private void validateFirstSurname(String surname) {
+        if (surname == null || surname.isEmpty()) {
+            throw new InvalidClientDtoException("El primer apellido no puede ser nulo o vacío");
+        }
+
+        String namePattern = "^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' -]{1,60}$";
+        if (!surname.matches(namePattern)) {
+            throw new InvalidClientDtoException("El primer apellido debe contener solo letras, espacios, apóstrofes o guiones y tener máximo 60 caracteres");
+        }
+    }
+
+    private void validateSecondSurname(String surname) {
+        // El segundo apellido puede ser nulo o vacío, solo validamos si tiene contenido
+        if (surname != null && !surname.isEmpty()) {
+            String namePattern = "^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ' -]{1,60}$";
+            if (!surname.matches(namePattern)) {
+                throw new InvalidClientDtoException("El segundo apellido debe contener solo letras, espacios, apóstrofes o guiones y tener máximo 60 caracteres");
+            }
+        }
     }
 }
