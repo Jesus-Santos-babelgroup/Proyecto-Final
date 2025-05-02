@@ -1,4 +1,4 @@
-package com.helloworld.renting.service.economicdata;
+package com.helloworld.renting.service.economicData;
 
 import com.helloworld.renting.entities.EconomicDataEmployed;
 import com.helloworld.renting.entities.EconomicDataSelfEmployed;

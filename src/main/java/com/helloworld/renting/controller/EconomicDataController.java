@@ -2,7 +2,7 @@ package com.helloworld.renting.controller;
 
 import com.helloworld.renting.exceptions.db.DBException;
 import com.helloworld.renting.exceptions.notfound.NotFoundException;
-import com.helloworld.renting.service.economicdata.EconomicDataService;
+import com.helloworld.renting.service.economicData.EconomicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

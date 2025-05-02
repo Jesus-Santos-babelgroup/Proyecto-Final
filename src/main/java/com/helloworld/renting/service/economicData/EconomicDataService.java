@@ -1,4 +1,4 @@
-package com.helloworld.renting.service.economicdata;
+package com.helloworld.renting.service.economicData;
 
 import com.helloworld.renting.exceptions.db.DBException;
 import com.helloworld.renting.exceptions.notfound.EconomicDataNotFoundException;

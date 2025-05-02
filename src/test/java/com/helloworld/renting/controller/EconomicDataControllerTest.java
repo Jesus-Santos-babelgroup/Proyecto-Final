@@ -2,7 +2,7 @@ package com.helloworld.renting.controller;
 
 import com.helloworld.renting.exceptions.db.DBException;
 import com.helloworld.renting.exceptions.notfound.EconomicDataNotFoundException;
-import com.helloworld.renting.service.economicdata.EconomicDataService;
+import com.helloworld.renting.service.economicData.EconomicDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
