@@ -4,7 +4,6 @@ import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
 import com.helloworld.renting.entities.EconomicDataEmployed;
 import com.helloworld.renting.entities.EconomicDataSelfEmployed;
-import com.helloworld.renting.exceptions.RentingException;
 import com.helloworld.renting.exceptions.db.DBException;
 import com.helloworld.renting.exceptions.notfound.EconomicDataNotFoundException;
 import com.helloworld.renting.mapper.ClientMapper;
@@ -17,7 +16,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,33 +24,23 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class EconomicDataServiceTest {
 
-    EconomicDataService sut;
-
-    @Mock
-    EconomicDataEmployedMapper economicDataEmployedMapper;
-
-    @Mock
-    EconomicDataSelfEmployedMapper economicDataSelfEmployedMapper;
-
     @InjectMocks
     private EconomicDataService service;
 
-    @Mock private EconomicDataSelfEmployedMapper selfEmployedMapper;
     @Mock private EconomicDataEmployedMapper employedMapper;
+    @Mock private EconomicDataSelfEmployedMapper selfEmployedMapper;
     @Mock private StructMapperToEntity structMapperToEntity;
     @Mock private StructMapperToDto structMapperToDto;
     @Mock private ClientMapper clientMapper;
 
     @BeforeEach
     void setup() {
-        sut = new EconomicDataService(economicDataSelfEmployedMapper, economicDataEmployedMapper, clientMapper, structMapperToDto, structMapperToEntity);
-        MockitoAnnotations.openMocks(this);
+        // Mockito annotations ya manejado por @ExtendWith y @InjectMocks
     }
 
     @Test
@@ -65,8 +53,6 @@ class EconomicDataServiceTest {
         EconomicDataSelfEmployed entity = new EconomicDataSelfEmployed();
 
         when(clientMapper.existsById(1L)).thenReturn(true);
-        when(clientMapper.findById(1L)).thenReturn(new com.helloworld.renting.entities.Client());
-        when(structMapperToDto.clientToDto(any())).thenReturn(dto.getClient()); // opcional, según cómo sea el DTO
         when(selfEmployedMapper.existsSelfEmployedByClientIdAndYear(1L, 2024)).thenReturn(false);
         when(structMapperToEntity.economicalDataSelfEmployedToEntity(dto)).thenReturn(entity);
         when(structMapperToDto.economicalDataSelfEmployedToDto(entity)).thenReturn(dto);
@@ -109,7 +95,6 @@ class EconomicDataServiceTest {
     void shouldAddEmployedSuccessfully() {
         EconomicDataEmployedDto dto = new EconomicDataEmployedDto();
         dto.setGrossIncome(BigDecimal.TEN);
-        dto.setNetIncome(BigDecimal.ONE);
         dto.setStartDate(LocalDate.of(2024, 1, 1));
         dto.setEndDate(LocalDate.of(2024, 12, 31));
         dto.setYearEntry(2024);
@@ -117,8 +102,6 @@ class EconomicDataServiceTest {
         EconomicDataEmployed entity = new EconomicDataEmployed();
 
         when(clientMapper.existsById(1L)).thenReturn(true);
-        when(clientMapper.findById(1L)).thenReturn(new com.helloworld.renting.entities.Client());
-        when(structMapperToDto.clientToDto(any())).thenReturn(dto.getClient());
         when(employedMapper.existsEmployedByClientIdAndYear(1L, 2024)).thenReturn(false);
         when(structMapperToEntity.economicalDataEmployedToEntity(dto)).thenReturn(entity);
         when(structMapperToDto.economicalDataEmployedToDto(entity)).thenReturn(dto);
@@ -164,121 +147,90 @@ class EconomicDataServiceTest {
     }
 
     @Test
-    void should_delete_when_economicDataEmployedExists() {
-        // Given
+    void shouldDeleteWhenEconomicDataEmployedExists() {
         Long id = 1L;
-        lenient().doNothing().when(economicDataEmployedMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataEmployedMapper).getEconomicDataEmployedByClientId(id);
+        when(employedMapper.getEconomicDataEmployedByClientId(id)).thenReturn(List.of(new EconomicDataEmployed()));
 
-        // When
-        sut.deleteEconomicDataEmployedFromClient(id);
+        service.deleteEconomicDataEmployedFromClient(id);
 
-        // Then
-        verify(economicDataEmployedMapper).deleteEconomicDataEmployedByClientId(id);
+        verify(employedMapper).deleteEconomicDataEmployedByClientId(id);
     }
 
     @Test
-    void should_throwException_when_noEconomicDataEmployedExists() {
-        // Given
-        String message = "No economic data employed found for client";
+    void shouldThrowExceptionWhenNoEconomicDataEmployedExists() {
         Long id = 1L;
-        lenient().doNothing().when(economicDataEmployedMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doReturn(List.of()).when(economicDataEmployedMapper).getEconomicDataEmployedByClientId(id);
+        when(employedMapper.getEconomicDataEmployedByClientId(id)).thenReturn(List.of());
 
-        // When
-        EconomicDataNotFoundException exception = assertThrows(EconomicDataNotFoundException.class, () -> sut.deleteEconomicDataEmployedFromClient(id));
+        EconomicDataNotFoundException ex = assertThrows(EconomicDataNotFoundException.class, () ->
+                service.deleteEconomicDataEmployedFromClient(id));
 
-        // Then
-        assertEquals(message, exception.getMessage());
+        assertEquals("No economic data employed found for client", ex.getMessage());
     }
 
     @Test
-    void should_delete_when_economicDataSelfEmployedExists() {
-        // Given
+    void shouldDeleteWhenEconomicDataSelfEmployedExists() {
         Long id = 1L;
-        lenient().doNothing().when(economicDataSelfEmployedMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataSelfEmployedMapper).getEconomicDataSelfEmployedByClientId(id);
+        when(selfEmployedMapper.getEconomicDataSelfEmployedByClientId(id)).thenReturn(List.of(new EconomicDataSelfEmployed()));
 
-        // When
-        sut.deleteEconomicDataSelfEmployedFromClient(id);
+        service.deleteEconomicDataSelfEmployedFromClient(id);
 
-        // Then
-        verify(economicDataSelfEmployedMapper).deleteEconomicDataSelfEmployedByClientId(id);
+        verify(selfEmployedMapper).deleteEconomicDataSelfEmployedByClientId(id);
     }
 
     @Test
-    void should_throwException_when_noEconomicDataSelfEmployedExists() {
-        // Given
-        String message = "No economic data self employed found for client";
+    void shouldThrowExceptionWhenNoEconomicDataSelfEmployedExists() {
         Long id = 1L;
-        lenient().doNothing().when(economicDataSelfEmployedMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doReturn(List.of()).when(economicDataSelfEmployedMapper).getEconomicDataSelfEmployedByClientId(id);
+        when(selfEmployedMapper.getEconomicDataSelfEmployedByClientId(id)).thenReturn(List.of());
 
-        // When
-        EconomicDataNotFoundException exception = assertThrows(EconomicDataNotFoundException.class, () -> sut.deleteEconomicDataSelfEmployedFromClient(id));
+        EconomicDataNotFoundException ex = assertThrows(EconomicDataNotFoundException.class, () ->
+                service.deleteEconomicDataSelfEmployedFromClient(id));
 
-        // Then
-        assertEquals(message, exception.getMessage());
+        assertEquals("No economic data self employed found for client", ex.getMessage());
     }
 
     @Test
-    void should_throwException_when_deleteEconomicDataEmployedFails() {
-        // Given
-        String message = "Error deleting economic data employed from client";
+    void shouldThrowExceptionWhenDeleteEconomicDataEmployedFails() {
         Long id = 1L;
-        lenient().doThrow(RentingException.class).when(economicDataEmployedMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataEmployed())).when(economicDataEmployedMapper).getEconomicDataEmployedByClientId(id);
+        when(employedMapper.getEconomicDataEmployedByClientId(id)).thenReturn(List.of(new EconomicDataEmployed()));
+        doThrow(new RuntimeException()).when(employedMapper).deleteEconomicDataEmployedByClientId(id);
 
-        // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataEmployedFromClient(id));
+        DBException ex = assertThrows(DBException.class, () ->
+                service.deleteEconomicDataEmployedFromClient(id));
 
-        // Then
-        assertEquals(message, exception.getMessage());
+        assertEquals("Error deleting economic data employed from client", ex.getMessage());
     }
 
     @Test
-    void should_throwException_when_deleteEconomicDataSelfEmployedFails() {
-        // Given
-        String message = "Error deleting economic data self employed from client";
+    void shouldThrowExceptionWhenDeleteEconomicDataSelfEmployedFails() {
         Long id = 1L;
-        lenient().doThrow(RentingException.class).when(economicDataSelfEmployedMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doReturn(List.of(new EconomicDataSelfEmployed())).when(economicDataSelfEmployedMapper).getEconomicDataSelfEmployedByClientId(id);
+        when(selfEmployedMapper.getEconomicDataSelfEmployedByClientId(id)).thenReturn(List.of(new EconomicDataSelfEmployed()));
+        doThrow(new RuntimeException()).when(selfEmployedMapper).deleteEconomicDataSelfEmployedByClientId(id);
 
-        // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataSelfEmployedFromClient(id));
+        DBException ex = assertThrows(DBException.class, () ->
+                service.deleteEconomicDataSelfEmployedFromClient(id));
 
-        // Then
-        assertEquals(message, exception.getMessage());
+        assertEquals("Error deleting economic data self employed from client", ex.getMessage());
     }
 
     @Test
-    void should_throwException_when_getEconomicDataEmployedFails() {
-        // Given
-        String message = "Error checking if economic data employed exists for client";
+    void shouldThrowExceptionWhenGetEconomicDataEmployedFails() {
         Long id = 1L;
-        lenient().doNothing().when(economicDataEmployedMapper).deleteEconomicDataEmployedByClientId(id);
-        lenient().doThrow(DBException.class).when(economicDataEmployedMapper).getEconomicDataEmployedByClientId(id);
+        when(employedMapper.getEconomicDataEmployedByClientId(id)).thenThrow(new RuntimeException());
 
-        // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataEmployedFromClient(id));
+        DBException ex = assertThrows(DBException.class, () ->
+                service.deleteEconomicDataEmployedFromClient(id));
 
-        // Then
-        assertEquals(message, exception.getMessage());
+        assertEquals("Error checking if economic data employed exists for client", ex.getMessage());
     }
 
     @Test
-    void should_throwException_when_getEconomicDataSelfEmployedFails() {
-        // Given
-        String message = "Error checking if economic data self employed exists for client";
+    void shouldThrowExceptionWhenGetEconomicDataSelfEmployedFails() {
         Long id = 1L;
-        lenient().doNothing().when(economicDataSelfEmployedMapper).deleteEconomicDataSelfEmployedByClientId(id);
-        lenient().doThrow(DBException.class).when(economicDataSelfEmployedMapper).getEconomicDataSelfEmployedByClientId(id);
+        when(selfEmployedMapper.getEconomicDataSelfEmployedByClientId(id)).thenThrow(new RuntimeException());
 
-        // When
-        DBException exception = assertThrows(DBException.class, () -> sut.deleteEconomicDataSelfEmployedFromClient(id));
+        DBException ex = assertThrows(DBException.class, () ->
+                service.deleteEconomicDataSelfEmployedFromClient(id));
 
-        // Then
-        assertEquals(message, exception.getMessage());
+        assertEquals("Error checking if economic data self employed exists for client", ex.getMessage());
     }
-
 }
