@@ -109,6 +109,7 @@ class CreateClientTest {
         verify(toEntity).clientToEntity(inputDto);
         verify(clientMapper).insert(client);
         verify(toDto).clientToDto(client);
+
     }
 
     @Test
@@ -141,11 +142,12 @@ class CreateClientTest {
         Client mappedClient = new Client();
         mappedClient.setNif("12345678A");
 
+
         when(clientMapper.existsByNif(any())).thenReturn(1);
         when(clientMapper.existsByEmail(any())).thenReturn(1);
         when(toEntity.clientToEntity(inputDto)).thenReturn(mappedClient);
         when(toDto.clientToDto(any())).thenReturn(new ClientDto());
-
+      
         // When
         clientService.createClient(inputDto);
 
@@ -324,7 +326,6 @@ class CreateClientTest {
         inputDto.setEmail("test@example.com");
         inputDto.setNif("1");
         when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,

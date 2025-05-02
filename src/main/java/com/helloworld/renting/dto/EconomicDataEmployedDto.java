@@ -27,6 +27,8 @@ public class EconomicDataEmployedDto {
     @NotNull
     private LocalDate startDate;
 
+    private LocalDate endDate;
+
     @NotNull
     @Positive
     private Integer yearEntry;

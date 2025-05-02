@@ -76,6 +76,13 @@ public class ClientService {
         Country country = countryMapper.getCountry(idCountry);
         CountryDto countryDto = toDto.countryToDto(country);
         dto.setCountry(countryDto);
+      
+        validateCountry(clientDto.getCountryId());
+        validateAddress(clientDto.getAddressId());
+
+        // Converting to entity
+        Client client = toEntity.clientToEntity(clientDto);
+        clientMapper.insert(client);
 
         Address address = addressMapper.getAddress(idAddress);
         AddressDto addressDto = toDto.addressToDto(address);
