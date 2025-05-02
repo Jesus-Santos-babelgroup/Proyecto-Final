@@ -49,9 +49,9 @@ public class EconomicDataService {
             Long clientId) {
 
         checkIfClientExist(clientId);
-        Client client = clientMapper.findById(clientId);
-        economicDataSelfEmployedDto.setClient(structMapperToDto.clientToDto(client));
-
+//        Client client = clientMapper.findById(clientId);
+//        economicDataSelfEmployedDto.setClient(structMapperToDto.clientToDto(client));
+        economicDataSelfEmployedDto.setClientId(clientId);
         checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
 
         EconomicDataSelfEmployed economicDataSelfEmployed =
@@ -68,8 +68,10 @@ public class EconomicDataService {
             Long clientId) {
 
         checkIfClientExist(clientId);
-        Client client = clientMapper.findById(clientId);
-        economicDataEmployedDto.setClient(structMapperToDto.clientToDto(client));
+//        Client client = clientMapper.findById(clientId);
+//        economicDataEmployedDto.setClient(structMapperToDto.clientToDto(client));
+
+        economicDataEmployedDto.setClientId(clientId);
 
         checkDuplicateYearEmployed(clientId, economicDataEmployedDto.getYearEntry());
         checkDateNotInFuture(economicDataEmployedDto.getStartDate());

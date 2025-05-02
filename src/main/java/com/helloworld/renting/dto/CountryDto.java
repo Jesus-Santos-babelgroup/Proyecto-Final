@@ -21,5 +21,5 @@ public class CountryDto {
 
     @NotBlank
     private String isoN3;
-
+  
 }
