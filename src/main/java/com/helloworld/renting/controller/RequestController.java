@@ -27,7 +27,6 @@ public class RequestController {
                     @ApiResponse(responseCode = "201", description = "Solicitud creada")
             }
     )
-
     public ResponseEntity<RentingRequestDto> createRequest(@Valid @RequestBody RentingRequestDto requestDto) {
         return null;
     }
