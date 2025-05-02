@@ -13,7 +13,7 @@ public class NonpaymentDto {
 
     @NotNull
     @Positive
-    private Long clientId;
+    private Long idClient;
 
     private String category;
 

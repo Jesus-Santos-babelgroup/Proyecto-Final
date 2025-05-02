@@ -1,6 +1,7 @@
 package com.helloworld.renting.service.request.approval.rules.approved.maxtotalinvestment;
 
-import com.helloworld.renting.exceptions.attributes.InvalidRentingRequestDtoException;
+import com.helloworld.renting.dto.RulesContextDto;
+import com.helloworld.renting.exceptions.attributes.InvalidRulesContextDtoException;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
 
@@ -30,20 +31,20 @@ public class MaxTotalInvestmentRule implements ApprovedRule {
     void validateTotalInvestment(BigDecimal totalInvestment) {
 
         if (totalInvestment == null) {
-            throw new InvalidRentingRequestDtoException("Total Investment cannot be null");
+            throw new InvalidRulesContextDtoException("Total Investment cannot be null");
         }
         if (totalInvestment.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidRentingRequestDtoException("Total Investment cannot be negative");
+            throw new InvalidRulesContextDtoException("Total Investment cannot be negative");
         }
     }
 
     void validateMaxTotalInvestment(BigDecimal limit) {
 
         if (limit == null) {
-            throw new InvalidRentingRequestDtoException("Max Total Investment cannot be null");
+            throw new InvalidRulesContextDtoException("Max Total Investment cannot be null");
         }
         if (limit.compareTo(BigDecimal.ZERO) < 0) {
-            throw new InvalidRentingRequestDtoException("Max Total Investment cannot be negative");
+            throw new InvalidRulesContextDtoException("Max Total Investment cannot be negative");
         }
     }
 

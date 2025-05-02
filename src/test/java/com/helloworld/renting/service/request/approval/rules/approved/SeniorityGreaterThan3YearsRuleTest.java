@@ -1,8 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.RulesContextDto;
-import com.helloworld.renting.service.request.approval.rules.approved.minimumSeniorityRule.MinimumSeniorityRule;
-import com.helloworld.renting.service.request.approval.rules.approved.minimumSeniorityRule.MinimumSeniorityProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,16 +8,13 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MinimumSeniorityRuleTest {
+class SeniorityGreaterThan3YearsRuleTest {
 
-    private MinimumSeniorityRule rule;
-    private MinimumSeniorityProperties properties;
+    private SeniorityGreaterThan3YearsRule rule;
 
     @BeforeEach
     void setUp() {
-        properties = new MinimumSeniorityProperties();
-        properties.setRequiredYears(3);
-        rule = new MinimumSeniorityRule(properties);
+        rule = new SeniorityGreaterThan3YearsRule();
     }
 
     @Test

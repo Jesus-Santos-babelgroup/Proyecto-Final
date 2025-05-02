@@ -1,5 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved.scoringBelowThresholdRule;
 
+import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import org.springframework.stereotype.Component;
 

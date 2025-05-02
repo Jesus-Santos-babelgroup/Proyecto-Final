@@ -1,5 +1,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
+import com.helloworld.renting.dto.RulesContextDto;
 import com.helloworld.renting.mapper.RulesMapper;
 import org.springframework.stereotype.Component;
 
