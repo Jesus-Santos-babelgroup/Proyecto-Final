@@ -1,10 +1,13 @@
-package com.helloworld.renting.service.client;
+package com.helloworld.renting.service.economicData;
 
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
+import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.entities.EconomicDataEmployed;
 import com.helloworld.renting.entities.EconomicDataSelfEmployed;
 import com.helloworld.renting.mapper.ClientMapper;
+import com.helloworld.renting.mapper.StructMapperToDto;
+import com.helloworld.renting.mapper.StructMapperToEntity;
 import com.helloworld.renting.mapper.economicalData.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,26 +21,20 @@ public class EconomicDataService {
 
     private final EconomicalDataSelfEmployedMapper economicalDataSelfEmployedMapper;
     private final EconomicalDataEmployedMapper economicalDataEmployedMapper;
-    private final StructEconomicalDataSelfEmployedMapperToDto selfEmployedMapperToDto;
-    private final StructEconomicalDataSelfEmployedMapperToEntity selfEmployedMapperToEntity;
-    private final StructEconomicalDataEmployedMapperToDto employedMapperToDto;
-    private final StructEconomicalDataEmployedMapperToEntity employedMapperToEntity;
     private final ClientMapper clientMapper;
+    private final StructMapperToDto structMapperToDto;
+    private final StructMapperToEntity structMapperToEntity;
 
     public EconomicDataService(EconomicalDataSelfEmployedMapper economicalDataSelfEmployedMapper,
                                EconomicalDataEmployedMapper economicalDataEmployedMapper,
-                               StructEconomicalDataSelfEmployedMapperToDto selfEmployedMapperToDto,
-                               StructEconomicalDataSelfEmployedMapperToEntity selfEmployedMapperToEntity,
-                               StructEconomicalDataEmployedMapperToDto employedMapperToDto,
-                               StructEconomicalDataEmployedMapperToEntity employedMapperToEntity,
-                               ClientMapper clientMapper){
+                               ClientMapper clientMapper,
+                               StructMapperToDto structMapperToDto,
+                               StructMapperToEntity structMapperToEntity) {
         this.economicalDataSelfEmployedMapper = economicalDataSelfEmployedMapper;
         this.economicalDataEmployedMapper = economicalDataEmployedMapper;
-        this.selfEmployedMapperToDto = selfEmployedMapperToDto;
-        this.selfEmployedMapperToEntity = selfEmployedMapperToEntity;
-        this.employedMapperToDto = employedMapperToDto;
-        this.employedMapperToEntity = employedMapperToEntity;
         this.clientMapper = clientMapper;
+        this.structMapperToDto = structMapperToDto;
+        this.structMapperToEntity = structMapperToEntity;
     }
 
     @Transactional
@@ -46,16 +43,17 @@ public class EconomicDataService {
             Long clientId) {
 
         checkIfClientExist(clientId);
-        economicDataSelfEmployedDto.setClientId(clientId);
+        Client client = clientMapper.findById(clientId);
+        economicDataSelfEmployedDto.setClient(structMapperToDto.clientToDto(client));
 
         checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
 
         EconomicDataSelfEmployed economicDataSelfEmployed =
-                selfEmployedMapperToEntity.toEntity(economicDataSelfEmployedDto);
+                structMapperToEntity.economicalDataSelfEmployedToEntity(economicDataSelfEmployedDto);
 
         economicalDataSelfEmployedMapper.insert(economicDataSelfEmployed);
 
-        return selfEmployedMapperToDto.toDto(economicDataSelfEmployed);
+        return structMapperToDto.economicalDataSelfEmployedToDto(economicDataSelfEmployed);
     }
 
     @Transactional
@@ -64,7 +62,8 @@ public class EconomicDataService {
             Long clientId) {
 
         checkIfClientExist(clientId);
-        economicDataEmployedDto.setClientId(clientId);
+        Client client = clientMapper.findById(clientId);
+        economicDataEmployedDto.setClient(structMapperToDto.clientToDto(client));
 
         checkDuplicateYearEmployed(clientId, economicDataEmployedDto.getYearEntry());
         checkDateNotInFuture(economicDataEmployedDto.getStartDate());
@@ -75,11 +74,11 @@ public class EconomicDataService {
         );
 
         EconomicDataEmployed economicDataEmployed =
-                employedMapperToEntity.toEntity(economicDataEmployedDto);
+                structMapperToEntity.economicalDataEmployedToEntity(economicDataEmployedDto);
 
         economicalDataEmployedMapper.insert(economicDataEmployed);
 
-        return employedMapperToDto.toDto(economicDataEmployed);
+        return structMapperToDto.economicalDataEmployedToDto(economicDataEmployed);
     }
 
 

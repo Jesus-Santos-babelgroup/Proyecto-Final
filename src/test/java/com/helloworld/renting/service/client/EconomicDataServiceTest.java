@@ -5,7 +5,10 @@ import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
 import com.helloworld.renting.entities.EconomicDataEmployed;
 import com.helloworld.renting.entities.EconomicDataSelfEmployed;
 import com.helloworld.renting.mapper.ClientMapper;
+import com.helloworld.renting.mapper.StructMapperToDto;
+import com.helloworld.renting.mapper.StructMapperToEntity;
 import com.helloworld.renting.mapper.economicalData.*;
+import com.helloworld.renting.service.economicData.EconomicDataService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -24,10 +27,8 @@ class EconomicDataServiceTest {
 
     @Mock private EconomicalDataSelfEmployedMapper selfEmployedMapper;
     @Mock private EconomicalDataEmployedMapper employedMapper;
-    @Mock private StructEconomicalDataSelfEmployedMapperToDto selfEmployedDtoMapper;
-    @Mock private StructEconomicalDataSelfEmployedMapperToEntity selfEmployedEntityMapper;
-    @Mock private StructEconomicalDataEmployedMapperToDto employedDtoMapper;
-    @Mock private StructEconomicalDataEmployedMapperToEntity employedEntityMapper;
+    @Mock private StructMapperToEntity structMapperToEntity;
+    @Mock private StructMapperToDto structMapperToDto;
     @Mock private ClientMapper clientMapper;
 
     @BeforeEach
@@ -45,9 +46,11 @@ class EconomicDataServiceTest {
         EconomicDataSelfEmployed entity = new EconomicDataSelfEmployed();
 
         when(clientMapper.existsById(1L)).thenReturn(true);
+        when(clientMapper.findById(1L)).thenReturn(new com.helloworld.renting.entities.Client());
+        when(structMapperToDto.clientToDto(any())).thenReturn(dto.getClient()); // opcional, según cómo sea el DTO
         when(selfEmployedMapper.existsSelfEmployedByClientIdAndYear(1L, 2024)).thenReturn(false);
-        when(selfEmployedEntityMapper.toEntity(dto)).thenReturn(entity);
-        when(selfEmployedDtoMapper.toDto(entity)).thenReturn(dto);
+        when(structMapperToEntity.economicalDataSelfEmployedToEntity(dto)).thenReturn(entity);
+        when(structMapperToDto.economicalDataSelfEmployedToDto(entity)).thenReturn(dto);
 
         EconomicDataSelfEmployedDto result = service.addEconomicDataSelfEmployed(dto, 1L);
 
@@ -95,9 +98,11 @@ class EconomicDataServiceTest {
         EconomicDataEmployed entity = new EconomicDataEmployed();
 
         when(clientMapper.existsById(1L)).thenReturn(true);
+        when(clientMapper.findById(1L)).thenReturn(new com.helloworld.renting.entities.Client());
+        when(structMapperToDto.clientToDto(any())).thenReturn(dto.getClient());
         when(employedMapper.existsEmployedByClientIdAndYear(1L, 2024)).thenReturn(false);
-        when(employedEntityMapper.toEntity(dto)).thenReturn(entity);
-        when(employedDtoMapper.toDto(entity)).thenReturn(dto);
+        when(structMapperToEntity.economicalDataEmployedToEntity(dto)).thenReturn(entity);
+        when(structMapperToDto.economicalDataEmployedToDto(entity)).thenReturn(dto);
 
         EconomicDataEmployedDto result = service.addEconomicDataEmployed(dto, 1L);
 
@@ -139,3 +144,4 @@ class EconomicDataServiceTest {
         assertTrue(ex.getReason().contains("El año de entrada debe coincidir"));
     }
 }
+

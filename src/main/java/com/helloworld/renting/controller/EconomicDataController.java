@@ -2,7 +2,7 @@ package com.helloworld.renting.controller;
 
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
-import com.helloworld.renting.service.client.EconomicDataService;
+import com.helloworld.renting.service.economicData.EconomicDataService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "clients_economic_data", description = "Operaciones sobre la información bancaria de los clientes")
 public class EconomicDataController{
 
-    private final EconomicDataService economicDataService;
+    private final com.helloworld.renting.service.economicData.EconomicDataService economicDataService;
 
     public EconomicDataController(EconomicDataService economicDataService){
         this.economicDataService = economicDataService;
     }
 
-    @PostMapping("{clientId}/self_employed")
+    @PostMapping("{id}/economic_data/self_employed")
     @Operation(
             summary = "Añadir ingresos del cliente",
             description = "Añadir ingresos autónomos de un cliente",
@@ -37,17 +37,17 @@ public class EconomicDataController{
     )
     public ResponseEntity<EconomicDataSelfEmployedDto> addEconomicalDataSelfEmployee(
             @Valid @RequestBody EconomicDataSelfEmployedDto economicDataSelfEmployedDto,
-            @PathVariable Long clientId) {
+            @PathVariable Long id) {
 
         EconomicDataSelfEmployedDto economicDataCreated = economicDataService.addEconomicDataSelfEmployed(
                 economicDataSelfEmployedDto,
-                clientId);
+                id);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(economicDataCreated);
     }
 
-    @PostMapping("{clientId}/employed")
+    @PostMapping("{id}/economic_data/employed")
     @Operation(
             summary = "Añadir ingresos de un cliente",
             description = "Añadir ingresos de tipo asalariado de un cliente",
@@ -61,10 +61,10 @@ public class EconomicDataController{
     )
     public ResponseEntity<EconomicDataEmployedDto> addEconomicalDataEmployee(
             @Valid @RequestBody EconomicDataEmployedDto economicDataEmployedDto,
-            @PathVariable Long clientId) {
+            @PathVariable Long id) {
         EconomicDataEmployedDto economicDataCreated = economicDataService.addEconomicDataEmployed(
                 economicDataEmployedDto,
-                clientId);
+                id);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(economicDataCreated);
