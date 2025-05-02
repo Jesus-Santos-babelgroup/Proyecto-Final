@@ -7,6 +7,8 @@ import com.helloworld.renting.exceptions.db.DuplicateModel;
 import com.helloworld.renting.mapper.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
+
 
 import java.time.LocalDate;
 
@@ -31,6 +33,7 @@ public class ClientService {
         this.countryMapper = countryMapper;
         this.addressMapper = addressMapper;
     }
+
 
     @Transactional
     public ClientDto createClient(ClientDto clientDto) {
@@ -146,4 +149,19 @@ public class ClientService {
             }
         }
     }
+
+    @Transactional
+    public void deleteClientById(Long id) {
+
+        if (!clientMapper.existsById(id)) {
+            throw new ClientNotFoundException("Cliente no encontrado con ID " + id);
+        }
+
+
+        boolean deleted = clientMapper.deleteById(id);
+        if (!deleted) {
+            throw new RuntimeException("No se pudo eliminar el cliente con ID " + id);
+        }
+    }
+
 }
