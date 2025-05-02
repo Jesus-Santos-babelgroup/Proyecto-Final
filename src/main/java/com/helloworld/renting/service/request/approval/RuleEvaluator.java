@@ -1,6 +1,6 @@
 package com.helloworld.renting.service.request.approval;
 
-import com.helloworld.renting.dto.RulesContextDto;
+import com.helloworld.renting.dto.RentingRequestDto;
 import com.helloworld.renting.entities.PreResultType;
 import com.helloworld.renting.service.request.approval.rules.approved.ApprovedRule;
 import com.helloworld.renting.service.request.approval.rules.denial.DenialRule;
@@ -20,11 +20,11 @@ public class RuleEvaluator {
     }
 
 
-    public PreResultType evaluate(RulesContextDto rulesContextDto) {
-        if (denialRules.stream().anyMatch(r -> !r.conditionMet(rulesContextDto))) {
+    public PreResultType evaluate(RentingRequestDto rentingRequestDto) {
+        if (denialRules.stream().anyMatch(r -> !r.conditionMet(rentingRequestDto))) {
             return PreResultType.PREDENIED;
         }
-        if (approvalRules.stream().allMatch(r -> r.conditionMet(rulesContextDto))) {
+        if (approvalRules.stream().allMatch(r -> r.conditionMet(rentingRequestDto))) {
             return PreResultType.PREAPPROVED;
         }
         return PreResultType.NEEDS_REVIEW;

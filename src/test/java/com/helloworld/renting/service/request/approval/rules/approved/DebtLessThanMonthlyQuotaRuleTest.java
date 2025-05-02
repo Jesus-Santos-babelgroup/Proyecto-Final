@@ -2,7 +2,6 @@
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.DebtDto;
-import com.helloworld.renting.dto.RulesContextDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

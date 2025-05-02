@@ -5,6 +5,8 @@ import com.helloworld.renting.entities.Client;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-public interface StructMapperToEntity {
-    Client clientToEntity(ClientDto dto);
+public interface MapStructClient {
+    Client toEntity(ClientDto dto);
+
+    ClientDto toDto(Client entity);
 }
