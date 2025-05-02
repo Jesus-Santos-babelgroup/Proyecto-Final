@@ -1,6 +1,7 @@
 package com.helloworld.renting.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
@@ -12,9 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,10 +32,7 @@ class EconomicDataControllerTest {
     @Mock
     private EconomicDataService economicDataService;
 
-    @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
     private ClientDto clientDto;
@@ -44,6 +42,9 @@ class EconomicDataControllerTest {
     @BeforeEach
     void setup() {
         sut = new EconomicDataController(economicDataService);
+        objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        mockMvc = MockMvcBuilders.standaloneSetup(sut).build();
         selfEmployedDto = new EconomicDataSelfEmployedDto();
         clientDto = new ClientDto();
         clientDto.setId(1L);
@@ -61,7 +62,6 @@ class EconomicDataControllerTest {
         employedDto.setEndDate(LocalDate.of(2023, 12, 31));
         employedDto.setYearEntry(2023);
     }
-
     /*
     @Test
     void shouldCreateSelfEmployedData() throws Exception {
@@ -92,7 +92,6 @@ class EconomicDataControllerTest {
                 .andExpect(jsonPath("$.yearEntry").value(2023));
     }
     */
-
     @Test
     void should_returnNoContent_when_economicDataEmployedIsDeleted() {
         // Given
