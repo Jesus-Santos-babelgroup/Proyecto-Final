@@ -2,8 +2,8 @@ package com.helloworld.renting.service.economicdata;
 
 import com.helloworld.renting.exceptions.db.DBException;
 import com.helloworld.renting.exceptions.notfound.EconomicDataNotFoundException;
-import com.helloworld.renting.mapper.EconomicDataEmployedMapper;
-import com.helloworld.renting.mapper.EconomicDataSelfEmployedMapper;
+import com.helloworld.renting.mapper.economicalData.EconomicDataEmployedMapper;
+import com.helloworld.renting.mapper.economicalData.EconomicDataSelfEmployedMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
