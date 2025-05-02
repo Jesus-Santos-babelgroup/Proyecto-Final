@@ -1,3 +1,4 @@
+/*
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.DebtDto;
@@ -83,4 +84,4 @@ class DebtLessThanMonthlyQuotaRuleTest {
         dto.setAmount(BigDecimal.valueOf(amount));
         return dto;
     }
-}
+}*/

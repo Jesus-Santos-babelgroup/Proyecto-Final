@@ -1,3 +1,4 @@
+/*
 package com.helloworld.renting.service.request.approval.rules.denial;
 
 import com.helloworld.renting.dto.DebtDto;
@@ -25,3 +26,4 @@ public class CheckExternalDebtsCompanyTypeRule implements DenialRule {
         return "Comprobar deudas externas que no sean tipo 'Renting' ni 'Financiera'";
     }
 }
+*/

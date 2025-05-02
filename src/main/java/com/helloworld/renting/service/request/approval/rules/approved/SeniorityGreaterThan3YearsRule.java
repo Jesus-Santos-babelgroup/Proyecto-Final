@@ -1,3 +1,4 @@
+/*
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import org.springframework.stereotype.Component;
@@ -19,3 +20,4 @@ public class SeniorityGreaterThan3YearsRule implements ApprovedRule {
         return "SeniorityGreaterThan3Years";
     }
 }
+*/

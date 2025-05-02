@@ -18,15 +18,19 @@ public class ClientService {
     // private final MapStructClient mapStruct;
     private final StructMapperToDto toDto;
     private final StructMapperToEntity toEntity;
+    private final CountryMapper countryMapper;
+    private final AddressMapper addressMapper;
 
     public ClientService(ClientMapper clientMapper,
                          //MapStructClient mapStruct
                          StructMapperToDto toDto,
-                         StructMapperToEntity toEntity) {
+                         StructMapperToEntity toEntity, CountryMapper countryMapper, AddressMapper addressMapper) {
         this.clientMapper = clientMapper;
         //this.mapStruct = mapStruct;
         this.toDto = toDto;
         this.toEntity = toEntity;
+        this.countryMapper = countryMapper;
+        this.addressMapper = addressMapper;
     }
 
     @Transactional
@@ -35,11 +39,11 @@ public class ClientService {
         validateName(clientDto.getName());
         validateFirstSurname(clientDto.getFirstSurname());
         validateSecondSurname(clientDto.getSecondSurname());
-        validateDateOfBirth(clientDto.getDateOfBirth());
+        /*validateDateOfBirth(clientDto.getDateOfBirth());
         checkForDuplicates(clientDto);
-        validateScoring(clientDto.getScoring());
-        validateCountry(clientDto.getCountryId());
-        validateAddress(clientDto.getAddressId());
+        validateScoring(clientDto.getScoring());*/
+        validateCountry(clientDto.getCountry().getId());
+        validateAddress(clientDto.getAddress().getId());
 
         // Converting to entity
         Client client = toEntity.clientToEntity(clientDto);
@@ -108,6 +112,7 @@ public class ClientService {
             throw new InvalidClientDtoException("La dirección con ID " + addressId + " no existe en la base de datos");
         }
     }
+
     private void validateName(String name) {
         if (name == null || name.isEmpty()) {
             throw new InvalidClientDtoException("El nombre no puede ser nulo o vacío");

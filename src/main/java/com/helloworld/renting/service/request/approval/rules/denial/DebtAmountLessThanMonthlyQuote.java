@@ -36,6 +36,12 @@ public class DebtAmountLessThanMonthlyQuote implements DenialRule {
         BigDecimal monthlyQuota = requestDto.getQuotaFinal();
         BigDecimal totalDebt = BigDecimal.ZERO;
         for (DebtDto debt : listDebtsDto) {
+            if (debt.getAmount() == null) {
+                throw new InvalidRentingRequestDtoException("La deuda no puede ser null.");
+            }
+            if (debt.getAmount().compareTo(BigDecimal.valueOf(0)) < 0) {
+                throw new InvalidRentingRequestDtoException("La deuda no puede ser negativa.");
+            }
             totalDebt = totalDebt.add(debt.getAmount());
         }
 

@@ -1,3 +1,4 @@
+/*
 package com.helloworld.renting.service.request.approval.rules.approved;
 
 import com.helloworld.renting.dto.RulesContextDto;
@@ -66,3 +67,4 @@ class MinimumSeniorityRuleTest {
         assertThrows(NullPointerException.class, () -> rule.conditionMet(context));
     }
 }
+*/

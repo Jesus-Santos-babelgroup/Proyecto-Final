@@ -18,8 +18,11 @@ public class InvestmentExceedsNetRuleTest {
 
     @BeforeEach
     public void setup() {
+        mapper = mock(InvestmentExceedsNetMapper.class);
+
         rule = new InvestmentExceedsNetRule(mapper);
         rentingRequestDto = mock(RentingRequestDto.class);
+        when(rentingRequestDto.getId()).thenReturn(1L);
     }
 
     @Test
