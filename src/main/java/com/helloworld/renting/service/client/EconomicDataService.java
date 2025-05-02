@@ -30,7 +30,7 @@ public class EconomicDataService {
                                StructEconomicalDataSelfEmployedMapperToEntity selfEmployedMapperToEntity,
                                StructEconomicalDataEmployedMapperToDto employedMapperToDto,
                                StructEconomicalDataEmployedMapperToEntity employedMapperToEntity,
-                               ClientMapper clientMapper){
+                               ClientMapper clientMapper) {
         this.economicalDataSelfEmployedMapper = economicalDataSelfEmployedMapper;
         this.economicalDataEmployedMapper = economicalDataEmployedMapper;
         this.selfEmployedMapperToDto = selfEmployedMapperToDto;
@@ -46,7 +46,7 @@ public class EconomicDataService {
             Long clientId) {
 
         checkIfClientExist(clientId);
-        economicDataSelfEmployedDto.setClientId(clientId);
+        //economicDataSelfEmployedDto.setClientId(clientId);
 
         checkDuplicateYearSelfEmployed(clientId, economicDataSelfEmployedDto.getYearEntry());
 
@@ -64,7 +64,7 @@ public class EconomicDataService {
             Long clientId) {
 
         checkIfClientExist(clientId);
-        economicDataEmployedDto.setClientId(clientId);
+        //economicDataEmployedDto.setClientId(clientId);
 
         checkDuplicateYearEmployed(clientId, economicDataEmployedDto.getYearEntry());
         checkDateNotInFuture(economicDataEmployedDto.getStartDate());
@@ -109,8 +109,8 @@ public class EconomicDataService {
         }
     }
 
-    private void checkIfClientExist(Long clientId){
-        if(!clientMapper.existsById(clientId)){
+    private void checkIfClientExist(Long clientId) {
+        if (!clientMapper.existsById(clientId)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El cliente no existe");
         }
     }
