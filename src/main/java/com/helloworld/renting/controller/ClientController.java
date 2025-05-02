@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.helloworld.renting.exceptions.notfound.ClientNotFoundException;
 
 import java.util.List;
 
@@ -157,13 +158,22 @@ public class ClientController {
             tags = {"clients"},
             responses = {
                     @ApiResponse(responseCode = "204", description = "Cliente eliminado"),
-                    @ApiResponse(responseCode = "404", description = "Cliente no encontrado o con solicitudes")
+                    @ApiResponse(responseCode = "404", description = "Cliente no encontrado"),
+                    @ApiResponse(responseCode = "409", description = "Cliente con solicitudes registradas")
             }
     )
     public ResponseEntity<Void> deleteClient(@PathVariable Long id) {
-        clientService.deleteClientById(id);
-        return ResponseEntity.noContent().build();
+        try {
+            clientService.deleteClientById(id);
+            return ResponseEntity.noContent().build();
+        } catch (ClientNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (Exception e) {
+            // Manejo genérico de errores inesperados (por ejemplo, problemas de conexión)
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
 
     @GetMapping("/{id}")
