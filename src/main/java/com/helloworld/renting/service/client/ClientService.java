@@ -55,7 +55,7 @@ public class ClientService {
         validateEmail(clientDto.getEmail());
         validateNif(clientDto.getNif());
         validateDateOfBirth(clientDto.getDateOfBirth());
-        checkForDuplicates(clientDto);
+        checkForDuplicatesOnCreate(clientDto); // Usa el nuevo método aquí
         validateScoring(clientDto.getScoring());
         validateCountry(clientDto.getCountry());
         validateAddress(clientDto.getAddress());
@@ -65,10 +65,11 @@ public class ClientService {
         Client client = toEntity.clientToEntity(clientDto);
         String idCountry = countryService.getIdCountry(clientDto.getCountry());
         client.setCountryId(idCountry);
-        Long idAddress = addressService.getIdAddress(clientDto.getAddress());
+        Long idAddress = addressService.getIdAddressSafe(clientDto.getAddress());
         client.setAddressId(idAddress);
-        Long idNotiAddress = addressService.getIdAddress(clientDto.getNotificationAddress());
+        Long idNotiAddress = addressService.getIdAddressSafe(clientDto.getNotificationAddress());
         client.setNotificationAddressId(idNotiAddress);
+
         clientMapper.insert(client);
 
         ClientDto dto = toDto.clientToDto(client);
@@ -241,6 +242,20 @@ public class ClientService {
     private void validateScoring(Integer scoring) {
         if (scoring == null || scoring < 0) {
             throw new InvalidClientDtoException("El scoring no puede ser nulo ni negativo");
+        }
+    }
+
+    private void checkForDuplicatesOnCreate(ClientDto clientDto) {
+        if (clientMapper.existsByNif(clientDto.getNif()) > 0) {
+            throw new DuplicateModel("Ya existe un cliente con este NIF: " + clientDto.getNif());
+        }
+
+        if (clientMapper.existsByEmail(clientDto.getEmail()) > 0) {
+            throw new DuplicateModel("Ya existe un cliente con este email: " + clientDto.getEmail());
+        }
+
+        if (clientMapper.existsByPhone(clientDto.getPhone()) > 0) {
+            throw new DuplicateModel("Ya existe un cliente con este teléfono: " + clientDto.getPhone());
         }
     }
 

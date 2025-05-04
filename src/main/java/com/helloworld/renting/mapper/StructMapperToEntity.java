@@ -1,10 +1,7 @@
 package com.helloworld.renting.mapper;
 
-import com.helloworld.renting.dto.ClientDto;
-import com.helloworld.renting.dto.CountryDto;
+import com.helloworld.renting.dto.*;
 import com.helloworld.renting.entities.Address;
-import com.helloworld.renting.dto.EconomicDataEmployedDto;
-import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
 import com.helloworld.renting.entities.Client;
 import com.helloworld.renting.entities.Country;
 import com.helloworld.renting.entities.EconomicDataEmployed;
@@ -17,7 +14,7 @@ public interface StructMapperToEntity {
 
     Country countryToEntity(CountryDto dto);
 
-    Address addressToEntity(Address dto);
+    Address addressToEntity(AddressDto dto);
 
     EconomicDataEmployed economicalDataEmployedToEntity(EconomicDataEmployedDto dto);
 
