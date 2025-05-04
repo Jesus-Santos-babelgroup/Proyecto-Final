@@ -37,7 +37,7 @@ public class ClientController {
     @PostMapping("")
     @Operation(
             summary = "Crear un cliente",
-            description = "Crea un nuevo cliente potencial",
+            description = "Crea un nuevo cliente potencial con su dirección y país",
             tags = {"clients"}
     )
     @ApiResponses(value = {
@@ -53,16 +53,28 @@ public class ClientController {
                                             summary = "Cliente creado correctamente",
                                             value = "{\n" +
                                                     "  \"id\": 1,\n" +
-                                                    "  \"name\": \"Juan\",\n" +
-                                                    "  \"firstSurname\": \"García\",\n" +
-                                                    "  \"secondSurname\": \"López\",\n" +
-                                                    "  \"addressId\": 1,\n" +
-                                                    "  \"countryId\": 1,\n" +
-                                                    "  \"phone\": \"666555444\",\n" +
-                                                    "  \"nif\": \"12345678A\",\n" +
-                                                    "  \"dateOfBirth\": \"1990-01-15\",\n" +
-                                                    "  \"email\": \"juan@example.com\",\n" +
-                                                    "  \"scoring\": 80\n" +
+                                                    "  \"name\": \"Arturo\",\n" +
+                                                    "  \"firstSurname\": \"Pérez\",\n" +
+                                                    "  \"secondSurname\": \"Sanchís\",\n" +
+                                                    "  \"phone\": \"667111389\",\n" +
+                                                    "  \"nif\": \"11214139Z\",\n" +
+                                                    "  \"dateOfBirth\": \"1951-10-25\",\n" +
+                                                    "  \"email\": \"Arturo@ejemplo.com\",\n" +
+                                                    "  \"scoring\": 44,\n" +
+                                                    "  \"country\": {\n" +
+                                                    "    \"isoA2\": \"ES\",\n" +
+                                                    "    \"name\": \"España\"\n" +
+                                                    "  },\n" +
+                                                    "  \"address\": {\n" +
+                                                    "    \"city\": \"Madrid\",\n" +
+                                                    "    \"street\": \"Calle Gran Vía 111\",\n" +
+                                                    "    \"zipCode\": \"28013\"\n" +
+                                                    "  },\n" +
+                                                    "  \"notificationAddress\": {\n" +
+                                                    "    \"city\": \"Madrid\",\n" +
+                                                    "    \"street\": \"Calle Gran Vía 111\",\n" +
+                                                    "    \"zipCode\": \"28013\"\n" +
+                                                    "  }\n" +
                                                     "}"
                                     )
                             }
@@ -80,7 +92,7 @@ public class ClientController {
                                                     "  \"timestamp\": \"2023-07-25T10:15:30.123+00:00\",\n" +
                                                     "  \"status\": 400,\n" +
                                                     "  \"error\": \"Bad Request\",\n" +
-                                                    "  \"message\": \"El nombre es obligatorio\",\n" +
+                                                    "  \"message\": \"La dirección no puede ser NULL\",\n" +
                                                     "  \"path\": \"/api/clients\"\n" +
                                                     "}"
                                     )
@@ -99,7 +111,7 @@ public class ClientController {
                                                     "  \"timestamp\": \"2023-07-25T10:15:30.123+00:00\",\n" +
                                                     "  \"status\": 409,\n" +
                                                     "  \"error\": \"Conflict\",\n" +
-                                                    "  \"message\": \"Ya existe un cliente con este NIF: 12345678A\",\n" +
+                                                    "  \"message\": \"Ya existe un cliente con este NIF: 11214139Z\",\n" +
                                                     "  \"path\": \"/api/clients\"\n" +
                                                     "}"
                                     )
@@ -108,7 +120,7 @@ public class ClientController {
             )
     })
     @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Datos del nuevo cliente",
+            description = "Datos del nuevo cliente con dirección y país",
             required = true,
             content = @Content(
                     mediaType = "application/json",
@@ -118,16 +130,27 @@ public class ClientController {
                                     name = "clienteNuevo",
                                     summary = "Ejemplo de cliente nuevo",
                                     value = "{\n" +
-                                            "  \"name\": \"Juan\",\n" +
-                                            "  \"firstSurname\": \"García\",\n" +
-                                            "  \"secondSurname\": \"López\",\n" +
-                                            "  \"addressId\": 1,\n" +
-                                            "  \"countryId\": 1,\n" +
-                                            "  \"phone\": \"666555444\",\n" +
-                                            "  \"nif\": \"12345678A\",\n" +
-                                            "  \"dateOfBirth\": \"1990-01-15\",\n" +
-                                            "  \"email\": \"juan@example.com\",\n" +
-                                            "  \"scoring\": 80\n" +
+                                            "  \"name\": \"Arturo\",\n" +
+                                            "  \"firstSurname\": \"Pérez\",\n" +
+                                            "  \"secondSurname\": \"Sanchís\",\n" +
+                                            "  \"phone\": \"667111389\",\n" +
+                                            "  \"email\": \"Arturo@ejemplo.com\",\n" +
+                                            "  \"nif\": \"11214139Z\",\n" +
+                                            "  \"dateOfBirth\": \"1951-10-25\",\n" +
+                                            "  \"scoring\": 44,\n" +
+                                            "  \"country\": {\n" +
+                                            "    \"isoA2\": \"ES\"\n" +
+                                            "  },\n" +
+                                            "  \"address\": {\n" +
+                                            "    \"city\": \"Madrid\",\n" +
+                                            "    \"street\": \"Calle Gran Vía 111\",\n" +
+                                            "    \"zipCode\": \"28013\"\n" +
+                                            "  },\n" +
+                                            "  \"notificationAddress\": {\n" +
+                                            "    \"city\": \"Madrid\",\n" +
+                                            "    \"street\": \"Calle Gran Vía 111\",\n" +
+                                            "    \"zipCode\": \"28013\"\n" +
+                                            "  }\n" +
                                             "}"
                             )
                     }
@@ -137,6 +160,8 @@ public class ClientController {
         ClientDto createdClient = clientService.createClient(clientDto);
         return new ResponseEntity<>(createdClient, HttpStatus.CREATED);
     }
+
+
     @PutMapping("/{id}")
     @Operation(
             summary = "Actualizar un cliente",

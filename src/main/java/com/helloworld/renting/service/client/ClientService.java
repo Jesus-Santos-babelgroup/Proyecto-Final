@@ -55,7 +55,7 @@ public class ClientService {
         validateEmail(clientDto.getEmail());
         validateNif(clientDto.getNif());
         validateDateOfBirth(clientDto.getDateOfBirth());
-        checkForDuplicatesOnCreate(clientDto); // Usa el nuevo método aquí
+        checkForDuplicatesOnCreate(clientDto);
         validateScoring(clientDto.getScoring());
         validateCountry(clientDto.getCountry());
         validateAddress(clientDto.getAddress());
