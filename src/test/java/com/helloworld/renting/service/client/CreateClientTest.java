@@ -1,9 +1,11 @@
-/*package com.helloworld.renting.service.client;
+package com.helloworld.renting.service.client;
 
 import com.helloworld.renting.dto.AddressDto;
 import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.CountryDto;
+import com.helloworld.renting.entities.Address;
 import com.helloworld.renting.entities.Client;
+import com.helloworld.renting.entities.Country;
 import com.helloworld.renting.exceptions.attributes.AttributeException;
 import com.helloworld.renting.exceptions.attributes.InvalidClientDtoException;
 import com.helloworld.renting.exceptions.db.DuplicateModel;
@@ -62,7 +64,6 @@ class CreateClientTest {
     void createClient_BasicFunctionality() {
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
@@ -86,18 +87,36 @@ class CreateClientTest {
         inputDto.setNotificationAddress(address);
 
         Client client = new Client();
+        client.setId(1L);
+
+        // Configuración de entidades para el resultado
+        Country countryEntity = new Country();
+        countryEntity.setIsoA2("AL");
+
+        Address addressEntity = new Address();
+        addressEntity.setId(1L);
+        addressEntity.setCity("Madrid");
+
         ClientDto outputDto = new ClientDto();
         outputDto.setId(1L);
         outputDto.setNotificationAddress(address);
 
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
-        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
-        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(1);
+        // Configuración de mocks
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(0); // Sin duplicados
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(0);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(0);
         when(countryMapper.existsByISOA2(country.getIsoA2())).thenReturn(true);
         when(addressMapper.existsByCity(address.getCity())).thenReturn(true);
         when(toEntity.clientToEntity(any(ClientDto.class))).thenReturn(client);
         when(toDto.clientToDto(client)).thenReturn(outputDto);
+        when(countryService.getIdCountry(any())).thenReturn("AL");
+        when(addressService.getIdAddressSafe(inputDto.getAddress())).thenReturn(1L);
+        when(addressService.getIdAddressSafe(inputDto.getNotificationAddress())).thenReturn(1L);
+        when(countryMapper.getCountry("AL")).thenReturn(countryEntity);
+        when(addressMapper.getAddress(1L)).thenReturn(addressEntity);
+        when(toDto.countryToDto(countryEntity)).thenReturn(country);
+        when(toDto.addressToDto(addressEntity)).thenReturn(address);
+
         // When
         ClientDto result = clientService.createClient(inputDto);
 
@@ -105,16 +124,93 @@ class CreateClientTest {
         assertNotNull(result);
         assertEquals(1L, result.getId());
 
-        verify(clientMapper).existsByEmail(inputDto.getEmail());
-        verify(clientMapper).existsById(inputDto.getId());
+        // Verificar que se llamó a los métodos correctos
         verify(clientMapper).existsByNif(inputDto.getNif());
+        verify(clientMapper).existsByEmail(inputDto.getEmail());
         verify(clientMapper).existsByPhone(inputDto.getPhone());
+        verify(addressService, times(2)).getIdAddressSafe(any(AddressDto.class));
+        verify(countryService).getIdCountry(any(CountryDto.class));
         verify(toEntity).clientToEntity(inputDto);
         verify(clientMapper).insert(client);
         verify(toDto).clientToDto(client);
-
+        verify(toDto).countryToDto(countryEntity);
+        verify(toDto).addressToDto(addressEntity);
     }
 
+    @Test
+    void createClient_WithDuplicateNif_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
+
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1); // Hay un registro con este NIF
+
+        // When & Then
+        DuplicateModel exception = assertThrows(DuplicateModel.class,
+                () -> clientService.createClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("Ya existe un cliente con este NIF: " + inputDto.getNif()));
+        verify(clientMapper, never()).insert(any());
+    }
+
+    @Test
+    void createClient_WithDuplicateEmail_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
+
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(0);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1); // Hay un registro con este email
+
+        // When & Then
+        DuplicateModel exception = assertThrows(DuplicateModel.class,
+                () -> clientService.createClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("Ya existe un cliente con este email: " + inputDto.getEmail()));
+        verify(clientMapper, never()).insert(any());
+    }
+
+    @Test
+    void createClient_WithDuplicatePhone_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
+
+        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(0);
+        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(0);
+        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(1); // Hay un registro con este teléfono
+
+        // When & Then
+        DuplicateModel exception = assertThrows(DuplicateModel.class,
+                () -> clientService.createClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("Ya existe un cliente con este teléfono: " + inputDto.getPhone()));
+        verify(clientMapper, never()).insert(any());
+    }
 
     @Test
     void createClient_WithNullDto_ShouldThrowException() {
@@ -128,238 +224,162 @@ class CreateClientTest {
     }
 
     @Test
-    void createClient_IDNotExists_ShouldThrowException() {
-
-        // Given
-        ClientDto inputDto = new ClientDto();
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(false);
-
-
-        // When & Then
-        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
-                () -> clientService.updateClient(inputDto));
-
-        verifyNoInteractions(toEntity, toDto);
-        assertTrue(exception.getMessage().contains("El ID no existe"));
-        verify(clientMapper, never()).updateClient(any());
-    }
-
-    @Test
     void createClient_NullName_ShouldThrowException() {
-
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
-                () -> clientService.updateClient(inputDto));
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
         assertTrue(exception.getMessage().contains("El nombre no puede ser NULL"));
-        verify(clientMapper, never()).updateClient(any());
+        verify(clientMapper, never()).insert(any());
     }
 
     @Test
     void createClient_NullFirstSurName_ShouldThrowException() {
-
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
         inputDto.setName("Test");
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
-                () -> clientService.updateClient(inputDto));
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
         assertTrue(exception.getMessage().contains("Los apellidos no pueden ser NULL"));
-        verify(clientMapper, never()).updateClient(any());
+        verify(clientMapper, never()).insert(any());
     }
 
     @Test
     void createClient_NullPhone_ShouldThrowException() {
-
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
-                () -> clientService.updateClient(inputDto));
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
         assertTrue(exception.getMessage().contains("El tlf no puede ser NULL"));
-        verify(clientMapper, never()).updateClient(any());
+        verify(clientMapper, never()).insert(any());
     }
 
     @Test
     void createClient_NullEmail_ShouldThrowException() {
-
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
-                () -> clientService.updateClient(inputDto));
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
         assertTrue(exception.getMessage().contains("El email no puede ser NULL"));
-        verify(clientMapper, never()).updateClient(any());
+        verify(clientMapper, never()).insert(any());
     }
 
     @Test
     void createClient_NullNif_ShouldThrowException() {
-
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
-                () -> clientService.updateClient(inputDto));
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
         assertTrue(exception.getMessage().contains("El NIF no puede ser NULL"));
-        verify(clientMapper, never()).updateClient(any());
+        verify(clientMapper, never()).insert(any());
     }
 
     @Test
     void createClient_NullDateBirth_ShouldThrowException() {
-
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
         inputDto.setNif("12345678A");
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-
+        inputDto.setScoring(7);
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
-                () -> clientService.updateClient(inputDto));
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
         assertTrue(exception.getMessage().contains("La fecha de nacimiento no puede ser NULL"));
-        verify(clientMapper, never()).updateClient(any());
+        verify(clientMapper, never()).insert(any());
     }
 
     @Test
     void createClient_BadFormatNif_ShouldThrowException() {
-
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
         inputDto.setNif("1");
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(7);
 
         // When & Then
         AttributeException exception = assertThrows(AttributeException.class,
-                () -> clientService.updateClient(inputDto));
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
         assertTrue(exception.getMessage().contains("El NIF no tiene el formato correcto"));
-        verify(clientMapper, never()).updateClient(any());
+        verify(clientMapper, never()).insert(any());
     }
-
-    @Test
-    void createClient_WithDuplicateNif_ShouldThrowException() {
-        // Given
-        ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        inputDto.setName("Test");
-        inputDto.setFirstSurname("SurnameTest1");
-        inputDto.setSecondSurname("SurnameTest2");
-        inputDto.setPhone("+34123456789");
-        inputDto.setEmail("test@example.com");
-        inputDto.setNif("12345678A");
-        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(2);
-
-        // When & Then
-        DuplicateModel exception = assertThrows(DuplicateModel.class,
-                () -> clientService.updateClient(inputDto));
-
-        verifyNoInteractions(toEntity, toDto);
-        assertTrue(exception.getMessage().contains("Ya existe un cliente con este NIF: " + inputDto.getNif()));
-        verify(clientMapper, never()).updateClient(any());
-    }
-
-    @Test
-    void createClient_WithDuplicateEmail_ShouldThrowException() {
-        // Given
-        ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
-        inputDto.setName("Test");
-        inputDto.setFirstSurname("SurnameTest1");
-        inputDto.setSecondSurname("SurnameTest2");
-        inputDto.setPhone("+34123456789");
-        inputDto.setEmail("test@example.com");
-        inputDto.setNif("12345678A");
-        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-
-
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
-        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(2);
-
-        // When & Then
-        DuplicateModel exception = assertThrows(DuplicateModel.class,
-                () -> clientService.updateClient(inputDto));
-
-        verifyNoInteractions(toEntity, toDto);
-        assertTrue(exception.getMessage().contains("Ya existe un cliente con este email: " + inputDto.getEmail()));
-        verify(clientMapper, never()).updateClient(any());
-    }
-
 
     @Test
     void createClient_WithFutureBirthDate_ShouldThrowException() {
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
         inputDto.setNif("12345678A");
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
+        inputDto.setScoring(7);
         LocalDate futureDate = LocalDate.now().plusYears(1);
         inputDto.setDateOfBirth(futureDate);
 
@@ -371,33 +391,47 @@ class CreateClientTest {
         verify(clientMapper, never()).insert(any());
     }
 
-
     @Test
-    void createClient_WithDuplicatePhone_ShouldThrowException() {
+    void createClient_WithNullScoring_ShouldThrowException() {
         // Given
         ClientDto inputDto = new ClientDto();
-        inputDto.setId(1L);
         inputDto.setName("Test");
         inputDto.setFirstSurname("SurnameTest1");
         inputDto.setSecondSurname("SurnameTest2");
         inputDto.setPhone("+34123456789");
         inputDto.setEmail("test@example.com");
         inputDto.setNif("12345678A");
-        inputDto.setPhone("+34123456789");
         inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
-
-        when(clientMapper.existsById(inputDto.getId())).thenReturn(true);
-        when(clientMapper.existsByNif(inputDto.getNif())).thenReturn(1);
-        when(clientMapper.existsByEmail(inputDto.getEmail())).thenReturn(1);
-        when(clientMapper.existsByPhone(inputDto.getPhone())).thenReturn(2);
-
+        // No asignamos scoring
 
         // When & Then
-        DuplicateModel exception = assertThrows(DuplicateModel.class,
-                () -> clientService.updateClient(inputDto));
+        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
+                () -> clientService.createClient(inputDto));
 
         verifyNoInteractions(toEntity, toDto);
-        assertTrue(exception.getMessage().contains("Ya existe un cliente con este teléfono: " + inputDto.getPhone()));
-        verify(clientMapper, never()).updateClient(any());
+        assertTrue(exception.getMessage().contains("El scoring no puede ser nulo ni negativo"));
+        verify(clientMapper, never()).insert(any());
     }
-}*/
+
+    @Test
+    void createClient_WithNegativeScoring_ShouldThrowException() {
+        // Given
+        ClientDto inputDto = new ClientDto();
+        inputDto.setName("Test");
+        inputDto.setFirstSurname("SurnameTest1");
+        inputDto.setSecondSurname("SurnameTest2");
+        inputDto.setPhone("+34123456789");
+        inputDto.setEmail("test@example.com");
+        inputDto.setNif("12345678A");
+        inputDto.setDateOfBirth(LocalDate.of(1990, 5, 15));
+        inputDto.setScoring(-1); // Scoring negativo
+
+        // When & Then
+        InvalidClientDtoException exception = assertThrows(InvalidClientDtoException.class,
+                () -> clientService.createClient(inputDto));
+
+        verifyNoInteractions(toEntity, toDto);
+        assertTrue(exception.getMessage().contains("El scoring no puede ser nulo ni negativo"));
+        verify(clientMapper, never()).insert(any());
+    }
+}
