@@ -58,8 +58,8 @@ public class ClientService {
         checkForDuplicatesOnCreate(clientDto);
         validateScoring(clientDto.getScoring());
         validateCountry(clientDto.getCountry());
-        validateAddress(clientDto.getAddress());
-        validateAddress(clientDto.getNotificationAddress());
+        addressService.findOrCreateAddress(clientDto.getAddress());
+        addressService.findOrCreateAddress(clientDto.getNotificationAddress());
         AddressDto notiAddressDto = validateEqualsAddresses(clientDto.getAddress(), clientDto.getNotificationAddress());
 
         Client client = toEntity.clientToEntity(clientDto);
