@@ -1,5 +1,6 @@
-/*package com.helloworld.renting.service.economicData;
+package com.helloworld.renting.service.economicData;
 
+import com.helloworld.renting.dto.ClientDto;
 import com.helloworld.renting.dto.EconomicDataEmployedDto;
 import com.helloworld.renting.dto.EconomicDataSelfEmployedDto;
 import com.helloworld.renting.entities.EconomicDataEmployed;
@@ -12,6 +13,7 @@ import com.helloworld.renting.mapper.StructMapperToEntity;
 import com.helloworld.renting.mapper.economicalData.EconomicDataEmployedMapper;
 import com.helloworld.renting.mapper.economicalData.EconomicDataSelfEmployedMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -31,21 +33,29 @@ class EconomicDataServiceTest {
     @InjectMocks
     private EconomicDataService service;
 
-    @Mock private EconomicDataEmployedMapper employedMapper;
-    @Mock private EconomicDataSelfEmployedMapper selfEmployedMapper;
-    @Mock private StructMapperToEntity structMapperToEntity;
-    @Mock private StructMapperToDto structMapperToDto;
-    @Mock private ClientMapper clientMapper;
+    @Mock
+    private EconomicDataEmployedMapper employedMapper;
+    @Mock
+    private EconomicDataSelfEmployedMapper selfEmployedMapper;
+    @Mock
+    private StructMapperToEntity structMapperToEntity;
+    @Mock
+    private StructMapperToDto structMapperToDto;
+    @Mock
+    private ClientMapper clientMapper;
 
     @BeforeEach
     void setup() {
         // Mockito annotations ya manejado por @ExtendWith y @InjectMocks
     }
 
-    
+
     @Test
     void shouldAddSelfEmployedSuccessfully() {
+        ClientDto clientDto = new ClientDto();
         EconomicDataSelfEmployedDto dto = new EconomicDataSelfEmployedDto();
+        clientDto.setId(1L);
+        dto.setClient(clientDto);
         dto.setGrossIncome(BigDecimal.TEN);
         dto.setNetIncome(BigDecimal.ONE);
         dto.setYearEntry(2024);
@@ -65,7 +75,10 @@ class EconomicDataServiceTest {
 
     @Test
     void shouldThrowWhenDuplicateSelfEmployedYear() {
+        ClientDto clientDto = new ClientDto();
         EconomicDataSelfEmployedDto dto = new EconomicDataSelfEmployedDto();
+        clientDto.setId(1L);
+        dto.setClient(clientDto);
         dto.setYearEntry(2024);
 
         when(clientMapper.existsById(1L)).thenReturn(true);
@@ -93,7 +106,10 @@ class EconomicDataServiceTest {
 
     @Test
     void shouldAddEmployedSuccessfully() {
+        ClientDto clientDto = new ClientDto();
         EconomicDataEmployedDto dto = new EconomicDataEmployedDto();
+        clientDto.setId(1L);
+        dto.setClient(clientDto);
         dto.setGrossIncome(BigDecimal.TEN);
         dto.setStartDate(LocalDate.of(2024, 1, 1));
         dto.setEndDate(LocalDate.of(2024, 12, 31));
@@ -114,7 +130,10 @@ class EconomicDataServiceTest {
 
     @Test
     void shouldThrowWhenStartDateInFuture() {
+        ClientDto clientDto = new ClientDto();
         EconomicDataEmployedDto dto = new EconomicDataEmployedDto();
+        clientDto.setId(1L);
+        dto.setClient(clientDto);
         dto.setStartDate(LocalDate.now().plusDays(1));
         dto.setEndDate(LocalDate.now());
         dto.setYearEntry(LocalDate.now().getYear());
@@ -131,7 +150,10 @@ class EconomicDataServiceTest {
 
     @Test
     void shouldThrowWhenStartDateYearDoesNotMatch() {
+        ClientDto clientDto = new ClientDto();
         EconomicDataEmployedDto dto = new EconomicDataEmployedDto();
+        clientDto.setId(1L);
+        dto.setClient(clientDto);
         dto.setStartDate(LocalDate.of(2023, 1, 1));
         dto.setEndDate(LocalDate.of(2023, 12, 31));
         dto.setYearEntry(2024);
@@ -145,9 +167,7 @@ class EconomicDataServiceTest {
         assertEquals(400, ex.getStatusCode().value());
         assertTrue(ex.getReason().contains("El año de entrada debe coincidir"));
     }
-    */
 
-    /*
     @Test
     void shouldDeleteWhenEconomicDataEmployedExists() {
         Long id = 1L;
@@ -235,4 +255,5 @@ class EconomicDataServiceTest {
 
         assertEquals("Error checking if economic data self employed exists for client", ex.getMessage());
     }
-    */
+
+}
